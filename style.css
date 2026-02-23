@@ -1,0 +1,227 @@
+
+
+#bg-box {z-index: -1;}
+#background {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+#tree {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: clamp(300px, 20%, 500px);
+}
+
+#logo-dlhp {
+    margin: auto;
+    width: clamp(100px, 40%, 300px);
+    display: block;
+}
+#login-content {
+    /* box-shadow: 0 0 20px rgba(0, 0, 0, .1); */
+    transform: translateY(-50px);
+}
+
+
+.content h3 {
+    width: 100%;
+    border-bottom: 2px solid grey;
+}
+
+#barang-masuk-keluar {
+    height: clamp(200px, 100vh, 600px);
+}
+
+.maku-date-group {
+    width: clamp(200px, calc(50% - 6px), 400px);
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+}
+.maku-date-group input {
+    width: 100%;
+    display: block;
+    padding: 5px;
+    border: 2px solid darkgray;
+    border-radius: 5px;
+    background-color: transparent;
+    color: #333;
+}
+.maku-date-group label {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+}
+
+#diag-maku {
+    width: 100%;
+    height: 360px;
+    border-radius: 10px;
+}
+#diagram-maku {
+}
+.maku-bottom {
+    height: 30px;
+    width: 100%;
+}
+#maku-numbers {
+    display: flex;
+    flex-direction: column;
+}
+#dg-maku-number {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: space-between;
+    color: grey;
+    font-size: 20px;
+    height: 100%;
+    border-right: 2px solid grey;
+    text-align: right;
+    padding-right: 10px;
+}
+#dg-maku-number span:nth-child(2) {
+    transform: translateY(25%);
+}
+#dg-maku-number span:nth-child(4) {
+    transform: translateY(-20%);
+}
+#dg-maku-number span:nth-child(5) {
+    transform: translateY(-40%);
+}
+#dg-maku-number span:nth-child(6) {
+    transform: translateY(-50%);
+}
+#dg-maku-lines {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: calc(100%);
+    z-index: -1;
+}
+#dg-maku-lines span {
+    height: 100%;
+    display: block;
+    width: 100%;
+    border-top: 1px dotted darkgray;
+}
+
+#dg-maku-bar {
+    height: calc(100% - 30px);
+}
+
+.maku-group {
+    border-bottom: 2px solid grey !important;
+}
+.maku-group {
+    height: 100%;
+    width: 150px !important;
+}
+.maku-bar {
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    gap: 4px;
+}
+.maku-bar-box {
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+}
+.bars {
+    width: 30px;
+    height: 60%;
+    border-radius: 3px 3px 0 0;
+}
+
+
+
+
+
+
+
+/* Date Detail */
+#detail-box {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: scroll;
+    backdrop-filter: blur(10px);
+}
+
+#date-detail {
+    box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+}
+
+#date-detail span.bolder {
+    border-bottom: 1.3px solid grey;
+    display: block;
+    padding-bottom: 4px;
+}
+
+#detail-photo-box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    backdrop-filter: blur(10px);
+    height: 100%;
+    width: 100%;
+}
+#detail-photo {
+    box-shadow: 0 0 10px rgba(0, 0, 0, .3);
+}
+#detail-photo img {
+    margin: auto;
+    width: 100%;
+    max-height: 500px;
+    display: block;
+}
+
+
+
+#inventory-search {
+    position: relative;
+    width: 100%;
+    border-radius: 10px;
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-start;
+    gap: 5px;
+    border: 2px solid darkgray;
+    padding-right: px;
+}
+#inventory-search input {
+    display: block;
+    width: 100%;
+    padding:10px !important;
+    font-size: 20px !important;
+    background: transparent;
+    height: 100%;
+    outline: none;
+    border-radius: 10px;
+    color: #444;
+    border: none;
+}
+
+#inventory-detail {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    backdrop-filter: blur(10px);
+}
+#inven-det-box {
+    box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+}
+#inven-det-box img {
+    width: 300px;
+}

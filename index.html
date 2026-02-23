@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventaris Barang Masuk dan Keluar</title>
+
+    <link rel="stylesheet" href="./font/fontawsome/css/all.css">
+    <link rel="stylesheet" href="bendhard16.min.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+</head>
+<body class="eb-garamond p-0 m-0">
+
+    <!-- Background & tree -->
+    <div id="bg-box" class="fixed-top-left p-0 m-0 vw-100 vh-100 hidden">
+        <img src="./img/bg_green.png" alt="" id="background">
+        <img src="./img/tree-bg.png" alt="" id="tree">
+    </div>
+    <div id="login" class="relative vh-100 p-20 clr-darkgrey align-center m-0 p-0 grid-center">
+        <div id="login-content" class="p-10 borad-20">
+            <img src="./img/logo-dlhp.png" alt="" id="logo-dlhp">
+            <div class="hr grey"></div>
+            <h1>Invetaris Barang <br>Masuk dan Keluar</h1>
+            <h3>Bidang Tata Lingkungan</h3>
+            <!-- Login Google -->
+             <div class="flex-center">
+                <div id="g_id_onload"
+                    data-client_id="682153086273-cvnoual5uc002rbisi3t1ctbgmd5dot2.apps.googleusercontent.com"
+                    data-context="signin"
+                    data-ux_mode="popup"
+                    data-callback="loginGoogle"
+                    data-auto_prompt="false">
+                </div>
+
+                <div class="g_id_signin"
+                    data-type="standard"
+                    data-shape="pill"
+                    data-theme="filled_blue"
+                    data-text="signin_with"
+                    data-size="large"
+                    data-locale="id"
+                    data-logo_alignment="left"
+                    data-width="250">
+                </div>
+            </div>
+            <span class="fz-10">by Arief Firmansyah</span>
+        </div>
+    </div>
+
+
+    <div id="main" class="p-20 clr-darkgrey dis-none">
+        <h2 class="p-0 m-0 align-left">Inventaris Barang Masuk dan Keluar</h2>
+        <h3 class="m-0 p-0">Bidang Tata Lingkungan</h3>
+
+        <br>
+
+        <!-- diagram barang masuk keluar -->
+        <div id="barang-masuk-keluar" class="content w-100 glass-box borad-20 p-20">
+            <h3 class="pb-1 m-0">Barang Masuk dan Keluar</h3>
+            <div id="maku-search" class="pt-2">
+                <div id="maku-type" class=" flex-start gap-10">
+                    <button id="maku-button-masuk" data-status="on" class="maku-type-group green p-5 w-100 fz-16 borad-5 align-center">Barang Masuk</button>
+                    <button id="maku-button-keluar" data-status="on" class="maku-type-group blue p-5 w-100 fz-16 borad-5 align-center">Barang Keluar</button>
+                </div>
+                <br>
+                <div id="maku-date" class="flex-start gap-10 mt-1">
+                    <div class="maku-date-group">
+                        <input type="date" id="maku-date-start">
+                        <label for="maku-date-start">Awal</label>
+                    </div>
+                    <div class="maku-date-group">
+                        <input type="date" id="maku-date-end">
+                        <label for="maku-date-end">Akhir</label>
+                    </div>
+                </div>
+            </div>
+            <div class="hr grey borad-20"></div>
+
+                        <!-- <div class="maku-group ph-5">
+                            <div class="maku-bar ph-5">
+                                <div class="maku-bar-box bar-masuk bolder">
+                                    <span class="bar-masuk-number align-center">2</span>
+                                    <div class="bars masuk-bar green"></div>
+                                </div>
+                                <div class="maku-bar-box bar-keluar bolder">
+                                    <span class="bar-keluar-number align-center">105</span>
+                                    <div class="bars keluar-bar blue"></div>
+                                </div>
+                            </div>
+                            <div class="maku-date align-center fz-20">01</div>
+                        </div> -->
+            
+            <div id="diag-maku">
+                <div id="diagram-maku" class="w-100 h-100 relative flex-start items-start">
+                    <div id="maku-numbers" class="h-100">
+                        <div id="dg-maku-number" class="h-100">
+                            <span>0</span>
+                            <span>10</span>
+                            <span>20</span>
+                            <span>30</span>
+                            <span>40</span>
+                            <span>50</span>
+                        </div>
+                        <div class="maku-bottom"></div>
+                    </div>
+
+                    <div id="maku-bars" class="scroll h-100 w-100">
+                        <div id="dg-maku-bar" class="w-100 flex-start gap-10 relative">
+                            
+                            <div id="dg-maku-groups" class="h-100 w-100 flex-start gap">
+                                
+                                <div class="maku-group ph-5">
+                                    <div class="maku-bar ph-5">
+                                        <div class="maku-bar-box bar-masuk bolder">
+                                            <span class="bar-masuk-number align-center">2</span>
+                                            <div class="bars masuk-bar green"></div>
+                                        </div>
+                                        <div class="maku-bar-box bar-keluar bolder">
+                                            <span class="bar-keluar-number align-center">105</span>
+                                            <div class="bars keluar-bar blue"></div>
+                                        </div>
+                                    </div>
+                                    <div class="maku-date align-center fz-20">01</div>
+                                </div>
+                                
+                                <div class="maku-group ph-5">
+                                    <div class="maku-bar ph-5">
+                                        <div class="maku-bar-box bar-masuk bolder">
+                                            <span class="bar-masuk-number align-center">2</span>
+                                            <div class="bars masuk-bar green"></div>
+                                        </div>
+                                        <div class="maku-bar-box bar-keluar bolder">
+                                            <span class="bar-keluar-number align-center">105</span>
+                                            <div class="bars keluar-bar blue"></div>
+                                        </div>
+                                    </div>
+                                    <div class="maku-date align-center fz-20">01</div>
+                                </div>
+                                
+                                <div class="maku-group ph-5">
+                                    <div class="maku-bar ph-5">
+                                        <div class="maku-bar-box bar-masuk bolder">
+                                            <span class="bar-masuk-number align-center">2</span>
+                                            <div class="bars masuk-bar green"></div>
+                                        </div>
+                                        <div class="maku-bar-box bar-keluar bolder">
+                                            <span class="bar-keluar-number align-center">105</span>
+                                            <div class="bars keluar-bar blue"></div>
+                                        </div>
+                                    </div>
+                                    <div class="maku-date align-center fz-20">01</div>
+                                </div>
+                                
+                                <div class="maku-group ph-5">
+                                    <div class="maku-bar ph-5">
+                                        <div class="maku-bar-box bar-masuk bolder">
+                                            <span class="bar-masuk-number align-center">2</span>
+                                            <div class="bars masuk-bar green"></div>
+                                        </div>
+                                        <div class="maku-bar-box bar-keluar bolder">
+                                            <span class="bar-keluar-number align-center">105</span>
+                                            <div class="bars keluar-bar blue"></div>
+                                        </div>
+                                    </div>
+                                    <div class="maku-date align-center fz-20">01</div>
+                                </div>
+                                
+                                <div class="maku-group ph-5">
+                                    <div class="maku-bar ph-5">
+                                        <div class="maku-bar-box bar-masuk bolder">
+                                            <span class="bar-masuk-number align-center">2</span>
+                                            <div class="bars masuk-bar green"></div>
+                                        </div>
+                                        <div class="maku-bar-box bar-keluar bolder">
+                                            <span class="bar-keluar-number align-center">105</span>
+                                            <div class="bars keluar-bar blue"></div>
+                                        </div>
+                                    </div>
+                                    <div class="maku-date align-center fz-20">01</div>
+                                </div>
+                                
+                                <div class="maku-group ph-5">
+                                    <div class="maku-bar ph-5">
+                                        <div class="maku-bar-box bar-masuk bolder">
+                                            <span class="bar-masuk-number align-center">2</span>
+                                            <div class="bars masuk-bar green"></div>
+                                        </div>
+                                        <div class="maku-bar-box bar-keluar bolder">
+                                            <span class="bar-keluar-number align-center">105</span>
+                                            <div class="bars keluar-bar blue"></div>
+                                        </div>
+                                    </div>
+                                    <div class="maku-date align-center fz-20">01</div>
+                                </div>
+                                
+                                <div class="maku-group ph-5">
+                                    <div class="maku-bar ph-5">
+                                        <div class="maku-bar-box bar-masuk bolder">
+                                            <span class="bar-masuk-number align-center">2</span>
+                                            <div class="bars masuk-bar green"></div>
+                                        </div>
+                                        <div class="maku-bar-box bar-keluar bolder">
+                                            <span class="bar-keluar-number align-center">105</span>
+                                            <div class="bars keluar-bar blue"></div>
+                                        </div>
+                                    </div>
+                                    <div class="maku-date align-center fz-20">01</div>
+                                </div>
+                                
+                                <div class="maku-group ph-5">
+                                    <div class="maku-bar ph-5">
+                                        <div class="maku-bar-box bar-masuk bolder">
+                                            <span class="bar-masuk-number align-center">2</span>
+                                            <div class="bars masuk-bar green"></div>
+                                        </div>
+                                        <div class="maku-bar-box bar-keluar bolder">
+                                            <span class="bar-keluar-number align-center">105</span>
+                                            <div class="bars keluar-bar blue"></div>
+                                        </div>
+                                    </div>
+                                    <div class="maku-date align-center fz-20">01</div>
+                                </div>
+                                
+                                <div class="maku-group ph-5">
+                                    <div class="maku-bar ph-5">
+                                        <div class="maku-bar-box bar-masuk bolder">
+                                            <span class="bar-masuk-number align-center">2</span>
+                                            <div class="bars masuk-bar green"></div>
+                                        </div>
+                                        <div class="maku-bar-box bar-keluar bolder">
+                                            <span class="bar-keluar-number align-center">105</span>
+                                            <div class="bars keluar-bar blue"></div>
+                                        </div>
+                                    </div>
+                                    <div class="maku-date align-center fz-20">01</div>
+                                </div>
+                                
+                                <div class="maku-group ph-5">
+                                    <div class="maku-bar ph-5">
+                                        <div class="maku-bar-box bar-masuk bolder">
+                                            <span class="bar-masuk-number align-center">2</span>
+                                            <div class="bars masuk-bar green"></div>
+                                        </div>
+                                        <div class="maku-bar-box bar-keluar bolder">
+                                            <span class="bar-keluar-number align-center">105</span>
+                                            <div class="bars keluar-bar blue"></div>
+                                        </div>
+                                    </div>
+                                    <div class="maku-date align-center fz-20">01</div>
+                                </div>
+                                
+                                <div class="maku-group ph-5">
+                                    <div class="maku-bar ph-5">
+                                        <div class="maku-bar-box bar-masuk bolder">
+                                            <span class="bar-masuk-number align-center">2</span>
+                                            <div class="bars masuk-bar green"></div>
+                                        </div>
+                                        <div class="maku-bar-box bar-keluar bolder">
+                                            <span class="bar-keluar-number align-center">105</span>
+                                            <div class="bars keluar-bar blue"></div>
+                                        </div>
+                                    </div>
+                                    <div class="maku-date align-center fz-20">01</div>
+                                </div>
+                                
+                                <div class="maku-group ph-5">
+                                    <div class="maku-bar ph-5">
+                                        <div class="maku-bar-box bar-masuk bolder">
+                                            <span class="bar-masuk-number align-center">2</span>
+                                            <div class="bars masuk-bar green"></div>
+                                        </div>
+                                        <div class="maku-bar-box bar-keluar bolder">
+                                            <span class="bar-keluar-number align-center">105</span>
+                                            <div class="bars keluar-bar blue"></div>
+                                        </div>
+                                    </div>
+                                    <div class="maku-date align-center fz-20">01</div>
+                                </div>
+                                
+                                <div class="maku-group ph-5">
+                                    <div class="maku-bar ph-5">
+                                        <div class="maku-bar-box bar-masuk bolder">
+                                            <span class="bar-masuk-number align-center">2</span>
+                                            <div class="bars masuk-bar green"></div>
+                                        </div>
+                                        <div class="maku-bar-box bar-keluar bolder">
+                                            <span class="bar-keluar-number align-center">105</span>
+                                            <div class="bars keluar-bar blue"></div>
+                                        </div>
+                                    </div>
+                                    <div class="maku-date align-center fz-20">01</div>
+                                </div>
+                                
+                                <div class="maku-group ph-5">
+                                    <div class="maku-bar ph-5">
+                                        <div class="maku-bar-box bar-masuk bolder">
+                                            <span class="bar-masuk-number align-center">2</span>
+                                            <div class="bars masuk-bar green"></div>
+                                        </div>
+                                        <div class="maku-bar-box bar-keluar bolder">
+                                            <span class="bar-keluar-number align-center">105</span>
+                                            <div class="bars keluar-bar blue"></div>
+                                        </div>
+                                    </div>
+                                    <div class="maku-date align-center fz-20">01</div>
+                                </div>
+
+                            </div>
+                            
+                            <div id="dg-maku-lines">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                        <div class="maku-bottom"></div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <br>
+
+        <div class="hr white"></div>
+
+        <div id="inventory-barang">
+            <!-- Inventory -->
+            <div id="inventory" class="content glass-box p-20 borad-20">
+                <h3 class="pb-1 m-0">Inventory &nbsp;(Stok Barang)</h3>
+                <div id="inventory-search" class="w-100 p-0">
+                    <input type="text" placeholder="Search" id="inven-search">
+                    <i class="fas fa-search grid-center fz-24 ph-5"></i>
+                </div>
+                <div class="hr grey"></div>
+                <div id="inventory-list">
+                    <div class="inven-group flex-beetwen mb-1 glass-box p-10 borad-10">
+                        Parang Panjang <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span>
+                    </div>
+                    <div class="inven-group flex-beetwen mb-1 glass-box p-10 borad-10">
+                        Sapu <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span>
+                    </div>
+                    <div class="inven-group flex-beetwen mb-1 glass-box p-10 borad-10">
+                        Jaket <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span>
+                    </div>
+                    <div class="inven-group flex-beetwen mb-1 glass-box p-10 borad-10">
+                        Chain Saw <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span>
+                    </div>
+                    <div class="inven-group flex-beetwen mb-1 glass-box p-10 borad-10">
+                        Rantai Chain Saw <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span>
+                    </div>
+                    <div class="inven-group flex-beetwen mb-1 glass-box p-10 borad-10">
+                        Oli <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span>
+                    </div>
+                    <div class="inven-group flex-beetwen mb-1 glass-box p-10 borad-10">
+                        Pisau Mesin Potong <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span>
+                    </div>
+                    <div class="inven-group flex-beetwen mb-1 glass-box p-10 borad-10">
+                        Gear <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span>
+                    </div>
+                    
+                </div>
+                
+            </div>
+
+            <!-- daftar barang -->
+            <div id="daftar-barang"></div>
+        </div>
+    </div>
+
+    <div id="inventory-detail" class="grid-center clr-darkgrey dis-none">
+        <div id="inven-det-box" class="glass-box p-20 borad-20">
+            <img src="./img/parang.png" alt="" class="white borad-20">
+            <div class="hr white"></div>
+            <h2 class="clr-darkgrey p-0 m-0">Parang Panjang</h2>
+            <span class="fz-18">Stok : 3 Pcs</span>
+            <span class="dis-block flex-beetwen fz-18">Transaksi <i class="fas fa-chevron-right"></i></span>
+            <span id="inventory-detail-close" class="dis-block w-100 red p-5 align-center mt-1 borad-5"><i class="fas fa-close"></i></span>
+        </div>
+    </div>
+
+
+
+
+
+
+
+    <div id="detail-box" class="p-20 clr-darkgrey grid-center dis-none">
+        
+        <div id="date-detail" class="glass-box p-20 borad-20 w-100">
+            <h3 class="p-0 m-0 flex-beetwen">Rabu, 07 Januari 2026 <i id="detail-box-close" class="fas fa-close clr-red"></i></h3>
+            <br>
+            <div id="detail-masuk" class="glass-box p-10 borad-10">
+                <span class="bolder fz-18">Barang Masuk</span>
+                <div id="detail-masuk-list">
+                    <div class="detail-group flex-beetwen pv-5">Parang Panjang <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span></div>
+                    <div class="detail-group flex-beetwen pv-5">Parang Panjang <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span></div>
+                    <div class="detail-group flex-beetwen pv-5">Parang Panjang <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span></div>
+                    <div class="detail-group flex-beetwen pv-5">Parang Panjang <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span></div>
+                    <div class="detail-group flex-beetwen pv-5">Parang Panjang <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span></div>
+                    <div class="detail-group flex-beetwen pv-5">Parang Panjang <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span></div>
+                    <div class="detail-group flex-beetwen pv-5">Parang Panjang <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span></div>
+                    <div class="detail-group flex-beetwen pv-5">Parang Panjang <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span></div>
+                    <div class="detail-group flex-beetwen pv-5">Parang Panjang <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span></div>
+                    <div class="detail-group flex-beetwen pv-5">Parang Panjang <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span></div>
+                    <div class="detail-group flex-beetwen pv-5">Parang Panjang <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span></div>
+                    <div class="detail-group flex-beetwen pv-5">Parang Panjang <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span></div>
+                    <div class="detail-group flex-beetwen pv-5">Parang Panjang <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span></div>
+                    <div class="detail-group flex-beetwen pv-5">Parang Panjang <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span></div>
+                    <div class="detail-group flex-beetwen pv-5">Parang Panjang <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span></div>
+                </div>
+            </div>
+            <br>
+            <div id="detail-keluar" class="glass-box p-10 borad-10">
+                <span class="bolder fz-18">Barang Keluar</span>
+                <div id="detail-keluar-list">
+                    <div class="detail-group flex-beetwen pv-5">Parang Panjang <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span></div>
+                    <div class="detail-group flex-beetwen pv-5">Parang Panjang <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span></div>
+                    <div class="detail-group flex-beetwen pv-5">Parang Panjang <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span></div>
+                    <div class="detail-group flex-beetwen pv-5">Parang Panjang <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span></div>
+                    <div class="detail-group flex-beetwen pv-5">Parang Panjang <span>3 &nbsp; <i class="fas fa-chevron-right"></i></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="detail-photo-box" class="p-20 grid-center dis-none">
+        <div id="detail-photo" class="glass-box p-10 borad-10 w-100">
+            <img src="./img/parang.png" alt="" class="borad-10 white">
+            <div class="hr grey"></div>
+            <div class="detail-text w-100 pv-5 fz-20">
+                <div class="flex-beetwen w-100">Barang Masuk <i class="fas fa-chevron-right dis-none"></i></div>
+                <h3 class="m-0 p-0">Parang Panjang</h3>
+                <span class="dis-block">3 Pcs - Rabu, 07/01/26 12:02:21</span>
+                <span class="dis-block">Pengadaan Tahun 2026</span>
+            </div>
+            <span id="detail-photo-close" class="dis-block flex-center w-100 uppercase fz-20 red"><i class="fas fa-close clr-white fz-30 br-red"></i></span>
+        </div>
+    </div>
+
+    <div id="items-data">
+        
+    </div>
+        
+
+
+    <script>
+    function loginGoogle (e) {
+        document.querySelector("#login").classList.add("dis-none")
+        document.querySelector("#main").classList.remove("dis-none")
+    }
+    </script>
+
+    <script src="main.js"></script>
+</body>
+</html>
