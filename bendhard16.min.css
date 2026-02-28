@@ -42,6 +42,14 @@
     font-family: "prociono";
     src: url("./font/Prociono/Prociono-Regular.ttf");
 }
+@font-face {
+    font-family: "inter";
+    src: url("./font/inter.ttf");
+}
+
+.inter {
+    font-family: "inter" !important;
+}
 
 .barlow {
     font-family: "Barlx", sans-serif !important;
@@ -83,7 +91,7 @@ body {
     font-size: 1rem;
     margin: 0;
     padding: 0;
-    background: #eee;
+    background: #bbb;
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -416,8 +424,17 @@ input::-webkit-inner-spin-button {
 .br-darkred {border-color: darkred !important;}
 
 
+.dark-pink {
+    background: linear-gradient(45deg, #FF002F, #730101) !important;
+    color: white;
+}
+
+.brown {
+    background: linear-gradient(45deg, #CA6641, brown) !important;
+    color: white;
+}
 .clr-brown {
-    color: brown !important;
+    color: br !important;
 }
 
 .delivery, .pickup, .red, [data-bg="red"] {
@@ -425,6 +442,11 @@ input::-webkit-inner-spin-button {
     color: white !important;
     border: none !important;
 }
+.teracotta {
+    background: linear-gradient(45deg, #aa1700, #FF3C00) !important;
+    color: white;
+}
+
 .color-delivery, .color-pickup, .clr-red, [data-color="red"] {color: red !important;}
 .br-delivery, .br-pickup, .br-red {border-color: red !important;}
 
@@ -469,7 +491,7 @@ input::-webkit-inner-spin-button {
 
 .white, [data-bg="white"] {
     background: linear-gradient(45deg, white, #eee);
-    color: black !important;
+    color: #444 !important;
     border: none !important;
 }
 .color-white, .clr-white, [data-color="white"] {color: white !important;}
@@ -477,7 +499,11 @@ input::-webkit-inner-spin-button {
 
 /* .color-default, .darkcyan, .clr-default, [data-color="default"] {color: darkcyan !important;} */
 .default, [data-bg="default"] {
-    background: linear-gradient(45deg, #31b852, #155324) !important;
+    background: linear-gradient(45deg, #072b2b, #006766) !important;
+    color: white;
+}
+.default2 {
+    background: linear-gradient(45deg, #006766, #006766) !important;
     color: white;
 }
 .br-default {border-color: #00BCBC !important;}
@@ -495,6 +521,7 @@ input::-webkit-inner-spin-button {
 
 .bold {font-weight: bold;}
 .bolder {font-weight: bolder;}
+.italic {font-style: italic !important;}
 
 .transparent {background: transparent !important;}
 .no-border {border: none !important;}
@@ -681,8 +708,12 @@ input::-webkit-inner-spin-button {
 
 
 .glass-box {
-    background: linear-gradient(45deg, rgba(255,255,255, .5), rgba(255,255,255, .2));
-    backdrop-filter: blur(3px);
+    background: linear-gradient(45deg, rgba(255,255,255, 1), rgba(255,255,255, 0));
+    backdrop-filter: blur(7px);
     border-right: 2px solid white;
     border-bottom: 2px solid white;
+}
+
+.square {
+    aspect-ratio: 1 !important;
 }
