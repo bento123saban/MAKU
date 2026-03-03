@@ -54,364 +54,691 @@
     <div id="main" class="clr-darkgrey vh-100 vw-100 p-10">
         <div id="main-content" class="h-100 flex-start h-100 w-100 gap-10">
             <!-- Navbar -->
-            <nav class="p-20 h-100 green clr-darkgrey borad-20">
+            <nav class="p-20 h-100 green clr-darkgrey borad-20 relative">
                 <!-- <img src="./img/logo-dlhp.png" alt="" class="w-50 m-auto dis-block mb-1"> -->
                 <h4 class="m-0 p-0 align-center">Bidang Tata Lingkungan</h4>
                 <div class="hr white"></div>
-                <div class="nav-group white"><i class="fas fa-chart-bar"></i> Dashboard</div>
-                <div class="nav-group"><i class="fas fa-handshake"></i> Transaksi</div>
-                <div class="nav-group"><i class="fas fa-database"></i> Inventory</div>
-                <div class="nav-group"><i class="fas fa-boxes"></i> Barang</div>
-                <div class="nav-group"><i class="fas fa-file"></i> Laporan</div>
-                <br><br>
+                <div class="nav-group white" data-nav="dashboard"><i class="fas fa-chart-line"></i> Dashboard</div>
+                <div class="nav-group" data-nav="transaksi"><i class="fas fa-handshake"></i> Transaksi</div>
+                <div class="nav-group" data-nav="inventory"><i class="fas fa-boxes"></i> Inventory</div>
                 <br>
                 <div class="nav-group"><i class="fa-solid fa-arrow-right-from-bracket"></i> Keluar</div>
+
+                <div id="theme-box" class="flex-center gap-10">
+                    <i class="fas fa-sun"></i>
+                    <div id="theme-button" class="white relative on pointer"><span></span></div>
+                    <i class="fas fa-moon clr-yellow"></i>
+                </div>
             </nav>
             
             <!-- Main Content -->
             <main class="w-100 h-100 p-20 white borad-20 relative">
                 <span class="p-0 m-0 align-right dis-block italic eb-garamond">Inventaris Barang Masuk dan Keluar</span><br>
                 <div id="contents" class="w-100 relative grid-center">
+
+                    <!-- Dashboard -->
                     <div id="dashboard" class="content scroll w-100 h-100">
-                        <h3 class="uppercase p-0 m-0">Dashboard</h3><br>
-                        <div class="flex-start">
-                            
-                            <div id="boxes" class="w-100 gap-10 p-0 m-0 hidden">
-                                <div class="boxes glass-box p-15 borad-20 blue">
-                                    <i class="fas fa-handshake"></i>
-                                    <h1 class="align-center p-0 m-0">4</h1>
-                                    <span class="p-0 m-0 mb-1"> Transaksi</span>
-                                </div>
-                                <br>
-                                <div class="boxes glass-box p-15 borad-20 orange">
-                                    <i class="fas fa-boxes"></i>
-                                    <h1 class="align-center p-0 m-0">40</h1>
-                                    <span class="p-0 m-0 mb-1"> Barang</span>
-                                </div>
-                                <br>
-                                <div class="boxes glass-box p-15 borad-20 purple">
-                                    <i class="fas fa-database"></i>
-                                    <h1 class="align-center p-0 m-0">400</h1>
-                                    <span class="p-0 m-0 mb-1"> Stok</span>
-                                </div>
+                        <h3 class="uppercase pb-1 m-0 flex-start items-end gap-20"><i class="fas fa-chart-line fz-40"></i> Dashboard</h3><br>
+                        
+                        <!-- Boxes -->
+                        <div id="boxes" class="w-100 gap-10 p-0 m-0 hidden flex-start">
+                            <div class="boxes glass-box p-15 borad-20 blue">
+                                <i class="fas fa-handshake"></i>
+                                <h1 class="align-center p-0 m-0">4</h1>
+                                <span class="p-0 m-0 mb-1"> Transaksi</span>
                             </div>
-                            <div id="available-canvas">
-                                <canvas id="available-chart"></canvas>
+                            <br>
+                            <div class="boxes glass-box p-15 borad-20 orange">
+                                <i class="fas fa-boxes"></i>
+                                <h1 class="align-center p-0 m-0">40</h1>
+                                <span class="p-0 m-0 mb-1"> Barang</span>
                             </div>
-                            <div id="round-canvas">
-                                <canvas id="round-chart"></canvas>
+                            <br>
+                            <div class="boxes glass-box p-15 borad-20 purple">
+                                <i class="fas fa-database"></i>
+                                <h1 class="align-center p-0 m-0">400</h1>
+                                <span class="p-0 m-0 mb-1"> Qty</span>
                             </div>
                         </div>
                         <br>
-                        <div id="line-canvas" class="">
-                            <canvas id="line-chart" class=""></canvas>
+                        
+                        <!-- charts -->
+                        <div class="flex-strech gap-20" id="chart-box">
+                            <!-- round chart -->
+                            <div id="available-canvas" class="">
+                                <canvas id="available-chart" class=""></canvas>
+                            </div>
+                            <!-- line chart -->
+                            <div id="line-canvas" class="">
+                                <canvas id="line-chart" class=""></canvas>
+                            </div>
                         </div>
                     </div>
 
-                    <div id="transaksi" class="content dis-none">
+                    <!-- Transaksi -->
+                    <div id="transaksi" class="content w-100 dis-none transparent">
+                        <h3 class="uppercase pb-1 m-0 flex-beetwen items-end gap-20">
+                            <span><i class="fas fa-handshake fz-40"></i> Transaksi</span>
+                            <div id="trx-menu" class="fz-20 flex-end gap-20">
+                                
+                            </div>
+                        </h3><br>
                         
-                        <div id="calendar" class="">
-                            <div class="flex-beetwen gap-20" id="calendar-head">
-                                <i class="green fas fa-chevron-left grid-center"></i>
-                                <span class="align-center dis-block w-100 p-5 borad-5">Februari 2026</span>
-                                <i class="green fas fa-chevron-right grid-center"></i>
-                            </div>
-                            <br>
-                            <div id="calendar-days" class="">
-                                <span class="clr-red">Min</span>
-                                <span class="">Sen</span>
-                                <span class="">Sel</span>
-                                <span class="">Rab</span>
-                                <span class="">Kam</span>
-                                <span class="">Jum</span>
-                                <span class="">Sab</span>
-                            </div>
-                            <br>
-                            <div id="calendar-date">
-                                <span></span>
-                                <span></span>
-                                <div class="date-box">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2">
-                                            <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div>
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">01</div>
+                        <!-- Calendar Box -->
+                        <div id="calendar-box" class="flex-strech gap-20 transparent items-center">
+
+                            <!-- Calendar -->
+                            <div id="calendar" class="">
+                                <div class="flex-beetwen gap-20" id="calendar-head">
+                                    <i class="green fas fa-chevron-left grid-center"></i>
+                                    <span class="align-center dis-block w-100 p-5 borad-5 fz-22 uppercase">Februari 2026</span>
+                                    <i class="green fas fa-chevron-right grid-center"></i>
                                 </div>
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">02</div>
+                                <br>
+                                <div id="calendar-days" class="">
+                                    <span class="clr-red">Min</span>
+                                    <span class="">Sen</span>
+                                    <span class="">Sel</span>
+                                    <span class="">Rab</span>
+                                    <span class="">Kam</span>
+                                    <span class="">Jum</span>
+                                    <span class="">Sab</span>
                                 </div>
-                                <div class="date-box">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2">
-                                            <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <!-- <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                <br>
+                                <div id="calendar-date">
+                                    <span></span>
+                                    <span></span>
+                                    <div class="date-box">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2">
+                                                <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div>
+                                            </div>
                                         </div>
+                                        <div class="date-number align-center">01</div>
                                     </div>
-                                    <div class="date-number align-center">03</div>
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">02</div>
+                                    </div>
+                                    <div class="date-box">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2">
+                                                <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <!-- <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">03</div>
+                                    </div>
+                                    
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">04</div>
+                                    </div>
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">05</div>
+                                    </div>
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">06</div>
+                                    </div>
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">07</div>
+                                    </div>
+                                    <div class="date-box ">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div> -->
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div>
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">08</div>
+                                    </div>
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">09</div>
+                                    </div>
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">10</div>
+                                    </div>
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">11</div>
+                                    </div>
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">12</div>
+                                    </div>
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">13</div>
+                                    </div>
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">14</div>
+                                    </div>
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">15</div>
+                                    </div>
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">16</div>
+                                    </div>
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">17</div>
+                                    </div>
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">18</div>
+                                    </div>
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">19</div>
+                                    </div>
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">20</div>
+                                    </div>
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">21</div>
+                                    </div>
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">22</div>
+                                    </div>
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">23</div>
+                                    </div>
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">24</div>
+                                    </div>
+                                    <div class="date-box">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <!-- <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">25</div>
+                                    </div>
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">26</div>
+                                    </div>
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">27</div>
+                                    </div>
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">28</div>
+                                    </div>
+                                    <div class="date-box">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2">
+                                                <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div>
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">29</div>
+                                    </div>
+                                    <div class="date-box opacity-30">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">30</div>
+                                    </div>
+                                    <div class="date-box">
+                                        <div class="date-content grid-center">
+                                            <div class="date-bars hidden gap-2 grey">
+                                                <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div> -->
+                                                <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div>
+                                            </div>
+                                        </div>
+                                        <div class="date-number align-center">31</div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div id="cal-maku" class="flex-beetwen">
+                                    <div class="cal-maku-box flex-start flex-column gap-5">
+                                        <h4 class="p-0 m-0 uppercase clr-blue">Barang Masuk</h4>
+                                        <span class="fz-12">4 Transaksi - 40 Barang - 400 Qty</span>
+                                    </div>
+                                    <div class="cal-maku-box flex-start flex-column gap-5">
+                                        <h4 class="p-0 m-0 uppercase clr-green">Barang Keluar</h4>
+                                        <span class="fz-12">4 Transaksi - 40 Barang - 400 Qty</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <span>|<br> | <br> |</span>
+                            <!-- calendar detail -->
+                            <div id="calendar-detail" class="h-100 w-100 transparent">
+                                <div id="detail-control" class="flex-start gap-20">
+                                    <div id="detail-search" class="relative">
+                                        <input type="text" class="dis-block p-10 fz-16 borad-20" id="search-input" placeholder="Type Something...">
+                                        <i class="fas fa-search absolut-top grid-center"></i>
+                                    </div>
+                                    <div id="maku-button" class="flex-beetwen gap-5">
+                                        <div class="maku-button green p-10 fz-14 borad-5"><i class="fas fa-arrow-right-to-bracket"></i></div>
+                                        <div class="maku-button blue p-10 fz-14 borad-5"><i class="fas fa-arrow-right-from-bracket"></i></div>
+                                    </div>
+                                    <div id="detail-type" class="flex-beetwen gap-5">
+                                        <div class="maku-button orange p-10 fz-14 borad-5"><i class="fas fa-handshake"></i></div>
+                                        <div class="maku-button purple p-10 fz-14 borad-5"><i class="fas fa-boxes"></i></div>
+                                    </div>
+                                    <div id="detail-checks">
+                                        <label class="custom-checkbox">
+                                            <input type="checkbox">
+                                            <span class="checkmark"></span>
+                                            Multiple
+                                        </label>
+                                    </div>
                                 </div>
                                 
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
+                                <br>
+                                <div id="cal-trx-list-box" class=" transparent">
+                                    <div id="cal-trx-list" class="fz-16">
+                                        
+                                        <div class="cal-trx-date">
+                                            <label class="fz-18 dis-block">Selasa, 01 Februari 2026</label>
+                                            <div class="cal-group-list">
+                                                <div class="cal-trx-group flex-beetwen">
+                                                    <span class="front green"></span>
+                                                    <div class="w-100">
+                                                        <span class="dis-block fz-12">34938479328749</span>
+                                                        <span class="dis-block w-100 text-cut">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga architecto quidem nesciunt nemo temporibus inventore qui, amet ipsum tenetur repudiandae odio ea, quasi necessitatibus cupiditate ad facere illo sunt commodi.</span>
+                                                    </div>
+                                                    <div class="fz-14 align-right">
+                                                        <span class="dis-block">2</span>
+                                                        <span class="dis-block">20</span>
+                                                    </div>
+                                                </div>
+                                                <div class="cal-trx-group flex-beetwen">
+                                                    <span class="front green"></span>
+                                                    <div class="w-100">
+                                                        <span class="dis-block fz-12">34938479328749</span>
+                                                        <span class="dis-block w-100 text-cut">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga architecto quidem nesciunt nemo temporibus inventore qui, amet ipsum tenetur repudiandae odio ea, quasi necessitatibus cupiditate ad facere illo sunt commodi.</span>
+                                                    </div>
+                                                    <div class="fz-14 align-right">
+                                                        <span class="dis-block">2</span>
+                                                        <span class="dis-block">20</span>
+                                                    </div>
+                                                </div>
+                                                <div class="cal-trx-group flex-beetwen">
+                                                    <span class="front blue"></span>
+                                                    <div class="w-100">
+                                                        <span class="dis-block fz-12">34938479328749</span>
+                                                        <span class="dis-block w-100 text-cut">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga architecto quidem nesciunt nemo temporibus inventore qui, amet ipsum tenetur repudiandae odio ea, quasi necessitatibus cupiditate ad facere illo sunt commodi.</span>
+                                                    </div>
+                                                    <div class="fz-14 align-right">
+                                                        <span class="dis-block">2</span>
+                                                        <span class="dis-block">20</span>
+                                                    </div>
+                                                </div>
+                                                <div class="cal-trx-group flex-beetwen">
+                                                    <span class="front blue"></span>
+                                                    <div class="w-100">
+                                                        <span class="dis-block fz-12">34938479328749</span>
+                                                        <span class="dis-block w-100 text-cut">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga architecto quidem nesciunt nemo temporibus inventore qui, amet ipsum tenetur repudiandae odio ea, quasi necessitatibus cupiditate ad facere illo sunt commodi.</span>
+                                                    </div>
+                                                    <div class="fz-14 align-right">
+                                                        <span class="dis-block">2</span>
+                                                        <span class="dis-block">20</span>
+                                                    </div>
+                                                </div>
+                                                <div class="cal-trx-group flex-beetwen">
+                                                    <span class="front blue"></span>
+                                                    <div class="w-100">
+                                                        <span class="dis-block fz-12">34938479328749</span>
+                                                        <span class="dis-block w-100 text-cut">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga architecto quidem nesciunt nemo temporibus inventore qui, amet ipsum tenetur repudiandae odio ea, quasi necessitatibus cupiditate ad facere illo sunt commodi.</span>
+                                                    </div>
+                                                    <div class="fz-14 align-right">
+                                                        <span class="dis-block">2</span>
+                                                        <span class="dis-block">20</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="cal-trx-date">
+                                            <label class="fz-18 dis-block">Kamis , 03 Februari 2026</label>
+                                            <div class="cal-group-list">
+                                                <div class="cal-trx-group flex-beetwen">
+                                                    <span class="front green"></span>
+                                                    <div class="w-100">
+                                                        <span class="dis-block fz-12">34938479328749</span>
+                                                        <span class="dis-block w-100 text-cut">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga architecto quidem nesciunt nemo temporibus inventore qui, amet ipsum tenetur repudiandae odio ea, quasi necessitatibus cupiditate ad facere illo sunt commodi.</span>
+                                                    </div>
+                                                    <div class="fz-14 align-right">
+                                                        <span class="dis-block">2</span>
+                                                        <span class="dis-block">20</span>
+                                                    </div>
+                                                </div>
+                                                <div class="cal-trx-group flex-beetwen">
+                                                    <span class="front green"></span>
+                                                    <div class="w-100">
+                                                        <span class="dis-block fz-12">34938479328749</span>
+                                                        <span class="dis-block w-100 text-cut">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga architecto quidem nesciunt nemo temporibus inventore qui, amet ipsum tenetur repudiandae odio ea, quasi necessitatibus cupiditate ad facere illo sunt commodi.</span>
+                                                    </div>
+                                                    <div class="fz-14 align-right">
+                                                        <span class="dis-block">2</span>
+                                                        <span class="dis-block">20</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="cal-trx-date">
+                                            <label class="fz-18 dis-block">Selasa , 08 Februari 2026</label>
+                                            <div class="cal-group-list">
+                                                <div class="cal-trx-group flex-beetwen">
+                                                    <span class="front blue"></span>
+                                                    <div class="w-100">
+                                                        <span class="dis-block fz-12">34938479328749</span>
+                                                        <span class="dis-block w-100 text-cut">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga architecto quidem nesciunt nemo temporibus inventore qui, amet ipsum tenetur repudiandae odio ea, quasi necessitatibus cupiditate ad facere illo sunt commodi.</span>
+                                                    </div>
+                                                    <div class="fz-14 align-right">
+                                                        <span class="dis-block">2</span>
+                                                        <span class="dis-block">20</span>
+                                                    </div>
+                                                </div>
+                                                <div class="cal-trx-group flex-beetwen">
+                                                    <span class="front blue"></span>
+                                                    <div class="w-100">
+                                                        <span class="dis-block fz-12">34938479328749</span>
+                                                        <span class="dis-block w-100 text-cut">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga architecto quidem nesciunt nemo temporibus inventore qui, amet ipsum tenetur repudiandae odio ea, quasi necessitatibus cupiditate ad facere illo sunt commodi.</span>
+                                                    </div>
+                                                    <div class="fz-14 align-right">
+                                                        <span class="dis-block">2</span>
+                                                        <span class="dis-block">20</span>
+                                                    </div>
+                                                </div>
+                                                <div class="cal-trx-group flex-beetwen">
+                                                    <span class="front blue"></span>
+                                                    <div class="w-100">
+                                                        <span class="dis-block fz-12">34938479328749</span>
+                                                        <span class="dis-block w-100 text-cut">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga architecto quidem nesciunt nemo temporibus inventore qui, amet ipsum tenetur repudiandae odio ea, quasi necessitatibus cupiditate ad facere illo sunt commodi.</span>
+                                                    </div>
+                                                    <div class="fz-14 align-right">
+                                                        <span class="dis-block">2</span>
+                                                        <span class="dis-block">20</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="cal-trx-date">
+                                            <label class="fz-18 dis-block">Jumat, 25 Februari 2026</label>
+                                            <div class="cal-group-list">
+                                                <div class="cal-trx-group flex-beetwen">
+                                                    <span class="front green"></span>
+                                                    <div class="w-100">
+                                                        <span class="dis-block fz-12">34938479328749</span>
+                                                        <span class="dis-block w-100 text-cut">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga architecto quidem nesciunt nemo temporibus inventore qui, amet ipsum tenetur repudiandae odio ea, quasi necessitatibus cupiditate ad facere illo sunt commodi.</span>
+                                                    </div>
+                                                    <div class="fz-14 align-right">
+                                                        <span class="dis-block">2</span>
+                                                        <span class="dis-block">20</span>
+                                                    </div>
+                                                </div>
+                                                <div class="cal-trx-group flex-beetwen">
+                                                    <span class="front green"></span>
+                                                    <div class="w-100">
+                                                        <span class="dis-block fz-12">34938479328749</span>
+                                                        <span class="dis-block w-100 text-cut">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga architecto quidem nesciunt nemo temporibus inventore qui, amet ipsum tenetur repudiandae odio ea, quasi necessitatibus cupiditate ad facere illo sunt commodi.</span>
+                                                    </div>
+                                                    <div class="fz-14 align-right">
+                                                        <span class="dis-block">2</span>
+                                                        <span class="dis-block">20</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="cal-trx-date">
+                                            <label class="fz-18 dis-block">Selasa, 29 Februari 2026</label>
+                                            <div class="cal-group-list">
+                                                <div class="cal-trx-group flex-beetwen">
+                                                    <span class="front green"></span>
+                                                    <div class="w-100">
+                                                        <span class="dis-block fz-12">34938479328749</span>
+                                                        <span class="dis-block w-100 text-cut">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga architecto quidem nesciunt nemo temporibus inventore qui, amet ipsum tenetur repudiandae odio ea, quasi necessitatibus cupiditate ad facere illo sunt commodi.</span>
+                                                    </div>
+                                                    <div class="fz-14 align-right">
+                                                        <span class="dis-block">2</span>
+                                                        <span class="dis-block">20</span>
+                                                    </div>
+                                                </div>
+                                                <div class="cal-trx-group flex-beetwen">
+                                                    <span class="front green"></span>
+                                                    <div class="w-100">
+                                                        <span class="dis-block fz-12">34938479328749</span>
+                                                        <span class="dis-block w-100 text-cut">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga architecto quidem nesciunt nemo temporibus inventore qui, amet ipsum tenetur repudiandae odio ea, quasi necessitatibus cupiditate ad facere illo sunt commodi.</span>
+                                                    </div>
+                                                    <div class="fz-14 align-right">
+                                                        <span class="dis-block">2</span>
+                                                        <span class="dis-block">20</span>
+                                                    </div>
+                                                </div>
+                                                <div class="cal-trx-group flex-beetwen">
+                                                    <span class="front blue"></span>
+                                                    <div class="w-100">
+                                                        <span class="dis-block fz-12">34938479328749</span>
+                                                        <span class="dis-block w-100 text-cut">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga architecto quidem nesciunt nemo temporibus inventore qui, amet ipsum tenetur repudiandae odio ea, quasi necessitatibus cupiditate ad facere illo sunt commodi.</span>
+                                                    </div>
+                                                    <div class="fz-14 align-right">
+                                                        <span class="dis-block">2</span>
+                                                        <span class="dis-block">20</span>
+                                                    </div>
+                                                </div>
+                                                <div class="cal-trx-group flex-beetwen">
+                                                    <span class="front blue"></span>
+                                                    <div class="w-100">
+                                                        <span class="dis-block fz-12">34938479328749</span>
+                                                        <span class="dis-block w-100 text-cut">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga architecto quidem nesciunt nemo temporibus inventore qui, amet ipsum tenetur repudiandae odio ea, quasi necessitatibus cupiditate ad facere illo sunt commodi.</span>
+                                                    </div>
+                                                    <div class="fz-14 align-right">
+                                                        <span class="dis-block">2</span>
+                                                        <span class="dis-block">20</span>
+                                                    </div>
+                                                </div>
+                                                <div class="cal-trx-group flex-beetwen">
+                                                    <span class="front blue"></span>
+                                                    <div class="w-100">
+                                                        <span class="dis-block fz-12">34938479328749</span>
+                                                        <span class="dis-block w-100 text-cut">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga architecto quidem nesciunt nemo temporibus inventore qui, amet ipsum tenetur repudiandae odio ea, quasi necessitatibus cupiditate ad facere illo sunt commodi.</span>
+                                                    </div>
+                                                    <div class="fz-14 align-right">
+                                                        <span class="dis-block">2</span>
+                                                        <span class="dis-block">20</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="cal-trx-date">
+                                            <label class="fz-18 dis-block">Kamis , 31 Februari 2026</label>
+                                            <div class="cal-group-list">
+                                                <div class="cal-trx-group flex-beetwen">
+                                                    <span class="front blue"></span>
+                                                    <div class="w-100">
+                                                        <span class="dis-block fz-12">34938479328749</span>
+                                                        <span class="dis-block w-100 text-cut">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga architecto quidem nesciunt nemo temporibus inventore qui, amet ipsum tenetur repudiandae odio ea, quasi necessitatibus cupiditate ad facere illo sunt commodi.</span>
+                                                    </div>
+                                                    <div class="fz-14 align-right">
+                                                        <span class="dis-block">2</span>
+                                                        <span class="dis-block">20</span>
+                                                    </div>
+                                                </div>
+                                                <div class="cal-trx-group flex-beetwen">
+                                                    <span class="front blue"></span>
+                                                    <div class="w-100">
+                                                        <span class="dis-block fz-12">34938479328749</span>
+                                                        <span class="dis-block w-100 text-cut">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga architecto quidem nesciunt nemo temporibus inventore qui, amet ipsum tenetur repudiandae odio ea, quasi necessitatibus cupiditate ad facere illo sunt commodi.</span>
+                                                    </div>
+                                                    <div class="fz-14 align-right">
+                                                        <span class="dis-block">2</span>
+                                                        <span class="dis-block">20</span>
+                                                    </div>
+                                                </div>
+                                                <div class="cal-trx-group flex-beetwen">
+                                                    <span class="front blue"></span>
+                                                    <div class="w-100">
+                                                        <span class="dis-block fz-12">34938479328749</span>
+                                                        <span class="dis-block w-100 text-cut">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga architecto quidem nesciunt nemo temporibus inventore qui, amet ipsum tenetur repudiandae odio ea, quasi necessitatibus cupiditate ad facere illo sunt commodi.</span>
+                                                    </div>
+                                                    <div class="fz-14 align-right">
+                                                        <span class="dis-block">2</span>
+                                                        <span class="dis-block">20</span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="date-number align-center">04</div>
-                                </div>
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">05</div>
-                                </div>
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">06</div>
-                                </div>
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">07</div>
-                                </div>
-                                <div class="date-box ">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div> -->
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div>
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">08</div>
-                                </div>
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">09</div>
-                                </div>
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">10</div>
-                                </div>
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">11</div>
-                                </div>
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">12</div>
-                                </div>
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">13</div>
-                                </div>
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">14</div>
-                                </div>
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">15</div>
-                                </div>
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">16</div>
-                                </div>
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">17</div>
-                                </div>
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">18</div>
-                                </div>
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">19</div>
-                                </div>
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">20</div>
-                                </div>
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">21</div>
-                                </div>
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">22</div>
-                                </div>
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">23</div>
-                                </div>
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">24</div>
-                                </div>
-                                <div class="date-box">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <!-- <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">25</div>
-                                </div>
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">26</div>
-                                </div>
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">27</div>
-                                </div>
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">28</div>
-                                </div>
-                                <div class="date-box">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2">
-                                            <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div>
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">29</div>
-                                </div>
-                                <div class="date-box opacity-30">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div>
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div> -->
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">30</div>
-                                </div>
-                                <div class="date-box">
-                                    <div class="date-content grid-center">
-                                        <div class="date-bars hidden gap-2 grey">
-                                            <!-- <div class="data-bar h-100 grid-center bar-masuk green" data-text="2">2</div> -->
-                                            <div class="data-bar h-100 grid-center bar-keluar blue" data-text="10">3</div>
-                                        </div>
-                                    </div>
-                                    <div class="date-number align-center">31</div>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Trx detail -->
+                        <div id="trx-detail">
+
+                        </div>
+
+                    </div>
+
+                    <div id="inventory" class="content w-100 dis-none">
+                        <h3 class="uppercase pb-1 m-0 flex-start items-end gap-20"><i class="fas fa-boxes fz-40"></i> Inventory</h3><br>
                     </div>
                 </div>
             </main>

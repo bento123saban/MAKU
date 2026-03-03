@@ -4,10 +4,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 Chart.register(ChartDataLabels)
 
 const lineData = {
-    labels: [
-    "",'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ],
+    labels: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"],
     datasets: [{
         label: 'Barang Masuk',
         data: [0,65,90, 59, 80, 81, 56, 55, 40, 59, 80, 81, 56, 55, 40],
@@ -46,7 +43,7 @@ const lineConfig = {
             },
             title: {
                 display:  true,
-                text: 'Barang Masuk dan Keluar Januari - Desember 2026',
+                text: 'Barang Masuk dan Keluar - 2026',
                 font : {size: 20},
                 family: "barlow, san-serif"
             },
@@ -77,19 +74,11 @@ const roundData = {
     labels: ['Tersedia', 'Habis'],
     datasets: [{
         data: [30, 10],
-        fill: false,
         borderColor: 'transparent',
-        tension: 0.4,
         fill: true, 
         backgroundColor: ['#0eb00e', 'darkgrey'],// Warna area (transparan)\
-        borderWidth: 2,                // Ini akan jadi lebar gap-nya
-        borderColor: '#f5f5f5',        // SAMAKAN dengan warna background box lu
-        borderAlign: 'inner',          // Memastikan gap tidak memakan ukuran luar
-        
-        // Matikan spacing jika pakai cara ini agar tidak tabrakan
-        spacing: 0,                    
-        
-        borderRadius: 10,              // Biar ujungnya tetap tumpul
+        spacing: 2,                    
+        borderRadius: 4,              // Biar ujungnya tetap tumpul
         hoverOffset: 15  
     }]
 };
@@ -161,22 +150,14 @@ export const roundChart = (elm) => {
 
 
 const availableData = {
-    labels: ['Ready', 'Maintenance', 'Rusak'],
+    labels: ['Ready', 'Maintenance','Habis', 'Rusak'],
     datasets: [{
-        data: [37, 2, 1],
-        fill: false,
-        borderColor: 'transparent',
-        tension: 0.4,
+        data: [37, 2, 10, 5],
         fill: true, 
-        backgroundColor: ['#0eb00e', "#ffd700", '#e6002a'], // Warna area (transparan)
-        borderWidth: 2,                // Ini akan jadi lebar gap-nya
-        borderColor: '#f5f5f5',        // SAMAKAN dengan warna background box lu
-        borderAlign: 'inner',          // Memastikan gap tidak memakan ukuran luar
-        
-        // Matikan spacing jika pakai cara ini agar tidak tabrakan
-        spacing: 0,                    
-        
-        borderRadius: 10,              // Biar ujungnya tetap tumpul
+        backgroundColor: ['#00ab00', "orange", "darkgrey", '#e6002a'], // Warna area (transparan)
+        spacing: 2,
+        borderColor: "transparent",                    
+        borderRadius: 4,              // Biar ujungnya tetap tumpul
         hoverOffset: 15        // Efek membesar saat di-hover (biar makin keren)
     }]
 };
