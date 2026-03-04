@@ -299,12 +299,17 @@ span.dot {
 table#items-list {
     width: 1000px;
 }
+table#items-list th {
+    padding: 3px 10px;
+}
 table#items-list td {
     vertical-align: top;
+    border-radius: 10px;
 }
 
 table#items-list tr td:nth-child(1) {
     width: 30px !important;
+    text-align: center;
 }
 table#items-list tr td:nth-child(2) {
     width: 100px !important;
@@ -315,7 +320,7 @@ table#items-list tr td:nth-child(3) {
 table#items-list tr td:nth-child(4) {
     width: 200px !important;
 }
-table#items-list tr td:nth-child(5), table#items-list tr td:nth-child(6) {
+table#items-list tr td:nth-child(5), table#items-list tr td:nth-child(6), table#items-list tr td:nth-child(8) {
     text-align:  center;
 }
 

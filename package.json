@@ -7,7 +7,8 @@
   "dependencies": {
     "chart.js": "^4.5.1",
     "chartjs-plugin-datalabels": "^2.2.0",
-    "fitty": "^2.4.2"
+    "fitty": "^2.4.2",
+    "tabulator-tables": "^6.3.1"
   },
   "devDependencies": {
     "vite": "^7.3.1"
