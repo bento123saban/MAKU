@@ -8,6 +8,8 @@
     "chart.js": "^4.5.1",
     "chartjs-plugin-datalabels": "^2.2.0",
     "fitty": "^2.4.2",
+    "jspdf": "^4.2.0",
+    "jspdf-autotable": "^5.0.7",
     "tabulator-tables": "^6.3.1"
   },
   "devDependencies": {
