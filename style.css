@@ -1,5 +1,6 @@
 
 
+/* Basic */
 #bg-box {z-index: -1;}
 #background {
     width: 100%;
@@ -14,6 +15,8 @@
     width: clamp(300px, 20%, 500px);
 }
 
+
+/* Login */
 #logo-dlhp {
     margin: auto;
     width: clamp(100px, 40%, 300px);
@@ -34,6 +37,8 @@
     border-bottom: 2px solid grey;
 }
 
+
+/* Navbar */
 nav {
     width: clamp(250px, 20%, 400px);
 }
@@ -84,14 +89,7 @@ nav {
 
 
 
-
-
-
-
-
-
-
-
+/* Boxes */
 .boxes {
     width: 100%;
     display: grid;
@@ -122,43 +120,6 @@ nav {
 #line-canvas {
     width: 100%;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -335,3 +296,29 @@ span.dot {
 
 /* Trx Detail */
 
+table#items-list {
+    width: 1000px;
+}
+table#items-list td {
+    vertical-align: top;
+}
+
+table#items-list tr td:nth-child(1) {
+    width: 30px !important;
+}
+table#items-list tr td:nth-child(2) {
+    width: 100px !important;
+}
+table#items-list tr td:nth-child(3) {
+    width: 150px !important;
+}
+table#items-list tr td:nth-child(4) {
+    width: 200px !important;
+}
+table#items-list tr td:nth-child(5), table#items-list tr td:nth-child(6) {
+    text-align:  center;
+}
+
+table#items-list tr td:nth-child(7) {
+    width: 200px !important;
+}
