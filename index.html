@@ -117,22 +117,38 @@
 
                     <!-- Transaksi -->
                     <div id="transaksi" class="content w-100 dis-none transparent">
-                        <h3 class="uppercase pb-1 m-0 flex-beetwen items-end gap-20">
-                            <span><i class="fas fa-handshake fz-40"></i> Transaksi</span>
-                            <div id="trx-menu" class="fz-20 flex-end gap-20">
-                                
-                            </div>
-                        </h3><br>
+                        <h3 class="uppercase pb-1 m-0 flex-beetwen items-end gap-20">Transaksi</h3>
+                        <br>
                         
                         <!-- Calendar Box -->
                         <div id="calendar-box" class="flex-strech gap-20 transparent items-center">
 
                             <!-- Calendar -->
-                            <div id="calendar" class="">
+                            <div id="calendar" class="relative">
                                 <div class="flex-beetwen gap-20" id="calendar-head">
                                     <i class="green fas fa-chevron-left grid-center"></i>
-                                    <span class="align-center dis-block w-100 p-5 borad-5 fz-22 uppercase">Februari 2026</span>
+                                    <span class="align-center dis-block w-100 p-5 borad-5 fz-22 uppercase pointer" id="month-control">Februari 2026</span>
                                     <i class="green fas fa-chevron-right grid-center"></i>
+                                </div>
+                                <div id="cal-head-select" class="flex-center gap-20 dis-none">
+                                    <div id="month-selector" class="flex-start flex-column align-right gap-10 w-100">
+                                        <span data-month="01">Januari</span>
+                                        <span data-month="02">Februari</span>
+                                        <span data-month="03">Maret</span>
+                                        <span data-month="04">April</span>
+                                        <span data-month="05">Mei</span>
+                                        <span data-month="06">Juni</span>
+                                        <span data-month="07">Juli</span>
+                                        <span data-month="08">Agustus</span>
+                                        <span data-month="09">September</span>
+                                        <span data-month="10">Oktober</span>
+                                        <span data-month="11">November</span>
+                                        <span data-month="12">Desember</span>
+                                    </div>
+                                    <div id="year-selector" class="w-100">
+                                        <span>2026</span>
+                                    </div>
+                                    <i class="fas fa-x clr-red pointer" id="cal-select-close"></i>
                                 </div>
                                 <br>
                                 <div id="calendar-days" class="">
@@ -441,16 +457,18 @@
                                     </div>
                                 </div>
                             </div>
-                            <span>|<br> | <br> |</span>
+                            <span id="calendar-separator">|<br> | <br> |</span>
                             <!-- calendar detail -->
                             <div id="calendar-detail" class="h-100 w-100 transparent">
-                                <div id="detail-control" class="flex-start gap-20">
+                                <!-- Detail Control -->
+                                <div id="detail-control" class="flex-strech gap-20 relative">
+
                                     <div id="detail-search" class="relative">
                                         <input type="text" class="dis-block p-10 fz-16 borad-20" id="search-input" placeholder="Cari ...">
                                         <i class="fas fa-search absolut-top grid-center"></i>
                                     </div>
                                     
-                                    <div id="maku-button" class="select-custom borad-10 fz-14" data-bg="">
+                                    <div id="maku-button" class="select-custom borad-10 fz-14 grid-center" data-bg="">  
                                         <div class="custom-select-container w-100" data-default="semua">
                                             <div class="select-trigger w-100 p-10">
                                                 <span>Pilih Tipe</span>
@@ -461,11 +479,11 @@
                                                 <div class="option green" data-value="masuk" data-clr="green"><i class="fas fa-arrow-right-to-bracket"></i> &nbsp; Masuk</div>
                                                 <div class="option blue" data-value="keluar" data-clr="blue"><i class="fas fa-arrow-right-from-bracket"></i> &nbsp; Keluar</div>
                                             </div>
-                                            <input type="hidden" name="type" class="select-input w-100">
+                                            <input type="hidden" name="type" class="select-input w-100" id="maku-event">
                                         </div>
                                     </div>
 
-                                    <div id="detail-type" class="select-custom borad-10 fz-14" data-bg="">
+                                    <div id="detail-type" class="select-custom borad-10 fz-14 grid-center" data-bg="">
                                         <div class="custom-select-container w-100" data-default="transaksi">
                                             <div class="select-trigger w-100 p-10">
                                                 <span>Pilih Tipe</span>
@@ -480,21 +498,25 @@
 
                                     </div>
 
-                                    <div id="detail-range" class="p-10 yellow fz-14 borad-10 bolder">
-                                        <span><i class="fas fa-calendar-day"></i> <i class="fas fa-angles-right"></i> <i class="fas fa-calendar-alt"></i></span>
-                                    </div>
-
-                                    <div id="detail-checks" class="flex-start gap-10 fz-14 dis-none">
-                                        <label class="custom-checkbox pointer">
-                                            <input type="checkbox">
-                                            <span class="checkmark"></span>
-                                        </label>
+                                    <div id="detail-more" class="grid-center pl-25 relative more-box">
+                                        <div class="flex-center flex-column gap-3 pointer more-icon p-10">
+                                            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                                        </div>
+                                        <div class="more-list p-5 dis-none">
+                                            <span class="grey">Bulanan</span>
+                                            <span>Antar Tanggal</span>
+                                            <span>Triwulan I</span>
+                                            <span>Triwulan II</span>
+                                            <span>Triwulan III</span>
+                                            <span>Triwulan IV</span>
+                                        </div>
                                     </div>
                                 </div>
-                                
                                 <br>
-                                <div id="cal-trx-list-box" class=" transparent">
-                                    <div id="cal-trx-list" class="fz-16">
+
+                                <!-- Detail List -->
+                                <div id="cal-trx-list-box" class="">
+                                    <div id="cal-trx-list" class="fz-16 dis-none">
                                         
                                         <div class="cal-trx-date">
                                             <label class="fz-18 dis-block">Selasa, 01 Februari 2026</label>
@@ -751,6 +773,23 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div id="cal-items-list">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Code</th>
+                                                    <th>Item</th>
+                                                    <th>Spek</th>
+                                                    <th>Masuk</th>
+                                                    <th>Keluar</th>
+                                                    <th>Note</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
