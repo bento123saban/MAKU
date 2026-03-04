@@ -376,67 +376,80 @@ input::-webkit-inner-spin-button {
 
 
 .dis-none {display: none !important;}
-/* color set */
-.prepare, .green, [data-bg="green"] {
+
+
+/* COLOR SET */
+
+/* Green */
+.green, [data-bg="green"] {
     background: linear-gradient(45deg, limegreen,  green) !important;
     color: white !important;
     border: none !important;
 }
-.color-prepare, .clr-green, [data-color="green"] { color: limegreen !important;}
-.br-prepare, .br-green {
+.clr-green, [data-color="green"] { color: limegreen !important;}
+.br-green {
     border-color: limegreen !important;
 }
 
-.shipping, .purple, [data-bg="purple"] {
+/* Purple */
+.purple, [data-bg="purple"] {
     background: linear-gradient(45deg, rebeccapurple,  purple) !important;
     color: white !important;
     border: none !important;
 }
-.color-shipping, .clr-purple, [data-color="purple"] { color: purple !important;}
-.br-shipping, .br-purple { border-color: purple !important;}
+.clr-purple, [data-color="purple"] { color: purple !important;}
+.br-purple { border-color: purple !important;}
 
-.loading, .lightpurple, [data-bg="purple"] {
+/* Light Purple */
+.lightpurple, [data-bg="purple"] {
     background: linear-gradient(to right, #C8A2C8, #B57EDC);
     color: white !important;
     border: none !important;
 }
-.color-loading, .clr-lightpurple, [data-color="purple"] { color: purple !important;}
-.br-loading, .br-lightpurple { border-color: purple !important;}
+.clr-lightpurple, [data-color="purple"] { color: #B57EDC !important;}
+.br-lightpurple { border-color: #B57EDC !important;}
 
-
-.ready, .blue, [data-bg="blue"] {
+/* Blue */
+.blue, [data-bg="blue"] {
     background: linear-gradient(45deg,deepskyblue, #008CCC) !important;
     color: white !important;
     border: none !important;
 }
-.color-ready, .clr-blue, [data-color="blue"] { color: #008CCC !important;}
-.br-ready, .br-blue{border-color: deepskyblue !important;}
+.clr-blue, [data-color="blue"] { color: #008CCC !important;}
+.br-blue{border-color: deepskyblue !important;}
 
-.unloadinh, .darkblue, [data-bg="blue"] {
+/* Darkblue */
+.darkblue, [data-bg="darkblue"] {
     background: linear-gradient(45deg, #008CCC, blue) !important;
     color: white !important;
     border: none !important;
 }
-.color-unloading, .clr-darkblue, [data-color="blue"] { color: blue !important;}
-.br-unloadinh, .br-darkblue{border-color: blue !important;}
+.clr-darkblue, [data-color="blue"] { color: blue !important;}
+.br-darkblue{border-color: blue !important;}
 
-.delivery, .pickup, .lightred, [data-bg="red"] {
+
+/* REd */
+.lightred, [data-bg="lightred"] {
     background: linear-gradient(45deg, #FF8C8C, red);
     color: white !important;
     border: none !important;
 }
-.color-delivery, .color-pickup, .clr-red, [data-color="red"] {color: red !important;}
-.br-delivery, .br-pickup, .br-red {border-color: red !important;}
+.red, [data-bg="red"] {
+    background: linear-gradient(45deg, red, darkred) !important;
+    color: white !important;
+    border: none !important;
+}
+.clr-red, [data-color="red"] {color: red !important;}
+.br-red {border-color: red !important;}
 .clr-darkred {color: darkred !important;}
 .br-darkred {border-color: darkred !important;}
 
-
-.dark-pink {
+.dark-pink, [data-bg="darkpink"] {
     background: linear-gradient(45deg, #FF002F, #730101) !important;
     color: white;
 }
 
-.brown {
+.brown, [data-bg="brown"] {
     background: linear-gradient(45deg, #CA6641, brown) !important;
     color: white;
 }
@@ -444,20 +457,13 @@ input::-webkit-inner-spin-button {
     color: br !important;
 }
 
-.delivery, .pickup, .red, [data-bg="red"] {
-    background: linear-gradient(45deg, red, darkred) !important;
-    color: white !important;
-    border: none !important;
-}
-.teracotta {
+
+.teracotta, [data-bg="teracotta"] {
     background: linear-gradient(45deg, #aa1700, #FF3C00) !important;
     color: white;
 }
 
-.color-delivery, .color-pickup, .clr-red, [data-color="red"] {color: red !important;}
-.br-delivery, .br-pickup, .br-red {border-color: red !important;}
-
-.instal, .yellow, [data-bg="yellow"] {
+.yellow, [data-bg="yellow"] {
     background: linear-gradient(45deg, yellow, goldenrod) !important;
     color: black !important;
     border: none !important;
@@ -465,13 +471,14 @@ input::-webkit-inner-spin-button {
 .color-instal, .clr-yellow, [data-color="yellow"] {color: #FFD700 !important;}
 .br-instal, .br-yellow {border-color: #FFD700 !important;}
 
-.past, .black, [data-bg="black"] {
+.black, [data-bg="black"] {
     background: linear-gradient(45deg, #000, #333) !important;
     color: #ddd !important;
     border: none !important;
 }
 .color-past, .clr-black, [data-color="black"] {color: black !important;}
 .br-past, .br-black {border-color: black !important;}
+
 
 .fuin, .grey, .gray, [data-bg="grey"] {
     background: linear-gradient(45deg, rgb(211, 211, 211), rgb(105, 105, 105)) !important;
@@ -724,3 +731,168 @@ input::-webkit-inner-spin-button {
 .square {
     aspect-ratio: 1 !important;
 }
+
+
+
+
+
+/* Custom Select */
+
+/* --- CSS CORE --- */
+.custom-select-container {
+position: relative;
+width: 100%;
+user-select: none;
+}
+
+.select-trigger {
+display: flex;
+justify-content: space-between;
+align-items: center;
+border-radius: 10px;
+cursor: pointer;
+transition: all 0.3s ease;
+}
+
+.custom-select-container.open .select-trigger {
+border-color: #3498db;
+border-bottom-left-radius: 0;
+border-bottom-right-radius: 0;
+box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.arrow {
+transition: transform 0.3s ease;
+/* margin-bottom: 4px; */
+transform: rotate(0) translateY(1px);
+}
+
+.custom-select-container.open .arrow {
+transform: rotate(90deg) translateY(1px);
+/* margin-bottom: -4px; */
+}
+
+.select-options {
+margin-top: 3px;
+position: absolute;
+top: 100%;
+left: 0;
+right: 0;
+background: rgba(255,255,255, .4);
+border-radius: 10px;
+display: none;
+z-index: 100;
+max-height: fit-content;
+overflow-y: auto;
+box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+.custom-select-container.open .select-options {
+display: block;
+}
+
+.option {
+padding: 12px 15px;
+cursor: pointer;
+transition: all 0.2s ease;
+}
+
+.option:hover {
+background-color: #f0f7ff;
+color: #3498db;
+}
+
+.option.selected {
+background-color: #3498db;
+color: #ffffff;
+}
+
+
+
+
+
+
+/* Custom Checkbox */
+
+
+/* Container utama */
+.custom-checkbox {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-family: sans-serif;
+  user-select: none;
+}
+
+/* Sembunyikan checkbox asli tapi tetap bisa diakses keyboard */
+.custom-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Buat kotak checkbox kustom */
+.checkmark {
+  height: 20px;
+  width: 20px;
+  background-color: #aaa;
+  border-radius: 4px;
+  margin-right: 5px;
+  position: relative;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Efek saat kursor di atas (hover) */
+.custom-checkbox:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* Warna saat dicentang */
+.custom-checkbox input:checked ~ .checkmark {
+  background-color: #2ecc71;
+}
+
+/* Membuat simbol centang (L-shape) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 7px;
+  top: 3px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+
+/* Tampilkan centang saat di-klik */
+.custom-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  50% { transform: translateX(8px); }
+  75% { transform: translateX(-8px); }
+  100% { transform: translateX(0); }
+}
+.shake {animation: shake 0.2s cubic-bezier(.36,.07,.19,.97) both;}
+
+/* const element = document.getElementById('target-area');
+
+function triggerError() {
+  // 1. Tambahkan class untuk memulai animasi
+  element.classList.add('apply-shake');
+
+  // 2. Pasang event listener yang mendeteksi akhir animasi
+  element.addEventListener('animationend', () => {
+    element.classList.remove('apply-shake');
+  }, { once: true }); 
+  // Opsional: { once: true } memastikan listener dihapus setelah sekali jalan
+} */

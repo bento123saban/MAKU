@@ -446,22 +446,48 @@
                             <div id="calendar-detail" class="h-100 w-100 transparent">
                                 <div id="detail-control" class="flex-start gap-20">
                                     <div id="detail-search" class="relative">
-                                        <input type="text" class="dis-block p-10 fz-16 borad-20" id="search-input" placeholder="Type Something...">
+                                        <input type="text" class="dis-block p-10 fz-16 borad-20" id="search-input" placeholder="Cari ...">
                                         <i class="fas fa-search absolut-top grid-center"></i>
                                     </div>
-                                    <div id="maku-button" class="flex-beetwen gap-5">
-                                        <div class="maku-button green p-10 fz-14 borad-5"><i class="fas fa-arrow-right-to-bracket"></i></div>
-                                        <div class="maku-button blue p-10 fz-14 borad-5"><i class="fas fa-arrow-right-from-bracket"></i></div>
+                                    
+                                    <div id="maku-button" class="select-custom borad-10 fz-14" data-bg="">
+                                        <div class="custom-select-container w-100" data-default="semua">
+                                            <div class="select-trigger w-100 p-10">
+                                                <span>Pilih Tipe</span>
+                                                <i class="arrow fas fa-chevron-right fz-14"></i>
+                                            </div>
+                                            <div class="select-options w-100">
+                                                <div class="option grey" data-value="semua" data-clr="grey"><i class="fas fa-arrow-right-arrow-left"></i> &nbsp; Semua</div>
+                                                <div class="option green" data-value="masuk" data-clr="green"><i class="fas fa-arrow-right-to-bracket"></i> &nbsp; Masuk</div>
+                                                <div class="option blue" data-value="keluar" data-clr="blue"><i class="fas fa-arrow-right-from-bracket"></i> &nbsp; Keluar</div>
+                                            </div>
+                                            <input type="hidden" name="type" class="select-input w-100">
+                                        </div>
                                     </div>
-                                    <div id="detail-type" class="flex-beetwen gap-5">
-                                        <div class="maku-button orange p-10 fz-14 borad-5"><i class="fas fa-handshake"></i></div>
-                                        <div class="maku-button purple p-10 fz-14 borad-5"><i class="fas fa-boxes"></i></div>
+
+                                    <div id="detail-type" class="select-custom borad-10 fz-14" data-bg="">
+                                        <div class="custom-select-container w-100" data-default="transaksi">
+                                            <div class="select-trigger w-100 p-10">
+                                                <span>Pilih Tipe</span>
+                                                <i class="arrow fas fa-chevron-right fz-14"></i>
+                                            </div>
+                                            <div class="select-options w-100">
+                                                <div class="option orange" data-value="transaksi" data-clr="orange"><i class="fas fa-handshake"></i> &nbsp; by Transaksi</div>
+                                                <div class="option purple" data-value="barang" data-clr="purple"><i class="fas fa-boxes"></i> &nbsp; by Daftar Barang</div>
+                                            </div>
+                                            <input type="hidden" name="type" class="select-input w-100">
+                                        </div>
+
                                     </div>
-                                    <div id="detail-checks">
-                                        <label class="custom-checkbox">
+
+                                    <div id="detail-range" class="p-10 yellow fz-14 borad-10 bolder">
+                                        <span><i class="fas fa-calendar-day"></i> <i class="fas fa-angles-right"></i> <i class="fas fa-calendar-alt"></i></span>
+                                    </div>
+
+                                    <div id="detail-checks" class="flex-start gap-10 fz-14 dis-none">
+                                        <label class="custom-checkbox pointer">
                                             <input type="checkbox">
                                             <span class="checkmark"></span>
-                                            Multiple
                                         </label>
                                     </div>
                                 </div>

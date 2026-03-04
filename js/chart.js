@@ -1,5 +1,8 @@
-import { Chart, layouts } from "chart.js/auto"
+import { Chart } from "chart.js/auto"
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+
+
+
 
 Chart.register(ChartDataLabels)
 
@@ -63,90 +66,10 @@ const lineConfig = {
     },
 }
 
-export const lineChart = (elm) => {
-    const cx = new Chart(elm, lineConfig)
+export const lineChart = () => {
+    const lineCanvas = document.querySelector("#line-chart")
+    new Chart(lineCanvas, lineConfig)
 }
-
-
-
-
-const roundData = {
-    labels: ['Tersedia', 'Habis'],
-    datasets: [{
-        data: [30, 10],
-        borderColor: 'transparent',
-        fill: true, 
-        backgroundColor: ['#0eb00e', 'darkgrey'],// Warna area (transparan)\
-        spacing: 2,                    
-        borderRadius: 4,              // Biar ujungnya tetap tumpul
-        hoverOffset: 15  
-    }]
-};
-const roundConfig = {
-    type: 'doughnut',
-    data: roundData,
-    options: {
-        responsive: true,
-        plugins: {
-            legend: {
-                display: true,
-                position: 'top',
-                usePointStyle: true,   // Pakai gaya titik sebagai simbol
-                pointStyle: 'rect',    // Paksa bentuk jadi Rectangle (Persegi)
-                boxWidth: 15,          // Ukuran lebar kotak (px)
-                boxHeight: 15,         // Ukuran tinggi kotak (px)
-                padding: 20,           // Jarak antar label
-            },
-            title: {
-                display: true,
-                text: 'Ketersediaan Barang',
-                font : {size: 20}
-            },
-            datalabels: {
-                display: false,
-                color: '#fff',
-                font: {
-                    size: 12
-                },
-                formatter: (value, ctx) => {
-                    // 1. Hitung total semua data
-                    let sum = 0;
-                    let dataArr = ctx.chart.data.datasets[0].data;
-                    dataArr.map(data => {
-                        sum += data;
-                    });
-                    // 2. Hitung persentase
-                    let percentage = (value * 100 / sum).toFixed(0) + "%";
-                    return percentage; // Tampilkan persentase di chart
-                },
-            },
-            tooltip: {
-                callbacks: {
-                    // Modifikasi teks label di dalam tooltip
-                    label: function(context) {
-                        let label = context.label || '';
-                        let value = context.raw; // Nilai asli (misal: 300)
-
-                        // 1. Hitung total data
-                        const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-
-                        // 2. Hitung persentase
-                        const percentage = ((value / total) * 100).toFixed(1) + '%';
-
-                        // 3. Gabungkan: "Label: Value (Percentage)"
-                        return ` ${label}: ${value} (${percentage})`;
-                    }
-                }
-            }
-        },
-        maintainAspectRatio: false, // INI KUNCINYA
-    },
-}
-export const roundChart = (elm) => {
-    const cx = new Chart(elm, roundConfig)
-}
-
-
 
 
 const availableData = {
@@ -216,8 +139,9 @@ const availableConfig = {
         maintainAspectRatio: false, // INI KUNCINYA
     },
 }
-export const availableChart = (elm) => {
-    const cx = new Chart(elm, availableConfig)
+export const availableChart = () => {
+    const availCanvas = document.querySelector("#available-chart")
+    new Chart(availCanvas, availableConfig)
 }
 
 
