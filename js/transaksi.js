@@ -1,11 +1,10 @@
 
 
 
-const constainer    = document.querySelector("#calendar")
+const container     = document.querySelector("#calendar")
 const monthCtrl     = document.querySelector("#month-control")
 const headSelect    = document.querySelector("#cal-head-select")
 const selectClose   = document.querySelector("#cal-select-close")
-
 export const monthControl = () => {
     monthCtrl.addEventListener("click", () => headSelect.classList.remove("dis-none"))
     selectClose.addEventListener("click", () => headSelect.classList.add("dis-none"))
@@ -190,5 +189,9 @@ export function CustomMore(selector = ".more-box", callback = null) {
     // Menutup menu jika klik di luar area menu mana pun
     document.addEventListener('click', () => closeAll());
 }
+
+
+// Tabulator
+
 
 
