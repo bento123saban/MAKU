@@ -196,72 +196,163 @@ export default class trx {
     }
 
     getData () {
-        const dataDummy = [
-            { id: 1, code: "XY900101FN", item: "Parang Panjang", spek: "70 Cm - Stainless Steel", masuk: 12, keluar: 2, note: "Stok Aman" },
-            { id: 2, code: "XY900102FN", item: "Cangkul Baja", spek: "Gagang Kayu Jati", masuk: 25, keluar: 5, note: "Barang Baru" },
-            { id: 3, code: "XY900103FN", item: "Sabit Rumput", spek: "Baja Karbon", masuk: 15, keluar: 10, note: "Checkmark" },
-            { id: 4, code: "XY900104FN", item: "Sekop Pasir", spek: "Ujung Lancip", masuk: 8, keluar: 0, note: "High Quality" },
-            { id: 5, code: "XY900105FN", item: "Gunting Pagar", spek: "Handle Karet", masuk: 20, keluar: 3, note: "" },
-            { id: 6, code: "XY900106FN", item: "Linggis 1m", spek: "Baja Solid", masuk: 5, keluar: 1, note: "Berat" },
-            { id: 7, code: "XY900107FN", item: "Martil Besar", spek: "5 Kg - Besi", masuk: 10, keluar: 2, note: "Checkmark" },
-            { id: 8, code: "XY900108FN", item: "Gergaji Kayu", spek: "Mata Gergaji Tajam", masuk: 30, keluar: 12, note: "Fast Moving" },
-            { id: 9, code: "XY900109FN", item: "Kapak Pembelah", spek: "Baja Tempa", masuk: 7, keluar: 2, note: "" },
-            { id: 10, code: "XY900110FN", item: "Meteran 5m", spek: "Plastik ABS", masuk: 50, keluar: 20, note: "Laris Manis" },
-            { id: 11, code: "XY900111FN", item: "Obeng Set", spek: "Magnetic 6 pcs", masuk: 40, keluar: 15, note: "Checkmark" },
-            { id: 12, code: "XY900112FN", item: "Tang Kombinasi", spek: "Isolasi 1000V", masuk: 18, keluar: 4, note: "" },
-            { id: 13, code: "XY900113FN", item: "Kunci Inggris", spek: "12 Inch Chrome", masuk: 12, keluar: 3, note: "Promo" },
-            { id: 14, code: "XY900114FN", item: "Bor Tangan", spek: "Listrik 500W", masuk: 6, keluar: 1, note: "Garansi 1 Thn" },
-            { id: 15, code: "XY900115FN", item: "Gerinda Tangan", spek: "4 Inch Standard", masuk: 9, keluar: 2, note: "Checkmark" },
-            { id: 16, code: "XY900116FN", item: "Palu Kambing", spek: "Gagang Fiber", masuk: 22, keluar: 8, note: "" },
-            { id: 17, code: "XY900117FN", item: "Waterpass", spek: "Aluminium 60cm", masuk: 14, keluar: 2, note: "" },
-            { id: 18, code: "XY900118FN", item: "Kuas Cat", spek: "3 Inch Nylon", masuk: 100, keluar: 45, note: "Checkmark" },
-            { id: 19, code: "XY900119FN", item: "Rol Cat", spek: "Bulu Halus", masuk: 60, keluar: 20, note: "" },
-            { id: 20, code: "XY900120FN", item: "Tang Potong", spek: "Mini 5 Inch", masuk: 25, keluar: 6, note: "Presisi" },
-            { id: 21, code: "XY900121FN", item: "Semen Portland", spek: "Sak 40 Kg", masuk: 200, keluar: 150, note: "Checkmark" },
-            { id: 22, code: "XY900122FN", item: "Pipa PVC", spek: "3/4 Inch AW", masuk: 80, keluar: 30, note: "Tebal" },
-            { id: 23, code: "XY900123FN", item: "Kran Air", spek: "Besi Chrome", masuk: 45, keluar: 10, note: "" },
-            { id: 24, code: "XY900124FN", item: "Kawat Las", spek: "RB26 2.6mm", masuk: 30, keluar: 5, note: "Checkmark" },
-            { id: 25, code: "XY900125FN", item: "Selang Air", spek: "1/2 Inch 20m", masuk: 15, keluar: 4, note: "Anti Tekuk" },
-            { id: 26, code: "XY900126FN", item: "Pompa Air", spek: "125 Watt Jet", masuk: 4, keluar: 1, note: "Heavy Duty" },
-            { id: 27, code: "XY900127FN", item: "Tangga Lipat", spek: "Aluminium 2m", masuk: 3, keluar: 1, note: "Checkmark" },
-            { id: 28, code: "XY900128FN", item: "Gembok Pagar", spek: "60mm Kuningan", masuk: 24, keluar: 9, note: "Anti Karat" },
-            { id: 29, code: "XY900129FN", item: "Baut Mur", spek: "12mm Set", masuk: 500, keluar: 200, note: "" },
-            { id: 30, code: "XY900130FN", item: "Engsel Pintu", spek: "4 Inch Stainless", masuk: 48, keluar: 12, note: "Checkmark" },
-            { id: 31, code: "XY900131FN", item: "Cat Kayu", spek: "1 Kg - Hitam", masuk: 36, keluar: 14, note: "" },
-            { id: 32, code: "XY900132FN", item: "Tinner", spek: "Literan - Super", masuk: 20, keluar: 8, note: "Cairan Mudah Terbakar" },
-            { id: 33, code: "XY900133FN", item: "Amplas", spek: "No. 100 Kasar", masuk: 150, keluar: 50, note: "Checkmark" },
-            { id: 34, code: "XY900134FN", item: "Lem Pipa", spek: "40gr Tube", masuk: 100, keluar: 40, note: "" },
-            { id: 35, code: "XY900135FN", item: "Kawat Nyamuk", spek: "Baja Putih /m", masuk: 50, keluar: 15, note: "Checkmark" },
-            { id: 36, code: "XY900136FN", item: "Paku Beton", spek: "3 Inch Box", masuk: 20, keluar: 5, note: "" },
-            { id: 37, code: "XY900137FN", item: "Bor Beton", spek: "SDS Plus 10mm", masuk: 12, keluar: 3, note: "Tajam" },
-            { id: 38, code: "XY900138FN", item: "Kunci L Set", spek: "9 pcs Chrome", masuk: 15, keluar: 2, note: "Checkmark" },
-            { id: 39, code: "XY900139FN", item: "Betel Beton", spek: "Flat 10 Inch", masuk: 8, keluar: 2, note: "" },
-            { id: 40, code: "XY900140FN", item: "Helm Proyek", spek: "Warna Kuning", masuk: 25, keluar: 10, note: "Safety Gear" },
-            { id: 41, code: "XY900141FN", item: "Rompi Safety", spek: "Orange Reflektor", masuk: 30, keluar: 5, note: "Checkmark" },
-            { id: 42, code: "XY900142FN", item: "Sepatu Boot", spek: "Karet - Size 42", masuk: 12, keluar: 3, note: "" },
-            { id: 43, code: "XY900143FN", item: "Sarung Tangan", spek: "Kain Bintik", masuk: 120, keluar: 60, note: "Checkmark" },
-            { id: 44, code: "XY900144FN", item: "Kabel NYM", spek: "2x1.5mm 50m", masuk: 10, keluar: 2, note: "" },
-            { id: 45, code: "XY900145FN", item: "Lampu LED", spek: "15 Watt Putih", masuk: 40, keluar: 15, note: "Hemat Energi" },
-            { id: 46, code: "XY900146FN", item: "Isolasi Listrik", spek: "Hitam PVC", masuk: 100, keluar: 30, note: "Checkmark" },
-            { id: 47, code: "XY900147FN", item: "Saklar Single", spek: "Tanam Tembok", masuk: 50, keluar: 12, note: "" },
-            { id: 48, code: "XY900148FN", item: "Stop Kontak", spek: "4 Lubang 3m", masuk: 20, keluar: 7, note: "Checkmark" },
-            { id: 49, code: "XY900149FN", item: "Palu Karet", spek: "Handle Kayu", masuk: 15, keluar: 4, note: "" },
-            { id: 50, code: "XY900150FN", item: "Gunting Seng", spek: "10 Inch Lurus", masuk: 10, keluar: 2, note: "Checkmark" }
+        const inventoryData = [
+            { id: "01", code: "97928749823", items: "Laptop ASUS VivoBook", masuk: 10, keluar: 2, note: "Sesuai" },
+            { id: "02", code: "97928749824", items: "Mouse Logitech G304", masuk: 25, keluar: 25, note: "Habis" },
+            { id: "03", code: "97928749825", items: "Keyboard Mechanical Keychron", masuk: 15, keluar: 5, note: "Sesuai" },
+            { id: "04", code: "97928749826", items: "Monitor Dell 24 Inch", masuk: 8, keluar: 0, note: "Stok Utuh" },
+            { id: "05", code: "97928749827", items: "Webcam Logitech C922", masuk: 12, keluar: 12, note: "Habis" },
+            { id: "06", code: "97928749828", items: "SSD Samsung EVO 500GB", masuk: 30, keluar: 10, note: "Sesuai" },
+            { id: "07", code: "97928749829", items: "RAM Corsair 16GB DDR4", masuk: 20, keluar: 4, note: "Sesuai" },
+            { id: "08", code: "97928749830", items: "Headset SteelSeries Arctis", masuk: 7, keluar: 7, note: "Habis" },
+            { id: "09", code: "97928749831", items: "Router TP-Link Archer", masuk: 10, keluar: 2, note: "Sesuai" },
+            { id: "10", code: "97928749832", items: "Printer Epson L3110", masuk: 5, keluar: 1, note: "Sesuai" },
+            { id: "11", code: "97928749833", items: "Hardisk External Seagate 1TB", masuk: 18, keluar: 18, note: "Habis" },
+            { id: "12", code: "97928749834", items: "Kabel HDMI 2.0 3m", masuk: 50, keluar: 20, note: "Sesuai" },
+            { id: "13", code: "97928749835", items: "USB Hub 4 Port USB 3.0", masuk: 25, keluar: 5, note: "Sesuai" },
+            { id: "14", code: "97928749836", items: "Power Bank Anker 20000mAh", masuk: 15, keluar: 15, note: "Habis" },
+            { id: "15", code: "97928749837", items: "Microphone Blue Yeti", masuk: 4, keluar: 0, note: "Stok Utuh" },
+            { id: "16", code: "97928749838", items: "Graphic Tablet Wacom Intuos", masuk: 6, keluar: 2, note: "Sesuai" },
+            { id: "17", code: "97928749839", items: "Cooling Pad Laptop", masuk: 30, keluar: 12, note: "Sesuai" },
+            { id: "18", code: "97928749840", items: "Flashdisk SanDisk 64GB", masuk: 100, keluar: 100, note: "Habis" },
+            { id: "19", code: "97928749841", items: "Speaker Simbadda CST", masuk: 10, keluar: 3, note: "Sesuai" },
+            { id: "20", code: "97928749842", items: "Kabel LAN Cat6 10m", masuk: 40, keluar: 10, note: "Sesuai" },
+            { id: "21", code: "97928749843", items: "Converter Type C to HDMI", masuk: 20, keluar: 20, note: "Habis" },
+            { id: "22", code: "97928749844", items: "VGA Card RTX 3060", masuk: 3, keluar: 1, note: "Sesuai" },
+            { id: "23", code: "97928749845", items: "Processor Intel i7-12700K", masuk: 5, keluar: 5, note: "Habis" },
+            { id: "24", code: "97928749846", items: "Motherboard MSI B550", masuk: 8, keluar: 2, note: "Sesuai" },
+            { id: "25", code: "97928749847", items: "Power Supply 650W 80+", masuk: 12, keluar: 4, note: "Sesuai" },
+            { id: "26", code: "97928749848", items: "Casing PC ATX Tempered Glass", masuk: 10, keluar: 0, note: "Stok Utuh" },
+            { id: "27", code: "97928749849", items: "Fan Case RGB 120mm", masuk: 60, keluar: 20, note: "Sesuai" },
+            { id: "28", code: "97928749850", items: "Keyboard Wireless Logitech", masuk: 15, keluar: 15, note: "Habis" },
+            { id: "29", code: "97928749851", items: "Tinta Epson 003 Black", masuk: 40, keluar: 35, note: "Sesuai" },
+            { id: "30", code: "97928749852", items: "Kertas A4 80gr Sinar Dunia", masuk: 100, keluar: 50, note: "Sesuai" },
+            { id: "31", code: "97928749853", items: "Joystick Gamesir G4 Pro", masuk: 6, keluar: 6, note: "Habis" },
+            { id: "32", code: "97928749854", items: "Baterai CMOS CR2032", masuk: 200, keluar: 10, note: "Sesuai" },
+            { id: "33", code: "97928749855", items: "Kabel Power PC", masuk: 50, keluar: 5, note: "Sesuai" },
+            { id: "34", code: "97928749856", items: "Pasta Processor MX-4", masuk: 15, keluar: 15, note: "Habis" },
+            { id: "35", code: "97928749857", items: "Switch Hub 8 Port", masuk: 10, keluar: 2, note: "Sesuai" },
+            { id: "36", code: "97928749858", items: "Bracket Monitor Single", masuk: 5, keluar: 0, note: "Stok Utuh" },
+            { id: "37", code: "97928749859", items: "Soundcard Focusrite Solo", masuk: 4, keluar: 1, note: "Sesuai" },
+            { id: "38", code: "97928749860", items: "Earphone Sony MDR-EX15LP", masuk: 30, keluar: 30, note: "Habis" },
+            { id: "39", code: "97928749861", items: "Mousepad Gaming XL", masuk: 25, keluar: 10, note: "Sesuai" },
+            { id: "40", code: "97928749862", items: "Docking Station Laptop", masuk: 7, keluar: 7, note: "Habis" },
+            { id: "41", code: "97928749863", items: "Wifi Dongle Dual Band", masuk: 20, keluar: 8, note: "Sesuai" },
+            { id: "42", code: "97928749864", items: "Kabel Display Port 1.4", masuk: 15, keluar: 3, note: "Sesuai" },
+            { id: "43", code: "97928749865", items: "Thermal Pad 1.5mm", masuk: 50, keluar: 50, note: "Habis" },
+            { id: "44", code: "97928749866", items: "UPS Prolink 1200VA", masuk: 4, keluar: 1, note: "Sesuai" },
+            { id: "45", code: "97928749867", items: "Stylus Pen Universal", masuk: 12, keluar: 2, note: "Sesuai" },
+            { id: "46", code: "97928749868", items: "Ring Light 26cm", masuk: 10, keluar: 10, note: "Habis" },
+            { id: "47", code: "97928749869", items: "Tripod Takara ECO-196", masuk: 8, keluar: 0, note: "Stok Utuh" },
+            { id: "48", code: "97928749870", items: "Scanner Canon LiDE 300", masuk: 3, keluar: 1, note: "Sesuai" },
+            { id: "49", code: "97928749871", items: "Screwdriver Kit Xiaomi", masuk: 15, keluar: 5, note: "Sesuai" },
+            { id: "50", code: "97928749872", items: "Cleaner Kit Laptop", masuk: 40, keluar: 40, note: "Habis" }
         ];
-        return dataDummy
+        const transactionData = [
+            { id: "01", tanggal: "05-03-2026", code: "7989234799", pengawas: ["Andi Budiman", "Siti Aminah"], event: "Workshop Digital Marketing", barang: 2, qty: 45 },
+            { id: "02", tanggal: "06-03-2026", code: "7989234800", pengawas: ["Rian Hidayat", "Dewi Lestari"], event: "Seminar Cyber Security", barang: 5, qty: 12 },
+            { id: "03", tanggal: "06-03-2026", code: "7989234801", pengawas: ["Eko Prasetyo"], event: "Lomba Coding Nasional", barang: 10, qty: 100 },
+            { id: "04", tanggal: "07-03-2026", code: "7989234802", pengawas: ["Ferry Irawan", "Giska Putri"], event: "Pameran Komputer 2026", barang: 25, qty: 250 },
+            { id: "05", tanggal: "08-03-2026", code: "7989234803", pengawas: ["Indah Permata"], event: "Rapat Tahunan IT", barang: 1, qty: 10 },
+            { id: "06", tanggal: "09-03-2026", code: "7989234804", pengawas: ["Kevin Sanjaya", "Lani Rahma"], event: "Pelatihan Server Admin", barang: 4, qty: 8 },
+            { id: "07", tanggal: "10-03-2026", code: "7989234805", pengawas: ["Maman Suherman"], event: "Instalasi Jaringan Lab", barang: 15, qty: 60 },
+            { id: "08", tanggal: "11-03-2026", code: "7989234806", pengawas: ["Nina Zatulini", "Oky Setiana"], event: "Webinar UI/UX Design", barang: 2, qty: 5 },
+            { id: "09", tanggal: "12-03-2026", code: "7989234807", pengawas: ["Putra Perkasa"], event: "E-Sport Tournament", barang: 30, qty: 30 },
+            { id: "10", tanggal: "13-03-2026", code: "7989234808", pengawas: ["Rina Nose", "Sule Prikitiw"], event: "Gathering Komunitas Tech", barang: 8, qty: 40 },
+            { id: "11", tanggal: "14-03-2026", code: "7989234809", pengawas: ["Taufik Hidayat"], event: "Maintenance Ruang Data", barang: 12, qty: 24 },
+            { id: "12", tanggal: "15-03-2026", code: "7989234810", pengawas: ["Vina Panduwinata"], event: "Bakti Sosial IT", barang: 3, qty: 15 },
+            { id: "13", tanggal: "16-03-2026", code: "7989234811", pengawas: ["Wawan Wanisar"], event: "Audit Inventaris", barang: 50, qty: 50 },
+            { id: "14", tanggal: "17-03-2026", code: "7989234812", pengawas: ["Xenia Sari", "Yanto Basna"], event: "Demo Produk Baru", barang: 6, qty: 12 },
+            { id: "15", tanggal: "18-03-2026", code: "7989234813", pengawas: ["Zulkifli Hasan"], event: "Sertifikasi Kompetensi", barang: 1, qty: 20 },
+            { id: "16", tanggal: "19-03-2026", code: "7989234814", pengawas: ["Anisa Pohan", "Bambang P."], event: "Bootcamp Frontend", barang: 20, qty: 40 },
+            { id: "17", tanggal: "20-03-2026", code: "7989234815", pengawas: ["Cinta Laura"], event: "Workshop AI Science", barang: 4, qty: 16 },
+            { id: "18", tanggal: "21-03-2026", code: "7989234816", pengawas: ["Dedi Corbuzier"], event: "Podcast Teknologi Live", barang: 10, qty: 10 },
+            { id: "19", tanggal: "22-03-2026", code: "7989234817", pengawas: ["Fajar Alfian"], event: "Lelang Perangkat Bekas", barang: 100, qty: 100 },
+            { id: "20", tanggal: "23-03-2026", code: "7989234818", pengawas: ["Haji Bolot"], event: "Testing Aplikasi Baru", barang: 2, qty: 2 }
+        ];
+        return [inventoryData, transactionData]
     }
 
-    renderTable() {
-        const data = this.getData()
+    // Fungsi untuk merender data ke tabel
+    renderItemsTable() {
+        const tableBody = document.querySelector("#items-table tbody");
+        
+        // Kosongkan isi tabel sebelumnya jika ada
+        tableBody.innerHTML = "";
 
-        const headHTML = ""
+        this.getData()[0].forEach(item => {
+            const row = document.createElement("tr");
+            row.classList.add("pointer")
+
+            // Logika sederhana untuk icon Note: 
+            // Jika Keluar == Masuk, tampilkan Centang Hijau. 
+            // Jika Keluar < Masuk, tampilkan Jam Orange.
+            const noteIcon = item.keluar === item.masuk 
+                ? '<i class="fas fa-check clr-green"></i>' 
+                : '<i class="fas fa-clock clr-purple"></i>';
+
+            row.innerHTML = `
+                <td>${item.id}</td>
+                <td><i class="fas fa-image pointer"></i></td>
+                <td>${item.code}</td>
+                <td>${item.items}</td>
+                <td>${item.masuk}</td>
+                <td>${item.keluar}</td>
+                <td>${noteIcon}</td>
+            `;
+
+            tableBody.appendChild(row);
+        });
     }
+
+    renderTrxTable() {
+        const tableBody = document.querySelector("#trx-table tbody");
+    
+        // Pastikan tableBody ditemukan
+        if (!tableBody) return;
+
+        // Kosongkan baris yang ada di HTML sebelumnya
+        tableBody.innerHTML = "";
+
+        this.getData()[1].forEach(item => {
+            // Generate list pengawas dengan format span per baris
+            const pengawasHtml = item.pengawas
+                .map(nama => `<span>- ${nama}</span>`)
+                .join("");
+
+            // Buat elemen baris (tr)
+            const row = document.createElement("tr");
+            row.classList.add("pointer")
+            
+            // Isi konten baris sesuai struktur HTML yang Anda minta
+            row.innerHTML = `
+                <td><span class="w-100 h-100 green p-5 tr-front grid-center">${item.id}</span></td>
+                <td>${item.tanggal}</td>
+                <td>${item.code}</td>
+                <td>
+                    <div class="flex-start flex-column align-left items-start">
+                        ${pengawasHtml}
+                    </div>
+                </td>
+                <td>${item.event}</td>
+                <td>${item.barang}</td>
+                <td>${item.qty}</td>
+            `;
+
+            // Masukkan baris ke dalam tbody
+            tableBody.appendChild(row);
+        });
+    }
+    
+
 
 
     play () {
         this.monthControl()
         this.makuChange()
         this.typeChange()
+        this.renderItemsTable()
+        this.renderTrxTable()
 
         this.CustomSelect()
         this.CustomMore()

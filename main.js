@@ -15,13 +15,14 @@ TRX.play()
 lineChart()
 availableChart()
 
-setTimeout(()=> document.querySelector(".date-box").classList.add("shake"), 3000)
+// setTimeout(()=> document.querySelector(".date-box").classList.add("shake"), 3000)
 
 navigation()
 themeChange()
 
 document.querySelector("[data-nav='transaksi']").click()
 document.querySelector("#theme-button").click()
+// document.querySelector("#type-barang").click()
 
 document.addEventListener('contextmenu', function(e) {
   e.preventDefault(); // Mencegah menu klik kanan bawaan browser
