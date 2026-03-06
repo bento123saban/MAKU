@@ -141,7 +141,6 @@ export default class trx {
         // Klik di luar area select mana pun akan menutup semua dropdown
         document.addEventListener('click', () => closeAllSelects());
     }
-
     CustomMore(selector = ".more-box", callback = null) {
         const allMore = document.querySelectorAll(selector);
         if (allMore.length === 0) return;
@@ -193,6 +192,82 @@ export default class trx {
 
         // Menutup menu jika klik di luar area menu mana pun
         document.addEventListener('click', () => closeAll());
+    }
+    CustomContextMenu () {
+
+        const dateBox = document.querySelectorAll(".date-box")
+        
+        const contextMenu = document.getElementById("context-menu");
+
+        dateBox.forEach(box => 
+            box.addEventListener("contextmenu", (e) => {
+                e.preventDefault();
+                contextMenu.style.display = "none";
+                contextMenu.dataset.date = box.dataset.date
+
+                let x = e.clientX;
+                let y = e.clientY;
+
+                contextMenu.style.display = "block";
+
+                const menuWidth = contextMenu.offsetWidth;
+                const menuHeight = contextMenu.offsetHeight;
+                const windowWidth = window.innerWidth;
+                const windowHeight = window.innerHeight;
+
+                if (x + menuWidth > windowWidth) x = x - menuWidth;
+                if (y + menuHeight > windowHeight) y = y - menuHeight;
+                
+                contextMenu.style.left = `${x}px`;
+                contextMenu.style.top = `${y}px`;
+            })
+        );
+
+        document.addEventListener("click", (e) => contextMenu.style.display = "none")
+
+        document.addEventListener("keydown", (e) => {if (e.key === "Escape") contextMenu.style.display = "none";});
+
+        const makuBox   = document.querySelector("#cal-maku")
+        const antarBox  = document.querySelector("#antar-tanggal")
+
+        const showStart = document.querySelector("#date-start-show")
+        const showEnd   = document.querySelector("#date-end-show")
+
+        const startBox  = document.querySelector("#start-box")
+        const endBox    = document.querySelector("#end-box")
+
+        document.querySelector("#date-start").onclick = (e) => {
+            const date = e.target.closest(".context-menu").dataset.date
+            makuBox.classList.add("dis-none")
+            antarBox.classList.remove("dis-none")
+            showStart.textContent = date
+            showStart.dataset.status = "on"
+            startBox.classList.remove("shake-constant", "blink")
+            if (showEnd.dataset.status != "on") endBox.classList.add("shake-constant", "blink")
+            else endBox.classList.remove("shake-constant", "blink")
+        }
+        document.querySelector("#date-end").onclick = (e) => {
+            const date = e.target.closest(".context-menu").dataset.date
+            makuBox.classList.add("dis-none")
+            antarBox.classList.remove("dis-none")
+            showEnd.textContent = date
+            showEnd.dataset.status = "on"
+            endBox.classList.remove("shake-constant", "blink")
+            if (showStart.dataset.status != "on") startBox.classList.add("shake-constant", "blink")
+            else startBox.classList.remove("shake-constant", "blink")
+        }
+        document.querySelector("#date-reset").onclick = (e) => {
+            e.target.closest(".context-menu").dataset.date = ""
+            makuBox.classList.remove("dis-none")
+            antarBox.classList.add("dis-none")
+            showStart.textContent = "- - -"
+            showEnd.textContent = "- - -"
+            showEnd.dataset.status = "off"
+            showStart.dataset.status = "off"
+            startBox.classList.remove("shake-constant", "blink")
+            endBox.classList.remove("shake-constant", "blink")
+        }
+
     }
 
     getData () {
@@ -270,7 +345,15 @@ export default class trx {
             { id: "19", tanggal: "22-03-2026", code: "7989234817", pengawas: ["Fajar Alfian"], event: "Lelang Perangkat Bekas", barang: 100, qty: 100 },
             { id: "20", tanggal: "23-03-2026", code: "7989234818", pengawas: ["Haji Bolot"], event: "Testing Aplikasi Baru", barang: 2, qty: 2 }
         ];
-        return [inventoryData, transactionData]
+        const calendarData = [
+            { date: "01", masuk: 2, keluar: 3 },
+            { date: "03", masuk: 2, keluar: 0 },
+            { date: "08", masuk: 0, keluar: 3 },
+            { date: "25", masuk: 2, keluar: 0 },
+            { date: "29", masuk: 2, keluar: 3 },
+            { date: "31", masuk: 0, keluar: 3 },
+        ];
+        return [inventoryData, transactionData, calendarData]
     }
     renderItemsTable() {
         const tableBody = document.querySelector("#items-table tbody");
@@ -340,8 +423,30 @@ export default class trx {
             tableBody.appendChild(row);
         });
     }
-    
+    renderCalendar() {
+        const container = document.getElementById('calendar-date');
+        const spans = `<span></span><span></span>`
+        container.innerHTML = spans; // Clear dulu
 
+        // Loop 1-31 (Gua asumsiin 31 hari dulu buat contoh)
+        for (let i = 1; i <= 31; i++) {
+            const dayStr = i.toString().padStart(2, '0');
+            const dayData = this.getData()[2].find(d => d.date === dayStr) || { date: dayStr, low: true, masuk: 0, keluar: 0 };
+            const html = `
+                <div class="date-box ${dayData.low ? 'opacity-30' : ''}" data-date="${dayData.date + "-03-2026"}">
+                    <div class="date-content grid-center">
+                        <div class="date-bars hidden gap-2 ${dayData.low ? 'grey' : 'grey'}">
+                            ${dayData.masuk > 0 ? `<div class="data-bar h-100 grid-center bar-masuk green" data-text="${dayData.masuk}">${dayData.masuk}</div>` : "" }
+                            ${dayData.keluar > 0 ? `<div class="data-bar h-100 grid-center bar-keluar blue" data-text="${dayData.keluar}">${dayData.keluar}</div>` : "" }
+                        </div>
+                    </div>
+                    <div class="date-number align-center">${dayData.date}</div>
+                </div>
+            `;
+            container.innerHTML += html;
+        }
+        this.CustomContextMenu()
+    }
 
 
     play () {
@@ -350,6 +455,7 @@ export default class trx {
         this.typeChange()
         this.renderItemsTable()
         this.renderTrxTable()
+        this.renderCalendar();
 
         this.CustomSelect()
         this.CustomMore()

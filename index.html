@@ -164,6 +164,7 @@
                                 <div id="calendar-date">
                                     <span></span>
                                     <span></span>
+
                                     <div class="date-box">
                                         <div class="date-content grid-center">
                                             <div class="date-bars hidden gap-2">
@@ -173,6 +174,7 @@
                                         </div>
                                         <div class="date-number align-center">01</div>
                                     </div>
+
                                     <div class="date-box opacity-30">
                                         <div class="date-content grid-center">
                                             <div class="date-bars hidden gap-2 grey">
@@ -456,6 +458,23 @@
                                         <span class="fz-12">4 Transaksi - 40 Barang - 400 Qty</span>
                                     </div>
                                 </div>
+                                <div id="antar-tanggal" class="flex-beetwen dis-none">
+                                    <div class="cal-maku-box flex-start flex-column gap-5 borad-10" id="start-box">
+                                        <h5 class="p-0 m-0 uppercase">Tanggal Awal</h5>
+                                        <span class="fz-18 clr-green bolder" id="date-start-show">- - -</span>
+                                    </div>
+                                    <i class="fas fa-search p-10 white borad-10"></i>
+                                    <div class="cal-maku-box flex-start flex-column gap-5 borad-10" id="end-box">
+                                        <h5 class="p-0 m-0 uppercase">Tanggal AKhir</h5>
+                                        <span class="fz-18 clr-blue bolder" id="date-end-show">- - -</span>
+                                    </div>
+                                </div>
+                                <div id="context-menu" class="context-menu barlow">
+                                    <div class="menu-item" id="date-start"><span><i class="fas fa-calendar-day"></i>&nbsp; &nbsp; Tanggal Awal</span><i class="fas fa-hoursglass-half"></i></div>
+                                    <div class="menu-item" id="date-end"></span><i class="fas fa-calendar-alt"></i>&nbsp; &nbsp; Tanggal Akhir</span></div>
+                                    <hr class="br-grey">
+                                    <div class="menu-item delete clr-dark-pink"  id="date-reset"><i class="fas fa-arrow-rotate-left"></i>&nbsp; &nbsp; Reset</div>
+                                </div>
                             </div>
 
                             <span id="calendar-separator">|<br>|<br>|</span>
@@ -510,7 +529,6 @@
                                         </div>
                                         <div class="more-list p-5 dis-none">
                                             <span class="grey">Bulanan</span>
-                                            <span>Antar Tanggal</span>
                                             <span>Triwulan I</span>
                                             <span>Triwulan II</span>
                                             <span>Triwulan III</span>
@@ -518,14 +536,6 @@
                                         </div>
                                     </div>
 
-                                </div>
-                                <br>
-                                <div id="antar-tanggal" class="flex-start gap-10 barlow dis-none">
-                                    <input type="date" class="beetwen-input green" id="date-start">
-                                    <span>-</span>
-                                    <input type="date" class="beetwen-input blue" id="date-end">
-                                    |
-                                    <i class="fas fa-search grey pointer p-10 borad-10"></i>
                                 </div>
                                 <br>
 

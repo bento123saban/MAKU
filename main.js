@@ -22,6 +22,7 @@ document.querySelector("#theme-button").click()
 
 document.addEventListener('contextmenu', function(e) {
   e.preventDefault(); // Mencegah menu klik kanan bawaan browser
+  // document.getElementById("context-menu").style.display = "none"
 });
 
 

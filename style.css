@@ -190,6 +190,7 @@ nav {
 }
 .date-box {
     cursor: pointer;
+    /* background-color: rgba(105, 105, 105, .15); */
 }
 .date-content {
     border-radius: 30%;
