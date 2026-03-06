@@ -6,10 +6,6 @@ import trx from "./js/transaksi"
 
 const TRX = new trx()
 TRX.play()
-// TRX.monthControl()
-// TRX.makuChange()
-// TRX.CustomMore()
-// TRX.CustomSelect()
 
 
 lineChart()

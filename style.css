@@ -235,11 +235,33 @@ span.dot {
     background-color: #777;
     border-radius: 100px;
 }
+.beetwen-input {
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    /* background-color: transparent; */
+}
+
+/* Hide spin buttons */
+input[type="date"]::-webkit-inner-spin-button {
+  color: #fff;
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 16 16"><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/></svg>');
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    color: rgba(0,0,0,0);
+    cursor: pointer;
+    outline: none;
+}
+
 
 
 /* Trx list */
 #cal-trx-list, #cal-items-list {
-    height: 460px;
+    height: 470px;
     overflow-y: overlay;
     scrollbar-color: grey transparent; /* HEX dengan Alpha 00 (transparan total) */
     scrollbar-width: thin;
@@ -298,11 +320,8 @@ span.dot {
 }
 
 
-#cal-items-box {
-    width: 100%;
-    max-width: 780px;
-    height: 490px;
-}
+
+
 table#items-table, table#trx-table {
     width: fit-content;
     min-width:900px;
@@ -336,6 +355,11 @@ table#items-table, table#trx-table {
 #items-table tr td:nth-child(1) {
     width: 50px;
     text-align: right;
+}
+#items-table tr td:nth-child(2) {
+    width: 30px;
+    text-align: center;
+
 }
 #items-table tr td:nth-child(3) {
     width: 110px;

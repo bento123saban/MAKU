@@ -272,8 +272,6 @@ export default class trx {
         ];
         return [inventoryData, transactionData]
     }
-
-    // Fungsi untuk merender data ke tabel
     renderItemsTable() {
         const tableBody = document.querySelector("#items-table tbody");
         
@@ -304,7 +302,6 @@ export default class trx {
             tableBody.appendChild(row);
         });
     }
-
     renderTrxTable() {
         const tableBody = document.querySelector("#trx-table tbody");
     
@@ -358,3 +355,4 @@ export default class trx {
         this.CustomMore()
     }
 }
+

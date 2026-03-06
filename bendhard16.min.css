@@ -912,15 +912,3 @@ color: #ffffff;
 }
 .shake {animation: shake 0.2s cubic-bezier(.36,.07,.19,.97) both;}
 
-/* const element = document.getElementById('target-area');
-
-function triggerError() {
-  // 1. Tambahkan class untuk memulai animasi
-  element.classList.add('apply-shake');
-
-  // 2. Pasang event listener yang mendeteksi akhir animasi
-  element.addEventListener('animationend', () => {
-    element.classList.remove('apply-shake');
-  }, { once: true }); 
-  // Opsional: { once: true } memastikan listener dihapus setelah sekali jalan
-} */
