@@ -124,7 +124,7 @@
                         <div id="calendar-box" class="flex-strech gap-20 transparent items-center">
 
                             <!-- Calendar -->
-                            <div id="calendar" class="relative">
+                            <div id="calendar" class="relative ">
                                 <div class="flex-beetwen gap-20" id="calendar-head">
                                     <i class="green fas fa-chevron-left grid-center"></i>
                                     <span class="align-center dis-block w-100 p-5 borad-5 fz-22 uppercase pointer" id="month-control">Februari 2026</span>
@@ -463,7 +463,7 @@
                                         <h5 class="p-0 m-0 uppercase">Tanggal Awal</h5>
                                         <span class="fz-18 clr-green bolder" id="date-start-show">- - -</span>
                                     </div>
-                                    <i class="fas fa-search p-10 white borad-10"></i>
+                                    <i class="fas fa-search p-10 white borad-10 pointer"></i>
                                     <div class="cal-maku-box flex-start flex-column gap-5 borad-10" id="end-box">
                                         <h5 class="p-0 m-0 uppercase">Tanggal AKhir</h5>
                                         <span class="fz-18 clr-blue bolder" id="date-end-show">- - -</span>
@@ -581,7 +581,7 @@
                                                 <thead>
                                                     <tr class="">
                                                         <th><span>#</span></th>
-                                                        <th><span><i class="fas fa-info"></i></span></th>
+                                                        <th class="dis-none"><span><i class="fas fa-info"></i></span></th>
                                                         <th><span>Code</span></th>
                                                         <th><span>Items</span></th>
                                                         <th><span>Masuk</span></th>
@@ -596,12 +596,43 @@
                                     </div>  
                                 </div>
                             </div>
+
+
+                            <!-- Trx detail -->
+                            <div id="trx-detail" class="p-10">
+                                <div class="flex-beetwen items-end">
+                                    <div class="flex-start gap-10">
+                                        <h1 class="m-0 p-5 green borad-10 grid-center" id="">20</h1>
+                                        <div>
+                                            <span class="dis-block">Rabu</span>
+                                            <span>Maret 2026</span>
+                                            <span class="dis-block fz-10 mt-1">14:12:70</span>
+                                        </div>
+                                    </div>
+                                    <div class="align-right">Barang Masuk <br> <span class="italic fz-14">EFac4f8j3t102</span></div>
+                                </div>
+                                <div class="hr grey"></div>
+                                <div id="trx-pengawas">
+                                    <div class="pengawas-box flex-start gap-5 p-5 borad-10">
+                                        <i class="fas fa-user grey p-15 borad-10"></i>
+                                        <div>
+                                            <span>Lorem Ipsum</span><br>
+                                            <span>2 - 30</span>
+                                        </div>
+                                    </div>
+                                    <div class="pengawas-box flex-start gap-5 p-5 borad-10">
+                                        <i class="fas fa-user grey p-15 borad-10"></i>
+                                        <div>
+                                            <span>Lorem Ipsum</span><br>
+                                            <span>2 - 30</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
 
-                        <!-- Trx detail -->
-                        <div id="trx-detail">
-
-                        </div>
+                        
 
                     </div>
 

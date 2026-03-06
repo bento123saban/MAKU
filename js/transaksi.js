@@ -374,7 +374,7 @@ export default class trx {
 
             row.innerHTML = `
                 <td>${item.id}</td>
-                <td><i class="fas fa-image pointer"></i></td>
+                <td class="dis-none"><i class="fas fa-image pointer"></i></td>
                 <td>${item.code}</td>
                 <td>${item.items}</td>
                 <td>${item.masuk}</td>

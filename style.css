@@ -382,8 +382,6 @@ table#items-table, table#trx-table {
 }
 
 
-
-
 #trx-table thead {
     position: sticky;
     top: 0;
@@ -437,4 +435,30 @@ table#items-table, table#trx-table {
 #trx-table tr td:nth-child(7) {
     width: 70px;
     text-align: center;
+}
+
+
+#trx-detail {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 380px;
+    height: 530px;
+    backdrop-filter: blur(200px);
+    border-radius: 15px;
+}
+#trx-detail h1 {
+    aspect-ratio: 1;
+    width: 60px !important;
+}
+#trx-pengawas {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px    ;
+}
+.pengawas-box {
+    background: linear-gradient(45deg, rgba(11, 11, 11, 0.1), rgba(211,211,211,.1));
+}
+.pengawas-box i {
+    /* border: 1.3px solid grey !important; */
 }
