@@ -3,9 +3,11 @@
 
 export default class trx {
     constructor () {
-        this.detailSearch  = document.querySelector("input#search-input")
-        this.makuValue     = document.querySelector("input#maku-value")
-        this.typeValue     = document.querySelector("input#type-value")
+        this.trxItemDetailBox   = document.querySelector("#trx-items-detail")
+        this.trxDetailBox       = document.querySelector("#trx-detail")
+        this.detailSearch       = document.querySelector("input#search-input")
+        this.makuValue          = document.querySelector("input#maku-value")
+        this.typeValue          = document.querySelector("input#type-value")
     }
     monthControl () {
         const monthCtrl     = document.querySelector("#month-control")
@@ -364,6 +366,7 @@ export default class trx {
         this.getData()[0].forEach(item => {
             const row = document.createElement("tr");
             row.classList.add("pointer")
+            row.dataset.code = item.code
 
             // Logika sederhana untuk icon Note: 
             // Jika Keluar == Masuk, tampilkan Centang Hijau. 
@@ -383,6 +386,14 @@ export default class trx {
             `;
 
             tableBody.appendChild(row);
+            row.onclick = () => {
+                const code = row.dataset.code
+                console.log(code)
+                if (this.trxItemDetailBox.dataset.code == code && !this.trxItemDetailBox.classList.contains("dis-none")) return
+                this.trxDetailBox.classList.add("dis-none")
+                this.trxItemDetailBox.classList.remove("dis-none")
+                this.renderItemsTrx(row)
+            }
         });
     }
     renderTrxTable() {
@@ -403,6 +414,7 @@ export default class trx {
             // Buat elemen baris (tr)
             const row = document.createElement("tr");
             row.classList.add("pointer")
+            row.dataset.code = item.code
             
             // Isi konten baris sesuai struktur HTML yang Anda minta
             row.innerHTML = `
@@ -421,6 +433,15 @@ export default class trx {
 
             // Masukkan baris ke dalam tbody
             tableBody.appendChild(row);
+            row.onclick = () => {
+                const code = row.dataset.code
+                console.log(code)
+                const onCode = this.trxDetailBox.dataset.code
+                if (onCode == code && !this.trxDetailBox.classList.contains("dis-none")) return
+                this.trxDetailBox.classList.remove("dis-none")
+                this.trxItemDetailBox.classList.add("dis-none")
+                this.renderTRXDetail(row)
+            }
         });
     }
     renderCalendar() {
@@ -433,9 +454,9 @@ export default class trx {
             const dayStr = i.toString().padStart(2, '0');
             const dayData = this.getData()[2].find(d => d.date === dayStr) || { date: dayStr, low: true, masuk: 0, keluar: 0 };
             const html = `
-                <div class="date-box ${dayData.low ? 'opacity-30' : ''}" data-date="${dayData.date + "-03-2026"}">
+                <div class="date-box ${dayData.low ? 'opacity' : ''}" data-date="${dayData.date + "-03-2026"}">
                     <div class="date-content grid-center">
-                        <div class="date-bars hidden gap-2 ${dayData.low ? 'grey' : 'grey'}">
+                        <div class="date-bars hidden gap-2 ${dayData.low ? '' : ''}">
                             ${dayData.masuk > 0 ? `<div class="data-bar h-100 grid-center bar-masuk green" data-text="${dayData.masuk}">${dayData.masuk}</div>` : "" }
                             ${dayData.keluar > 0 ? `<div class="data-bar h-100 grid-center bar-keluar blue" data-text="${dayData.keluar}">${dayData.keluar}</div>` : "" }
                         </div>
@@ -447,9 +468,22 @@ export default class trx {
         }
         this.CustomContextMenu()
     }
+    renderTRXDetail(elm) {
+        
+    }
+    renderItemsTrx(elm) {
+
+    }
+
+
 
 
     play () {
+
+        document.querySelector("#trx-detail-close").onclick = () => this.trxDetailBox.classList.add("dis-none")
+        document.querySelector("#trx-item-detail-close").onclick = () => this.trxItemDetailBox.classList.add("dis-none")
+
+
         this.monthControl()
         this.makuChange()
         this.typeChange()
