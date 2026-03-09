@@ -26,3 +26,14 @@ document.addEventListener('contextmenu', function(e) {
 });
 
 
+async function checkDomain(domain) {
+  try {
+    const response = await fetch(`https://rdap.arin.net/registry/domain/${domain}`);
+    const data = await response.json();
+    console.log("Data Domain:", data);
+  } catch (error) {
+    console.error("Domain tidak ditemukan atau bersifat privat");
+  }
+}
+
+checkDomain('ct.wt');

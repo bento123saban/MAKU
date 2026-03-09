@@ -49,6 +49,7 @@ nav {
     margin-bottom: 10px;
     display: flex;
     justify-content: flex-start;
+    align-items: flex-end;
     gap: 10px;
     cursor: pointer;
 }
@@ -497,6 +498,19 @@ span.in-out {
 #inven-boxes .boxes:hover {
     /* transform: translate(-2px); */
     filter: brightness(1.2);
+}
+i.far.fa-circle {
+    position: relative;
+}
+i.far.fa-circle::after {
+    content: "";
+    width: 80%;
+    height: 2px;
+    position: absolute;
+    /* top: 0; */
+    /* left: 50%; */
+    transform: rotate(-45deg);
+    background-color: white;
 }
 table#inventory-table th span {
     padding: 5px 10px;
