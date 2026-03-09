@@ -321,23 +321,21 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 
-
-
-table#items-table, table#trx-table {
+table#items-table, table#trx-table, #inventory-table {
     width: fit-content;
     min-width:900px;
     border-spacing: 3px;
 }
-#items-table thead {
+#items-table thead, #trx-table thead, #inventory-table thead {
     position: sticky;
     top: 0;
 }
-#items-table th {
+#items-table th, #trx-table th {
     /* padding: 4px 10px; */
     font-weight: normal;
     font-size: 18px;
 }
-#items-table th span {
+#items-table th span, #trx-table th span {
     display: block;
     padding: 4px 10px;
     /* background: linear-gradient(45deg, #7d0783, #673098); */
@@ -346,11 +344,16 @@ table#items-table, table#trx-table {
     border: 1.6px solid #7d0783;
     backdrop-filter: blur(1000px);
 }
-/* tr {padding: 15px 0;} */
-#items-table tbody tr:nth-child(odd) {
+#trx-table th span {border: 1.6px solid orange;}
+
+#items-table tbody tr:nth-child(odd), #trx-table tbody tr:nth-child(odd), #inventory-table tbody tr:nth-child(odd) {
     background-color: rgba(105, 105, 105, .15);
 }
-#items-table tr td {
+:is(#items-table, #trx-table, #inventory-table) td span.tr-front {
+    aspect-ratio: 1;
+    width: 30px !important;
+}
+#items-table tr td, #trx-table tr td, #inventory-table tr td {
     padding: 4px 10px;
 }
 #items-table tr td:nth-child(1) {
@@ -381,39 +384,6 @@ table#items-table, table#trx-table {
     text-align: center;
 }
 
-
-#trx-table thead {
-    position: sticky;
-    top: 0;
-}
-#trx-table th span {
-    display: block;
-    padding: 4px 10px;
-    /* background: linear-gradient(45deg, #7d0783, #673098); */
-    border-radius: 4px;
-    /* color: #673098 !important; */
-    border: 1.6px solid orange;
-    backdrop-filter: blur(1000px);
-}
-#trx-table tr td {
-    padding: 4px 10px;
-}
-#trx-table tbody tr:nth-child(odd) {
-    background-color: rgba(105, 105, 105, .15);
-}
-#trx-table td span.green, #trx-table td span.blue {
-    border-radius: 4px;
-}
-#trx-table td {
-    padding: 3px 10px;
-}
-.tr-front {
-    aspect-ratio: 1;
-}
-
-#trx-table thead th {
-    font-weight: normal;
-}
 #trx-table tr td:nth-child(1) {
     width: 50px;
     text-align: right;
@@ -471,10 +441,6 @@ table#items-table, table#trx-table {
     background-color: rgba(105, 105, 105, .2);
 }
 
-#trx-items-list-trx, #detail-items-list {
-    height: 300px;
-    overflow: auto;
-}
 #trx-items-detail i.fa-image {
     width: 100px;
     aspect-ratio: 1;
@@ -493,10 +459,31 @@ span.in-out {
 
 
 
-
-
-
-
+ #inventory-list  {
+    height: 370px;
+    overflow-y: overlay;
+    scrollbar-color: grey transparent; /* HEX dengan Alpha 00 (transparan total) */
+    scrollbar-width: thin;
+    background: transparent;
+    width: 100%;
+    max-width: 2050px;
+    overflow: auto;
+ }
+#inven-search-box {
+    width: fit-content;
+}
+#inven-search-box i {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+}
+#inventory-search {
+    background: rgba(105, 105, 105, .1);
+    border-color: white;
+    padding-right: 40px !important;
+}
 #inven-boxes {
     /* overflow: scroll; */
     display: grid;
@@ -518,4 +505,16 @@ table#inventory-table th span {
     border-radius: 5px;
     display: block;
     backdrop-filter: blur(100px);
+}
+#inventory-table tr td:nth-child(1) {
+    /* Style kamu di sini */
+    /* background-color: #f0f0f0; */
+    text-align: center;
+    width: 50px;
+}
+#inventory-table tr td:nth-child(n+4):nth-child(-n+8) {
+    /* Style kamu di sini */
+    /* background-color: #f0f0f0; */
+    text-align: center;
+    width: 50px;
 }

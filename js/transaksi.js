@@ -273,7 +273,7 @@ export default class trx {
     }
 
     getData () {
-        const inventoryData = [
+        const trxItemsData = [
             { id: "01", code: "97928749823", items: "Laptop ASUS VivoBook", masuk: 10, keluar: 2, note: "Sesuai" },
             { id: "02", code: "97928749824", items: "Mouse Logitech G304", masuk: 25, keluar: 25, note: "Habis" },
             { id: "03", code: "97928749825", items: "Keyboard Mechanical Keychron", masuk: 15, keluar: 5, note: "Sesuai" },
@@ -355,7 +355,26 @@ export default class trx {
             { date: "29", masuk: 2, keluar: 3 },
             { date: "31", masuk: 0, keluar: 3 },
         ];
-        return [inventoryData, transactionData, calendarData]
+
+        const inventoryData = Array.from({ length: 75 }, (_, i) => ({
+            id: (i + 1).toString().padStart(2, '0'),
+            code: Math.floor(100000 + Math.random() * 900000).toString(),
+            item: [
+                "Keyboard Mechanical Keychron", 
+                "Logitech MX Master 3S", 
+                "Monitor Dell UltraSharp", 
+                "SteelSeries Arctis Nova", 
+                "Razer DeathAdder V3"
+            ][i % 5],
+            stok: Math.floor(Math.random() * 20) + 1,
+            thumbsUp: Math.floor(Math.random() * 10),
+            tools: Math.floor(Math.random() * 5),
+            square: Math.random() > 0.5 ? 1 : "-",
+            xMark: Math.random() > 0.8 ? 1 : "-",
+            note: "Keterangan item ke-" + (i + 1)
+        }));
+
+        return [trxItemsData, transactionData, calendarData, inventoryData]
     }
     renderItemsTable() {
         const tableBody = document.querySelector("#items-table tbody");
@@ -371,7 +390,7 @@ export default class trx {
                 : '<i class="fas fa-clock clr-purple"></i>';
 
             row.innerHTML = `
-                <td class="pointer">${item.id}</td>
+                <td class="pointer"><span class="purple borad-5 w-100 h-100 green p-5 tr-front grid-center">${item.id}</span></td>
                 <td class="dis-none"><i class="fas fa-image pointer"></i></td>
                 <td>${item.code}</td>
                 <td>${item.items}</td>
@@ -412,7 +431,7 @@ export default class trx {
             
             // Isi konten baris sesuai struktur HTML yang Anda minta
             row.innerHTML = `
-                <td class="pointer"><span class="w-100 h-100 green p-5 tr-front grid-center">${item.id}</span></td>
+                <td class="pointer"><span class="borad-5 w-100 h-100 green p-5 tr-front grid-center">${item.id}</span></td>
                 <td>${item.tanggal}</td>
                 <td>${item.code}</td>
                 <td>
@@ -437,6 +456,23 @@ export default class trx {
                 this.renderTRXDetail(row)
             }
         });
+    }
+    renderInvenTable () {
+        const tbody = document.querySelector('#inventory-table tbody');
+
+        tbody.innerHTML = this.getData()[3].map(data => `
+            <tr>
+                <td class="p-5"><span class="blue borad-5 w-100 h-100 green p-5 tr-front grid-center">${data.id}</span></td>
+                <td>${data.code}</td>
+                <td>${data.item}</td>
+                <td>${data.stok}</td>
+                <td>${data.thumbsUp}</td>
+                <td>${data.tools}</td>
+                <td>${data.square}</td>
+                <td>${data.xMark}</td>
+                <td>${data.note}</td>
+            </tr>
+        `).join('');
     }
     renderCalendar() {
         const container = document.getElementById('calendar-date');
@@ -483,6 +519,7 @@ export default class trx {
         this.typeChange()
         this.renderItemsTable()
         this.renderTrxTable()
+        this.renderInvenTable()
         this.renderCalendar();
 
         this.CustomSelect()
