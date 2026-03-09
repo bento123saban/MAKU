@@ -513,6 +513,32 @@ export default class trx {
         document.querySelector("#trx-detail-close").onclick = () => this.trxDetailBox.classList.add("dis-none")
         document.querySelector("#trx-item-detail-close").onclick = () => this.trxItemDetailBox.classList.add("dis-none")
 
+        const formButtons = document.querySelectorAll("#form-masuk-button, #form-keluar-button")
+        formButtons.forEach(btn => {
+            btn.onclick = () => {
+                const id = btn.id
+                if (id == "form-masuk-button") {
+                    formButtons[1].classList.add("opacity-50")
+                    formButtons[1].classList.remove("blue")
+                    formButtons[1].classList.add("clr-blue")
+                    formButtons[1].classList.add("br-blue")
+                    btn.classList.remove("opacity-50")
+                    btn.classList.add("green")
+                    btn.classList.remove("clr-green")
+                    btn.classList.remove("br-green")
+                } else {
+                    formButtons[0].classList.add("opacity-50")
+                    formButtons[0].classList.remove("green")
+                    formButtons[0].classList.add("clr-green")
+                    formButtons[0].classList.add("br-green")
+                    btn.classList.remove("opacity-50")
+                    btn.classList.add("blue")
+                    btn.classList.remove("clr-blue")
+                    btn.classList.remove("br-blue")
+                }
+            }
+        })
+
 
         this.monthControl()
         this.makuChange()

@@ -741,70 +741,71 @@ input::-webkit-inner-spin-button {
 
 /* --- CSS CORE --- */
 .custom-select-container {
-position: relative;
-width: 100%;
-user-select: none;
+    position: relative;
+    width: 100%;
+    user-select: none;
 }
 
 .select-trigger {
-display: flex;
-justify-content: space-between;
-align-items: center;
-cursor: pointer;
-transition: all 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid;
 }
 
 .custom-select-container.open .select-trigger {
-border-color: #3498db;
-border-bottom-left-radius: 0;
-border-bottom-right-radius: 0;
-box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border-color: #3498db;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
 .arrow {
-transition: transform 0.3s ease;
-/* margin-bottom: 4px; */
-transform: rotate(0) translateY(1px);
+    transition: transform 0.3s ease;
+    /* margin-bottom: 4px; */
+    transform: rotate(0) translateY(1px);
 }
 
 .custom-select-container.open .arrow {
-transform: rotate(90deg) translateY(1px);
-/* margin-bottom: -4px; */
+    transform: rotate(90deg) translateY(1px);
+    /* margin-bottom: -4px; */
 }
 
 .select-options {
-margin-top: 3px;
-position: absolute;
-top: 100%;
-left: 0;
-right: 0;
-background: rgba(255,255,255, .4);
-border-radius: 10px;
-display: none;
-z-index: 100;
-max-height: fit-content;
-overflow-y: auto;
-box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    margin-top: 3px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #777;
+    border-radius: 10px;
+    display: none;
+    z-index: 100;
+    max-height: fit-content;
+    overflow-y: auto;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
 }
 
 .custom-select-container.open .select-options {
-display: block;
+    display: block;
 }
 
 .option {
-padding: 12px 15px;
-cursor: pointer;
-transition: all 0.2s ease;
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .option:hover {
-background-color: #f0f7ff;
-color: #3498db;
+    background-color: #f0f7ff;
+    color: #3498db;
 }
 
 .option.selected {
-background-color: #3498db;
-color: #ffffff;
+    background-color: #3498db;
+    color: #ffffff;
 }
 
 
@@ -817,36 +818,36 @@ color: #ffffff;
 
 /* Container utama */
 .custom-checkbox {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  font-family: sans-serif;
-  user-select: none;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-family: sans-serif;
+    user-select: none;
 }
 
 /* Sembunyikan checkbox asli tapi tetap bisa diakses keyboard */
 .custom-checkbox input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
 }
 
 /* Buat kotak checkbox kustom */
 .checkmark {
-  height: 20px;
-  width: 20px;
-  background-color: #aaa;
-  border-radius: 4px;
-  margin-right: 5px;
-  position: relative;
-  transition: all 0.2s ease-in-out;
+    height: 20px;
+    width: 20px;
+    background-color: #aaa;
+    border-radius: 4px;
+    margin-right: 5px;
+    position: relative;
+    transition: all 0.2s ease-in-out;
 }
 
 /* Efek saat kursor di atas (hover) */
 .custom-checkbox:hover input ~ .checkmark {
-  background-color: #ccc;
+    background-color: #ccc;
 }
 
 /* Warna saat dicentang */

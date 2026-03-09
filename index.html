@@ -19,8 +19,8 @@
         <!-- <img src="./img/hexagonal.jpg" alt="" id="background">
         <img src="./img/tree-bg.png" alt="" id="tree"> -->
     </div>
-    <div id="login" class="dis-none relative vh-100 p-20 clr-darkgrey align-center m-0 p-0 grid-center">
-        <div id="login-content" class="p-10 borad-20">
+    <div id="login" class="dis-none relative vh-100 p-20 clr-darkgrey align-center m-0 p-0 grid-center green">
+        <div id="login-content" class="p-10 borad-20 p-20 white">
             <img src="./img/logo-dlhp.png" alt="" id="logo-dlhp">
             <div class="hr grey"></div>
             <h1>Invetaris Barang <br>Masuk dan Keluar</h1>
@@ -1006,14 +1006,57 @@
 
                     </div>
 
-                    <div id="add" class="content w-100 dis-none">
-                        <h3 class="uppercase pb-1 m-0 flex-start items-end gap-20"><i class="fas fa-add fz-40"></i> Form Transaksi</h3>
+                    <div id="add" class="content w-100 dis-none">   
+                        <h3 class="uppercase pb-1 m-0 flex-start items-end gap-20"><i class="fas fa-list fz-40"></i> Form Transaksi</h3>
                         <br>
                         <div class="flex-start gap-20">
-                            <div class="add-type-button p-15 green borad-10 pointer"><i class="fas fa-arrow-right-to-bracket"></i> Barang Masuk</div> |
-                            <div class="add-type-button p-15 blue borad-10 pointer"><i class="fas fa-arrow-right-from-bracket"></i> Barang Keluar</div>
+                            <div class="add-type-button p-15 green borad-10 pointer" id="form-masuk-button"><i class="fas fa-arrow-right-to-bracket"></i>&nbsp; Barang Masuk</div> |
+                            <div class="add-type-button p-15 br-blue clr-blue opacity-50 borad-10 pointer" id="form-keluar-button"><i class="fas fa-arrow-right-from-bracket"></i>&nbsp; Barang Keluar</div>
                         </div>
                         <br>
+                        <div id="form-container">
+                            <div id="form" class="w-100 h-100 p-10">
+                                <h4 class="m-0 p-0 mb-1">Formulir Barang Masuk</h4> <br>
+
+                                <!-- Detail Maku Button -->
+                                <div id="form-masuk-status" class=" select-custom borad-10 fz-14 grid-center" data-bg="">
+                                    <div class="custom-select-container w-100" data-default="...">
+                                        <div class="select-trigger w-100 p-10 white borad-10">
+                                            <span>Status</span>
+                                            <i class="arrow fas fa-chevron-right fz-14"></i>
+                                        </div>
+                                        <div class="select-options w-100">
+                                            <div class="option" data-value="semua" data-clr="">Pengadaan</div>
+                                            <div class="option" data-value="masuk" data-clr="">Tarikan</div>
+                                            <div class="option" data-value="keluar" data-clr="">Selesai Perbaikan</div>
+                                            <div class="option" data-value="keluar" data-clr="">Selesai Pakai</div>
+                                            <div class="option" data-value="keluar" data-clr="">Hibah/Pemberian</div>
+                                            <div class="option" data-value="keluar" data-clr="">Sewa</div>
+                                        </div>
+                                        <input type="hidden" name="type" class="select-input w-100" id="maku-value" value="semua">
+                                    </div>
+                                </div>
+
+                                <div class="flex-start gap-10 dis-none">
+                                    <div class="form-group relative">
+                                        <label for="kode-barang" class="p-3 dis-block fz-14 align-left">Kode Barang</label>
+                                        <div class="flex-start gap-5">
+                                            <input type="number" id="kode-barang" class="align-center transparent" placeholder=". . .">
+                                        </div>
+                                    </div>
+                                    <div class="form-group relative">
+                                        <label for="kode-barang" class="p-3 dis-block fz-14 align-left">Nama Barang</label>
+                                        <div class="flex-start gap-5">
+                                            <input type="number" id="nama-barang" class="transparent" placeholder=". . .">|
+                                            <i class="fas fa-plus fz-18 grid-center borad-10"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <i class="fas fa-image orange grid-center fz-60 p-20 borad-20"></i>
+                        </div>
+                        
                     </div>
                 </div>
             </main>
