@@ -360,23 +360,18 @@ export default class trx {
     renderItemsTable() {
         const tableBody = document.querySelector("#items-table tbody");
         
-        // Kosongkan isi tabel sebelumnya jika ada
         tableBody.innerHTML = "";
 
         this.getData()[0].forEach(item => {
             const row = document.createElement("tr");
-            row.classList.add("pointer")
             row.dataset.code = item.code
 
-            // Logika sederhana untuk icon Note: 
-            // Jika Keluar == Masuk, tampilkan Centang Hijau. 
-            // Jika Keluar < Masuk, tampilkan Jam Orange.
             const noteIcon = item.keluar === item.masuk 
                 ? '<i class="fas fa-check clr-green"></i>' 
                 : '<i class="fas fa-clock clr-purple"></i>';
 
             row.innerHTML = `
-                <td>${item.id}</td>
+                <td class="pointer">${item.id}</td>
                 <td class="dis-none"><i class="fas fa-image pointer"></i></td>
                 <td>${item.code}</td>
                 <td>${item.items}</td>
@@ -386,7 +381,7 @@ export default class trx {
             `;
 
             tableBody.appendChild(row);
-            row.onclick = () => {
+            row.firstElementChild.onclick = () => {
                 const code = row.dataset.code
                 console.log(code)
                 if (this.trxItemDetailBox.dataset.code == code && !this.trxItemDetailBox.classList.contains("dis-none")) return
@@ -413,12 +408,11 @@ export default class trx {
 
             // Buat elemen baris (tr)
             const row = document.createElement("tr");
-            row.classList.add("pointer")
             row.dataset.code = item.code
             
             // Isi konten baris sesuai struktur HTML yang Anda minta
             row.innerHTML = `
-                <td><span class="w-100 h-100 green p-5 tr-front grid-center">${item.id}</span></td>
+                <td class="pointer"><span class="w-100 h-100 green p-5 tr-front grid-center">${item.id}</span></td>
                 <td>${item.tanggal}</td>
                 <td>${item.code}</td>
                 <td>
@@ -433,7 +427,7 @@ export default class trx {
 
             // Masukkan baris ke dalam tbody
             tableBody.appendChild(row);
-            row.onclick = () => {
+            row.firstElementChild.onclick = () => {
                 const code = row.dataset.code
                 console.log(code)
                 const onCode = this.trxDetailBox.dataset.code
