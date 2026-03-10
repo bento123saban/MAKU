@@ -549,6 +549,10 @@ table#inventory-table th span {
 
 
 
+.add-type-button {
+    width: 200px;
+    scale: .7;
+}
 #form-masuk-button, #form-keluar-button {
     border: 2px solid white;
 }
@@ -556,30 +560,41 @@ table#inventory-table th span {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
 }
-#form-masuk-status {
+#form-masuk-sumber {
     width: 200px;
 }
+#form-masuk .option:hover {
+    color: limegreen !important;
+}
+#form-masuk .option.selected {
+    
+    background-color: limegreen;
+    color: #ffffff !important;
+}
+
 
 
 .form-group {
     position: relative;
+    display: grid;
 }
-.form-group input {
-    border: 2px solid grey;
-    border-radius: 10px;
+.form-group .form-label {
+    position: absolute;
+    bottom: calc(100%);
+    padding: 4px 5px;
+}
+.form-group .form-input {
+    width: 100%;
     padding: 10px;
-    /* background-color: rgba(105, 105, 105, .1); */
-    color: #777;
-    outline: none;
     font-size: 17px;
-    /* text-align: center; */
+    border-radius: 10px;
+    background-color: transparent;
+    outline: none;
 }
-.form-group div i {
-    aspect-ratio: 1;
-    /* width: 100%; */
-    height: 43px;
-    display: block;
-    border: 2px solid grey;
+.form-group input::placeholder {
+    font-style: italic;
 }
-#kode-barang {width: 150px;}
-#nama-barang {width: 250px;}
+#form-masuk .form-input {
+    color: inherit;
+    border: 2px solid limegreen !important;
+}

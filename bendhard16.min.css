@@ -444,9 +444,9 @@ input::-webkit-inner-spin-button {
 .clr-darkred {color: darkred !important;}
 .br-darkred {border-color: darkred !important;}
 
-.dark-pink, [data-bg="darkpink"] {
+.dark-pink, [data-bg="dark-pink"] {
     background: linear-gradient(45deg, #FF002F, #730101) !important;
-    color: white;
+    color: white !important;
     border:  none !important;
 }
 
@@ -745,6 +745,11 @@ input::-webkit-inner-spin-button {
     width: 100%;
     user-select: none;
 }
+.custom-select-container label {
+    position: absolute;
+    bottom: calc(100% + 2px);
+    padding-left: 5px;
+}
 
 .select-trigger {
     display: flex;
@@ -752,34 +757,30 @@ input::-webkit-inner-spin-button {
     align-items: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    border: 2px solid;
-}
+    border: 2px solid transparent;
+    font-size: 17px;
+    padding: 12px !important;
+} 
 
 .custom-select-container.open .select-trigger {
-    border-color: #3498db;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
 .arrow {
     transition: transform 0.3s ease;
-    /* margin-bottom: 4px; */
-    transform: rotate(0) translateY(1px);
+    transform: rotate(0) translateY(0px);
 }
 
-.custom-select-container.open .arrow {
-    transform: rotate(90deg) translateY(1px);
-    /* margin-bottom: -4px; */
-}
+.custom-select-container.open .arrow {transform: rotate(90deg) translateY(1px);}
 
 .select-options {
     margin-top: 3px;
     position: absolute;
-    top: 100%;
+    top: 101%;
     left: 0;
     right: 0;
-    background: #777;
+    background: linear-gradient(45deg, grey, dimgrey);
+    color: white;
     border-radius: 10px;
     display: none;
     z-index: 100;
@@ -798,81 +799,19 @@ input::-webkit-inner-spin-button {
     transition: all 0.2s ease;
 }
 
+
 .option:hover {
     background-color: #f0f7ff;
-    color: #3498db;
+    color: dimgray;
 }
 
 .option.selected {
-    background-color: #3498db;
+    background-color: dimgray;
     color: #ffffff;
 }
 
 
 
-
-
-
-/* Custom Checkbox */
-
-
-/* Container utama */
-.custom-checkbox {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    font-family: sans-serif;
-    user-select: none;
-}
-
-/* Sembunyikan checkbox asli tapi tetap bisa diakses keyboard */
-.custom-checkbox input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-    height: 0;
-    width: 0;
-}
-
-/* Buat kotak checkbox kustom */
-.checkmark {
-    height: 20px;
-    width: 20px;
-    background-color: #aaa;
-    border-radius: 4px;
-    margin-right: 5px;
-    position: relative;
-    transition: all 0.2s ease-in-out;
-}
-
-/* Efek saat kursor di atas (hover) */
-.custom-checkbox:hover input ~ .checkmark {
-    background-color: #ccc;
-}
-
-/* Warna saat dicentang */
-.custom-checkbox input:checked ~ .checkmark {
-  background-color: #2ecc71;
-}
-
-/* Membuat simbol centang (L-shape) */
-.checkmark:after {
-  content: "";
-  position: absolute;
-  display: none;
-  left: 7px;
-  top: 3px;
-  width: 5px;
-  height: 10px;
-  border: solid white;
-  border-width: 0 3px 3px 0;
-  transform: rotate(45deg);
-}
-
-/* Tampilkan centang saat di-klik */
-.custom-checkbox input:checked ~ .checkmark:after {
-  display: block;
-}
 
 
 
@@ -906,27 +845,27 @@ input::-webkit-inner-spin-button {
 }
 
 @keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-8px); }
-  50% { transform: translateX(8px); }
-  75% { transform: translateX(-8px); }
-  100% { transform: translateX(0); }
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    50% { transform: translateX(8px); }
+    75% { transform: translateX(-8px); }
+    100% { transform: translateX(0); }
 }
 .shake {animation: shake 0.2s cubic-bezier(.36,.07,.19,.97) both;}
 
 /* Kita buat animasi getarnya hanya terjadi di 15% pertama dari total durasi */
 @keyframes shake-infinite {
-  0%       { transform: translateX(0); }
-  3%       { transform: translateX(-8px); }
-  6%       { transform: translateX(8px); }
-  9%       { transform: translateX(-8px); }
-  12%      { transform: translateX(8px); }
-  15%, 100% { transform: translateX(0); } /* Diam dari 15% sampai 100% */
+    0%       { transform: translateX(0); }
+    3%       { transform: translateX(-8px); }
+    6%       { transform: translateX(8px); }
+    9%       { transform: translateX(-8px); }
+    12%      { transform: translateX(8px); }
+    15%, 100% { transform: translateX(0); } /* Diam dari 15% sampai 100% */
 }
 
 .shake-constant {
-  /* Durasi 1.7s adalah hasil 0.2s animasi + 1.5s jeda */
-  animation: shake-infinite 1.7s cubic-bezier(.36,.07,.19,.97) infinite;
+    /* Durasi 1.7s adalah hasil 0.2s animasi + 1.5s jeda */
+    animation: shake-infinite 1.7s cubic-bezier(.36,.07,.19,.97) infinite;
 }
 
 /* Total durasi 1.7s:
@@ -935,55 +874,78 @@ input::-webkit-inner-spin-button {
 */
 
 @keyframes blink-only {
-  0%, 12%, 100% {
-    opacity: 1; /* Terang di awal, akhir kedip, dan selama jeda */
-  }
-  3%, 9% , 15%, 21%, 27%, 33%, 39%, 45%, 51% {
-    opacity: 0; /* Pudar total */
-  }
-  6%, 18%, 24%, 30%, 36%, 42%, 48%, 54% {
-    opacity: 1; /* Terang di tengah kedip */
-  }
+    0%, 12%, 100% {
+        opacity: 1; /* Terang di awal, akhir kedip, dan selama jeda */
+    }
+    3%, 9% , 15%, 21%, 27%, 33%, 39%, 45%, 51% {
+        opacity: 0; /* Pudar total */
+    }
+    6%, 18%, 24%, 30%, 36%, 42%, 48%, 54% {
+        opacity: 1; /* Terang di tengah kedip */
+    }
 }
 
 .blink {
-  animation: blink-only 4s ease-in-out infinite;
+    animation: blink-only 4s ease-in-out infinite;
 }
 
 
-
-
-#context-menu {
-  display: none;
-  position: fixed; /* Gunakan fixed agar koordinat layar sinkron */
-  margin: 0;
-  z-index: 10000;
-  background: linear-gradient(45deg, rgba(255,255,255, .5), rgba(255,255,255, .1));
-  /* color: white; */
-  /* border: 1px solid #c5c5c5; */
-  border-radius: 10px;
-  padding: 0;
-  min-width: 180px;
-  box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
-  backdrop-filter: blur(100px);
-  overflow: hidden;
-}
-
-.menu-item {
-  padding: 10px 15px;
+/* Sembunyikan input asli */
+.checkbox-container input {
+  position: absolute;
+  opacity: 0;
   cursor: pointer;
-  /* font-family: sans-serif; */
-  font-size: 14px;
-  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  height: 0;
+  width: 0;
 }
 
-.menu-item:hover {
-  background: #444;
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-family: sans-serif;
+  user-select: none; /* Mencegah teks ter-highlight saat klik cepat */
+}
+
+/* Kotak Custom */
+.custom-box {
+  height: 24px;
+  width: 24px;
+  background-color: #fff;
+  border: 2px solid limegreen;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+/* .custom-box i {opacity: 0;} */
+
+/* Ikon Centang (Default Sembunyi) */
+.checkmark {
+  width: 16px;
+  height: 16px;
+  transform: scale(0);
+  transition: transform 0.2s cubic-bezier(0.12, 0.4, 0.29, 1.46);
   color: white;
 }
 
-hr {
-  border: 0;
-  border-top: 1px solid #444;
-  margin: 5px 0;
+/* --- LOGIKA SAAT CHECKED --- */
+
+/* Ubah warna kotak saat terpilih */
+.checkbox-container input:checked + .custom-box {
+  background-color: limegreen;
+  border-color: lime;
+}
+
+/* Munculkan ikon centang dengan animasi scale */
+.checkbox-container input:checked + .custom-box .checkmark {
+  transform: scale(1);
+}
+
+/* Efek Hover */
+.checkbox-container:hover .custom-box {
+  border-color: green;
+  box-shadow: 0 0 8px rgba(0, 200, 83, 0.2);
 }

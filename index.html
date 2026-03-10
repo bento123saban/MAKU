@@ -1006,55 +1006,92 @@
 
                     </div>
 
-                    <div id="add" class="content w-100 dis-none">   
-                        <h3 class="uppercase pb-1 m-0 flex-start items-end gap-20"><i class="fas fa-list fz-40"></i> Form Transaksi</h3>
-                        <br>
-                        <div class="flex-start gap-20">
-                            <div class="add-type-button p-15 green borad-10 pointer" id="form-masuk-button"><i class="fas fa-arrow-right-to-bracket"></i>&nbsp; Barang Masuk</div> |
-                            <div class="add-type-button p-15 br-blue clr-blue opacity-50 borad-10 pointer" id="form-keluar-button"><i class="fas fa-arrow-right-from-bracket"></i>&nbsp; Barang Keluar</div>
+                    <div id="add" class="content w-100 dis-none">  
+                        <div class="flex-beetwen">
+                            <h3 class="uppercase pb-1 m-0 flex-start items-end gap-20"><i class="fas fa-list fz-40"></i> Form Transaksi</h3>
                         </div>
                         <br>
-                        <div id="form-container">
-                            <div id="form" class="w-100 h-100 p-10">
-                                <h4 class="m-0 p-0 mb-1">Formulir Barang Masuk</h4> <br>
+                        <div id="" class=" select-custom borad-10 fz-14 grid-center w-50" data-bg="grey">
+                            <div class="custom-select-container w-100" data-default="...">
+                                <!-- <label class="">Sumber</label> -->
+                                <div class="select-trigger w-100 p-10 borad-10">
+                                    <span class="" data-class="">Jenis Transaksi :</span>
+                                    <i class="arrow fas fa-chevron-right fz-16"></i>
+                                </div>
+                                <div class="select-options w-100">
+                                    <div class="option green" data-value="masuk" data-clr="green"><i class="fas fa-arrow-right-to-bracket"></i>&nbsp; Barang Masuk</div>
+                                    <div class="option blue" data-value="keluar" data-clr="blue"><i class="fas fa-arrow-right-from-bracket"></i>&nbsp; Barang Keluar</div>
+                                    <div class="option orange" data-value="keluar" data-clr="orange"><i class="fas fa-boxes"></i>&nbsp; Data Barang</div>
+                                    <!-- <div class="option orange" data-value="keluar" data-clr="orange"><i class="fas fa-search"></i>&nbsp; Stok Opname</div> -->
+                                    <!-- <div class="option dark-pink" data-value="keluar" data-clr="dark-pink"><i class="fas fa-arrows-rotate"></i>&nbsp; Revisi</div> -->
+                                </div>
+                                <input type="hidden" name="type" class="select-input w-100" id="maku-value" value="semua">
+                            </div>
+                        </div>
+                        <div class="hr grey w-100"></div>
+                        <br>
+                        <div id="form-container w-100">
+                            <div id="form-masuk" class="w-100 h-100 w-50">
 
-                                <!-- Detail Maku Button -->
-                                <div id="form-masuk-status" class=" select-custom borad-10 fz-14 grid-center" data-bg="">
-                                    <div class="custom-select-container w-100" data-default="...">
-                                        <div class="select-trigger w-100 p-10 white borad-10">
-                                            <span>Status</span>
-                                            <i class="arrow fas fa-chevron-right fz-14"></i>
+                                <div class="flex-beetwen gap-20">
+                                    <!-- Sumber -->
+                                    <div class="form-group w-100">
+                                        <label class="form-label">Sumber</label>
+                                        <div id="form-masuk-sumber" class=" select-custom borad-10 fz-14 grid-center w-100" data-bg="">
+                                            <div class="custom-select-container w-100" data-default="...">
+                                                <div class="select-trigger w-100 p-10 borad-10 br-green">
+                                                    <span class="clr-grey italic" data-class="">Pilih sumber :</span>
+                                                    <i class="arrow fas fa-chevron-right fz-16 clr-green"></i>
+                                                </div>
+                                                <div class="select-options w-100">
+                                                    <div class="option" data-value="pengadaan" data-clr="">Pengadaan Baru</div>
+                                                    <div class="option" data-value="tarikan_lapangan" data-clr="">Tarikan Lapangan</div>
+                                                    <div class="option" data-value="selesai_perbaikan" data-clr="">Selesai Perbaikan</div>
+                                                    <div class="option" data-value="selesai_pakai" data-clr="">Selesai Pakai</div>
+                                                    <div class="option" data-value="hibah_pemeberian" data-clr="">Hibah/Pemberian</div>
+                                                    <!-- <div class="option" data-value="sewa" data-clr="">Sewa</div> -->
+                                                </div>
+                                                <input type="hidden" name="type" class="select-input w-100" id="maku-value" value="semua">
+                                            </div>
                                         </div>
-                                        <div class="select-options w-100">
-                                            <div class="option" data-value="semua" data-clr="">Pengadaan</div>
-                                            <div class="option" data-value="masuk" data-clr="">Tarikan</div>
-                                            <div class="option" data-value="keluar" data-clr="">Selesai Perbaikan</div>
-                                            <div class="option" data-value="keluar" data-clr="">Selesai Pakai</div>
-                                            <div class="option" data-value="keluar" data-clr="">Hibah/Pemberian</div>
-                                            <div class="option" data-value="keluar" data-clr="">Sewa</div>
-                                        </div>
-                                        <input type="hidden" name="type" class="select-input w-100" id="maku-value" value="semua">
+                                    </div>|
+                                    <!-- Vendor -->
+                                    <div class="form-group w-100">
+                                        <label class="form-label">Keterangan Sumber</label>
+                                        <input type="text" class="form-input" placeholder="Masukan Keterangan">
                                     </div>
                                 </div>
 
-                                <div class="flex-start gap-10 dis-none">
-                                    <div class="form-group relative">
-                                        <label for="kode-barang" class="p-3 dis-block fz-14 align-left">Kode Barang</label>
-                                        <div class="flex-start gap-5">
-                                            <input type="number" id="kode-barang" class="align-center transparent" placeholder=". . .">
-                                        </div>
-                                    </div>
-                                    <div class="form-group relative">
-                                        <label for="kode-barang" class="p-3 dis-block fz-14 align-left">Nama Barang</label>
-                                        <div class="flex-start gap-5">
-                                            <input type="number" id="nama-barang" class="transparent" placeholder=". . .">|
-                                            <i class="fas fa-plus fz-18 grid-center borad-10"></i>
-                                        </div>
+                                <br><br>
+
+                                <div class="flex-beetwen gap-20">
+                                    <!-- Penerima -->
+                                    <div class="form-group w-100">
+                                        <label class="form-label">Penerima</label>
+                                        <input type="text" class="form-input" placeholder="Penerima Barang Masuk">
+                                    </div>|
+                                    <!-- Tanggal Masuk -->
+                                    <div class="form-group w-100">
+                                        <label class="form-label">Tanggal Diterima</label>
+                                        <input type="date" class="form-input" placeholder="Masukan Keterangan tekait Sumber Barang">
                                     </div>
                                 </div>
+
+                                
+                                
+                                
+
+                                
+                                    
+                                    
+
+                                
+
+
+                                
                                 
                             </div>
-                            <i class="fas fa-image orange grid-center fz-60 p-20 borad-20"></i>
+                            <i class="fas fa-image orange grid-center fz-60 p-20 borad-20 dis-none"></i>
                         </div>
                         
                     </div>

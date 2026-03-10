@@ -98,6 +98,7 @@ export default class trx {
                 if (triggerSpan) {
                     triggerSpan.innerHTML = text;
                     triggerSpan.setAttribute('data-value', val);
+                    triggerSpan.className = triggerSpan.dataset.class
                 }
 
                 // 2. Update Hidden Input (untuk form submit)
