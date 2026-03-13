@@ -591,9 +591,9 @@ table#inventory-table th span {
     background-color: transparent;
     outline: none;
 }
-i.form-icon {
+/* i.form-icon {
     
-}
+} */
 .form-group input::placeholder {
     font-style: italic;
 }
@@ -632,4 +632,5 @@ table#items-search td {
     border-radius: 4px;
     /* margin-top: 2px;  */
     aspect-ratio: 5/3;
+    /* color: white; */
 }
