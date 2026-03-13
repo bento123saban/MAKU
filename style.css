@@ -571,6 +571,14 @@ table#inventory-table th span {
     background-color: limegreen;
     color: #ffffff !important;
 }
+#form-keluar .option:hover {
+    color: deepskyblue !important;
+}
+#form-keluar .option.selected {
+    
+    background-color: deepskyblue;
+    color: #ffffff !important;
+}
 
 
 
@@ -579,7 +587,6 @@ table#inventory-table th span {
     display: flex;
     min-width: 200px;
     max-width: 400px;
-    /* background-color: red; */
     border: 2px solid transparent;
 }
 .form-group .form-label {
@@ -594,7 +601,10 @@ table#inventory-table th span {
     border-radius: 10px;
     background-color: transparent;
     outline: none;
+    border: 2px solid inherit;
+    color: inherit;
 }
+
 /* i.form-icon {
     
 } */
@@ -605,6 +615,11 @@ table#inventory-table th span {
     color: inherit;
     border: 2px solid limegreen !important;
 }
+#form-keluar .form-input {
+    color: inherit;
+    border: 2px solid deepskyblue !important;
+}
+
 table#items-search td {
     padding: 5px 10px;
 }
@@ -620,6 +635,15 @@ table#items-search td {
 }
 
 
+#items-form-masuk-list {
+    height: 340px;
+    overflow: overlay;
+    /* background-color: green !important; */
+    scrollbar-color: grey transparent; /* HEX dengan Alpha 00 (transparan total) */
+    scrollbar-width: thin;
+    background: transparent;
+}
+
 .form-items-group {
     background-color: rgba(105, 105, 105, .2);
     padding: 10px;
@@ -630,12 +654,12 @@ table#items-search td {
     justify-content: flex-end;
     align-items: center;
     gap: 4px;
-    width: 110px;
+    width: 120px;
 }
 .form-icons-group input {
     display: grid;
     place-items: center;
-    width: 40px;
+    width: 50px;
     border: 2px solid inherit;
     background-color: transparent;
     text-align: center;

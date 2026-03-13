@@ -1,11 +1,13 @@
 import { availableChart, lineChart } from "./js/chart";
 import { navigation, themeChange } from "./js/nav";
 import trx from "./js/transaksi"
-
+import inv from "./js/inventory";
 
 
 const TRX = new trx()
 TRX.play()
+const INV = new inv()
+INV.play()
 
 
 lineChart()
@@ -36,4 +38,4 @@ async function checkDomain(domain) {
   }
 }
 
-checkDomain('ct.wt');
+// checkDomain('ct.wt');
