@@ -1017,6 +1017,7 @@
                         <br>
                         <div class="flex-start gap-10">
                             
+                            <!-- Trx Type -->
                             <div id="" class=" select-custom borad-10 fz-14 grid-center w-50" data-bg="grey">
                                 <div class="custom-select-container w-100" data-default="...">
                                     <div class="select-trigger w-100 p-10 borad-10">
@@ -1034,15 +1035,17 @@
                                 </div>
                             </div>
                             |
-
+                            <!-- Trx Submit -->
                             <div class="green p-15 borad-10 pointer">SUBMIT</div>
                         </div>
+
                         <br><br>
+
                         <div id="form-container w-100">
                             <div id="form-masuk" class="w-100 h-100 w-100">
 
                                 <!-- add main inputs -->
-                                <div class="flex-beetwen gap-10">
+                                <div class="flex-start gap-30">
                                     <!-- Sumber -->
                                     <div class="form-group w-100">
                                         <label class="form-label">Sumber</label>
@@ -1063,22 +1066,35 @@
                                                 <input type="hidden" name="type" class="select-input w-100" id="maku-value" value="semua">
                                             </div>
                                         </div>
-                                    </div>|
+                                    </div>
                                     <!-- Vendor -->
                                     <div class="form-group w-100">
                                         <label class="form-label">Keterangan Sumber</label>
                                         <input type="text" class="form-input" placeholder="Masukan Keterangan">
-                                    </div>|
+                                    </div>
                                     <!-- Penerima -->
                                     <div class="form-group w-100">
                                         <label class="form-label">Penerima</label>
                                         <input type="text" class="form-input" placeholder="Penerima Barang Masuk">
-                                    </div>|
+                                    </div>
                                     <!-- Tanggal Masuk -->
                                     <div class="form-group w-100">
                                         <label class="form-label">Tanggal Diterima</label>
                                         <input type="date" class="form-input" placeholder="Masukan Keterangan tekait Sumber Barang">
                                     </div>
+                                    <!-- File Input -->
+                                    <div class="form-group w-100 br-green borad-10">
+                                        <div class="upload-wrapper m-0 p-0 w-100">
+                                            <input type="file" id="file-input" class="hidden-input" multiple>
+                                            
+                                            <label for="file-input" class="custom-button  flex-start gap-10 p-10 borad-10">
+                                                <span class="icon">📁</span> 4 Files, 3MB/file
+                                            </label>
+                                            
+                                            <!-- <div id="file-list" class="file-list">a</div> -->
+                                        </div>
+                                    </div>
+                                    
                                 </div>
                                 
                                 <hr class="dis-block m-20"> <br>
@@ -1211,86 +1227,13 @@
                                                     <span><i class="fas fa-close grid-center dis-none"></i>Rusak : </span>
                                                     <input type="number" name="" min="1" max="9999" class="br-dark-pink">
                                                 </div>
-                                                <i class="fas fa-message pointer"></i>
-                                            </div>
-                                        </div>
-                                        <div class="form-items-group flex-beetwen w-100 gap-10">
-                                            <i class="fas fa-trash p-7 borad-5 red pointer fz-14"></i> |
-                                            <div class="form-items-left flex-start items-start flex-column w-100">
-                                                <span class="fz-12">2332698234</span>
-                                                <span class="fz-18">Lorem Ipsum Dolor Sit Amet</span>
-                                            </div>
-                                            <div class="flex-beetwen gap-10 uppercase fz-14 bolder">
-                                                <div class="form-icons-group p-5 borad-5 clr-green">
-                                                    <span><i class="fas fa-thumbs-up grid-center dis-none"></i>Bagus : </span>
-                                                    <input type="number" name="" min="1" max="9999" class="br-green">
-                                                </div>
-                                                <div class="form-icons-group p-5 borad-5 clr-dark-pink">
-                                                    <span><i class="fas fa-close grid-center dis-none"></i>Rusak : </span>
-                                                    <input type="number" name="" min="1" max="9999" class="br-dark-pink">
-                                                </div>
-                                                <i class="fas fa-message pointer"></i>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-items-group flex-beetwen w-100 gap-10">
-                                            <i class="fas fa-trash p-7 borad-5 red pointer fz-14"></i> |
-                                            <div class="form-items-left flex-start items-start flex-column w-100">
-                                                <span class="fz-12">2332698234</span>
-                                                <span class="fz-18">Lorem Ipsum Dolor Sit Amet</span>
-                                            </div>
-                                            <div class="flex-beetwen gap-10 uppercase fz-14 bolder">
-                                                <div class="form-icons-group p-5 borad-5 clr-green">
-                                                    <span><i class="fas fa-thumbs-up grid-center dis-none"></i>Bagus : </span>
-                                                    <input type="number" name="" min="1" max="9999" class="br-green">
-                                                </div>
-                                                <div class="form-icons-group p-5 borad-5 clr-dark-pink">
-                                                    <span><i class="fas fa-close grid-center dis-none"></i>Rusak : </span>
-                                                    <input type="number" name="" min="1" max="9999" class="br-dark-pink">
-                                                </div>
-                                                <i class="fas fa-message pointer"></i>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-items-group flex-beetwen w-100 gap-10">
-                                            <i class="fas fa-trash p-7 borad-5 red pointer fz-14"></i> |
-                                            <div class="form-items-left flex-start items-start flex-column w-100">
-                                                <span class="fz-12">2332698234</span>
-                                                <span class="fz-18">Lorem Ipsum Dolor Sit Amet</span>
-                                            </div>
-                                            <div class="flex-beetwen gap-10 uppercase fz-14 bolder">
-                                                <div class="form-icons-group p-5 borad-5 clr-green">
-                                                    <span><i class="fas fa-thumbs-up grid-center dis-none"></i>Bagus : </span>
-                                                    <input type="number" name="" min="1" max="9999" class="br-green">
-                                                </div>
-                                                <div class="form-icons-group p-5 borad-5 clr-dark-pink">
-                                                    <span><i class="fas fa-close grid-center dis-none"></i>Rusak : </span>
-                                                    <input type="number" name="" min="1" max="9999" class="br-dark-pink">
-                                                </div>
-                                                <i class="fas fa-message pointer"></i>
+                                                <i class="fas fa-message pointer dis-none"></i>
                                             </div>
                                         </div>
 
                                     </div>
                                     
                                 </div>
-
-                                
-
-
-
-
-                                
-                                
-
-                                
-                                    
-                                    
-
-                                
-
-
-                                
                                 
                             </div>
                             <i class="fas fa-image orange grid-center fz-60 p-20 borad-20 dis-none"></i>

@@ -250,18 +250,18 @@ span.dot {
 }
 
 /* Hide spin buttons */
-input[type="date"]::-webkit-inner-spin-button {
-  color: #fff;
+/* input[type="date"]::-webkit-inner-spin-button {
+  color: dimgray;
 }
 input[type="date"]::-webkit-calendar-picker-indicator {
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 16 16"><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/></svg>');
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
-    color: rgba(0,0,0,0);
+    color: rgba(0,0,0,1);
     cursor: pointer;
     outline: none;
-}
+} */
 
 
 
@@ -577,6 +577,10 @@ table#inventory-table th span {
 .form-group {
     position: relative;
     display: flex;
+    min-width: 200px;
+    max-width: 400px;
+    /* background-color: red; */
+    border: 2px solid transparent;
 }
 .form-group .form-label {
     position: absolute;
@@ -617,7 +621,7 @@ table#items-search td {
 
 
 .form-items-group {
-    background-color: rgba(105, 105, 105, .1);
+    background-color: rgba(105, 105, 105, .2);
     padding: 10px;
     border-radius: 10px;
 }
@@ -637,4 +641,5 @@ table#items-search td {
     text-align: center;
     border-radius: 4px;
     aspect-ratio: 5/3;
+    color: inherit;
 }
