@@ -615,6 +615,12 @@ table#items-search td {
     overflow: auto;
 }
 
+
+.form-items-group {
+    background-color: rgba(105, 105, 105, .1);
+    padding: 10px;
+    border-radius: 10px;
+}
 .form-icons-group {
     display: flex;
     justify-content: flex-end;
@@ -626,11 +632,9 @@ table#items-search td {
     display: grid;
     place-items: center;
     width: 40px;
-    border: 2px solid;
+    border: 2px solid inherit;
     background-color: transparent;
     text-align: center;
     border-radius: 4px;
-    /* margin-top: 2px;  */
     aspect-ratio: 5/3;
-    /* color: white; */
 }
