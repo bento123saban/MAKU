@@ -625,10 +625,11 @@ table#items-search td {
 .form-icons-group input {
     display: grid;
     place-items: center;
-    flex: 1;
+    width: 40px;
     border: 2px solid;
     background-color: transparent;
     text-align: center;
     border-radius: 4px;
     /* margin-top: 2px;  */
+    aspect-ratio: 5/3;
 }
