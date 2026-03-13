@@ -449,6 +449,9 @@ input::-webkit-inner-spin-button {
     color: white !important;
     border:  none !important;
 }
+.clr-dark-pink {
+    color: #FF002F;
+}
 
 .brown, [data-bg="brown"] {
     background: linear-gradient(45deg, #CA6641, brown) !important;

@@ -510,11 +510,11 @@ span.in-out {
     filter: brightness(1.2);
 }
 i.far.fa-circle {
-    position: relative;
+    position: relative !important;
 }
 i.far.fa-circle::after {
     content: "";
-    width: 80%;
+    width: 90%;
     height: 2px;
     position: absolute;
     /* top: 0; */
@@ -576,7 +576,7 @@ table#inventory-table th span {
 
 .form-group {
     position: relative;
-    display: grid;
+    display: flex;
 }
 .form-group .form-label {
     position: absolute;
@@ -591,10 +591,44 @@ table#inventory-table th span {
     background-color: transparent;
     outline: none;
 }
+i.form-icon {
+    
+}
 .form-group input::placeholder {
     font-style: italic;
 }
 #form-masuk .form-input {
     color: inherit;
     border: 2px solid limegreen !important;
+}
+table#items-search td {
+    padding: 5px 10px;
+}
+#form-items-search {
+    height: 270px;
+    overflow-y: overlay;
+    scrollbar-color: grey transparent; /* HEX dengan Alpha 00 (transparan total) */
+    scrollbar-width: thin;
+    background: transparent;
+    width: 100%;
+    max-width: 750px;
+    overflow: auto;
+}
+
+.form-icons-group {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 4px;
+    width: 110px;
+}
+.form-icons-group input {
+    display: grid;
+    place-items: center;
+    flex: 1;
+    border: 2px solid;
+    background-color: transparent;
+    text-align: center;
+    border-radius: 4px;
+    /* margin-top: 2px;  */
 }
