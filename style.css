@@ -654,7 +654,7 @@ table#items-search td {
     justify-content: flex-end;
     align-items: center;
     gap: 4px;
-    width: 120px;
+    width: 130px;
 }
 .form-icons-group input {
     display: grid;
