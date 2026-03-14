@@ -1,11 +1,38 @@
 import { availableChart, lineChart } from "./js/chart";
 import { navigation, themeChange } from "./js/nav";
 import trx from "./js/transaksi"
-import inv from "./js/inventory";
+import form from "./js/form";
+import inv from "./js/inventory"
+import { CustomContextMenu, CustomSelect, CustomMore } from "./js/custom";
+
+
+CustomContextMenu()
+CustomMore()
+CustomSelect()
+
+
+
+// new custom().play()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 const TRX = new trx()
 TRX.play()
+const FORM = new form()
+FORM.play()
 const INV = new inv()
 INV.play()
 

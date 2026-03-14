@@ -747,6 +747,11 @@ input::-webkit-inner-spin-button {
 
 /* Custom Select */
 
+.select-custom {
+    width: 100% !important;
+    max-width: 300px !important;
+    min-width: 200px;
+}
 /* --- CSS CORE --- */
 .custom-select-container {
     position: relative;
@@ -758,7 +763,6 @@ input::-webkit-inner-spin-button {
     bottom: calc(100% + 2px);
     padding-left: 5px;
 }
-
 .select-trigger {
     display: flex;
     justify-content: space-between;
@@ -769,18 +773,14 @@ input::-webkit-inner-spin-button {
     font-size: 17px;
     padding: 12px !important;
 } 
-
 .custom-select-container.open .select-trigger {
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
-
 .arrow {
     transition: transform 0.3s ease;
     transform: rotate(0) translateY(0px);
 }
-
 .custom-select-container.open .arrow {transform: rotate(90deg) translateY(1px);}
-
 .select-options {
     margin-top: 3px;
     position: absolute;
@@ -796,23 +796,18 @@ input::-webkit-inner-spin-button {
     overflow-y: auto;
     box-shadow: 0 8px 16px rgba(0,0,0,0.1);
 }
-
 .custom-select-container.open .select-options {
     display: block;
 }
-
 .option {
     padding: 12px 15px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
-
-
 .option:hover {
     background-color: #f0f7ff;
     color: dimgray;
 }
-
 .option.selected {
     background-color: dimgray;
     color: #ffffff;
@@ -970,7 +965,7 @@ input::-webkit-inner-spin-button {
     width: 100%;
 }
 /* 1. Sembunyikan input asli */
-  .hidden-input {
+.hidden-input {
     width: 0.1px;
     height: 0.1px;
     opacity: 0;
@@ -980,7 +975,7 @@ input::-webkit-inner-spin-button {
   }
 
   /* 2. Styling Tombol Custom */
-  .custom-button {
+.custom-button {
     display: inline-block;
     /* padding: 12px; */
     color: white;
@@ -992,16 +987,16 @@ input::-webkit-inner-spin-button {
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   }
 
-  .custom-button:hover {
+.custom-button:hover {
     /* background-color: #357ae8; */
   }
 
-  .custom-button:active {
+.custom-button:active {
     transform: scale(0.98);
   }
 
   /* 3. Container List File */
-  .file-list {
+.file-list {
     margin-top: 15px;
     font-family: sans-serif;
     color: #555;
@@ -1014,4 +1009,24 @@ input::-webkit-inner-spin-button {
     margin-bottom: 5px;
     border-left: 4px solid #4285f4;
     border-radius: 4px;
+  }
+
+  
+
+
+  /* Custom contextmenu */
+  .context-menu {
+    position: fixed;
+    width: 180px;
+    background-color: #333;
+    padding: 10px;
+    border-radius: 20px;
+  }
+  .context-menu .menu-item {
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .context-menu .menu-item:hover {
+    background-color: #777;
   }

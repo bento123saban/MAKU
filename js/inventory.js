@@ -2,36 +2,57 @@
 
 
 
-export default class inv {
+
+
+
+
+
+export default class inven {
     constructor () {
-        this.jenisInput = document.querySelector("#form-jenis-input")
-        this.submitBtn  = document.querySelector("#form-submit-button")
-        this.forms      = document.querySelectorAll(".forms")
+
     }
 
+    getData () {
+        
+        const inventoryData = Array.from({ length: 75 }, (_, i) => ({
+            id: (i + 1).toString().padStart(2, '0'),
+            code: Math.floor(100000 + Math.random() * 900000).toString(),
+            item: [
+                "Keyboard Mechanical Keychron", 
+                "Logitech MX Master 3S", 
+                "Monitor Dell UltraSharp", 
+                "SteelSeries Arctis Nova", 
+                "Razer DeathAdder V3"
+            ][i % 5],
+            stok: Math.floor(Math.random() * 20) + 1,
+            thumbsUp: Math.floor(Math.random() * 10),
+            tools: Math.floor(Math.random() * 5),
+            square: Math.random() > 0.5 ? 1 : "-",
+            xMark: Math.random() > 0.8 ? 1 : "-",
+            note: "Keterangan item ke-" + (i + 1)
+        }));
 
+        return inventoryData
+    }
+    
+    renderInvenTable () {
+        const tbody = document.querySelector('#inventory-table tbody');
+
+        tbody.innerHTML = this.getData().map(data => `
+            <tr>
+                <td class="p-5"><span class="blue borad-5 w-100 h-100 green p-5 tr-front grid-center">${data.id}</span></td>
+                <td>${data.code}</td>
+                <td>${data.item}</td>
+                <td>${data.stok}</td>
+                <td>${data.thumbsUp}</td>
+                <td>${data.square}</td>
+                <td>${data.note}</td>
+            </tr>
+        `).join('');
+    }
 
     play () {
-        this.jenisInput.onchange = (e) => {
-            const value = e.target.value
-            console.log(value)
-            if (value == "masuk") {
-                this.submitBtn.classList.remove("blue", "orange", "grey")
-                this.submitBtn.classList.add("green")
-            }
-            else if (value == "keluar") {
-                this.submitBtn.classList.remove("green", "orange", "grey")
-                this.submitBtn.classList.add("blue")
-            }
-            else if (value == "barang") {
-                this.submitBtn.classList.remove("blue", "green", "grey")
-                this.submitBtn.classList.add("orange")
-            }
-            else return
-            this.forms.forEach(form => {
-                if (form.dataset.form == value) form.classList.remove("dis-none")
-                else form.classList.add("dis-none") 
-            })
-        }
+
+        this.renderInvenTable()
     }
 }
