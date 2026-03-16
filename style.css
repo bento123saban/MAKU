@@ -623,6 +623,10 @@ table#inventory-table th span {
     color: inherit;
     border: 2px solid orange !important;
 }
+#form-edit .form-input {
+    color: inherit;
+    border: 2px solid purple !important;
+}
 table#items-search td {
     padding: 5px 10px;
 }

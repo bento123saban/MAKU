@@ -73,11 +73,11 @@ export const lineChart = () => {
 
 
 const availableData = {
-    labels: ['Ready', 'Maintenance','Habis', 'Rusak'],
+    labels: ['Ready','Habis'],
     datasets: [{
-        data: [37, 2, 10, 5],
+        data: [37, 2],
         fill: true, 
-        backgroundColor: ['#00ab00', "orange", "darkgrey", '#e6002a'], // Warna area (transparan)
+        backgroundColor: ['#00ab00', "darkgrey"], // Warna area (transparan)
         spacing: 2,
         borderColor: "transparent",                    
         borderRadius: 4,              // Biar ujungnya tetap tumpul

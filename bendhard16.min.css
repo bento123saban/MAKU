@@ -749,7 +749,7 @@ input::-webkit-inner-spin-button {
 
 .select-custom {
     width: 100% !important;
-    max-width: 300px !important;
+    max-width: 500px !important;
     min-width: 200px;
 }
 /* --- CSS CORE --- */
