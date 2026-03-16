@@ -1921,55 +1921,70 @@
 
                             <!-- form barang -->
                             
-                            <div id="form-tambah" data-form="tambah" class="forms w-100 h-100 w-100">
+                            <div id="form-tambah" data-form="tambah" class="forms w-100 h-100 w-100 dis-none">
                                 <!-- keluar main inputs -->
                                 <div class="flex-start gap-10">
+
+                                    <div id="tambah-foto">
+                                        <div id="tambah-img-box" class="relative borad-20 grid-center">
+                                            <img src="" alt="" class="dis-none">
+                                            <i class="fas fa-image fz-60"></i>
+                                        </div>
+                                        <br><br>
+                                        <!-- File Input -->
+                                        <div class="form-group w-100 br-orange borad-10">
+                                            <label for="file-input" class="form-label">Foto Barang <span class="fz-8">Max 5 MB</span></label>
+                                            <div class="upload-wrapper m-0 p-0 w-100">
+                                                <input type="file" id="file-input" class="hidden-input" multiple>
+                                                <label for="file-input" class="custom-button  flex-start gap-10 p-10 borad-10">
+                                                    <span class="icon"><i class="fas fa-file clr-orange"></i></span> Pilih File
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    |
+
+                                    
+                                    
+
                                     <!-- Sumber -->
                                     <div class="form-group w-100">
-                                        <label class="form-label">Tujuan</label>
+                                        <label class="form-label">Select</label>
                                         <div id="form-masuk-sumber" class=" select-custom borad-10 fz-14 grid-center w-100" data-bg="">
                                             <div class="custom-select-container w-100" data-default="...">
-                                                <div class="select-trigger w-100 p-10 borad-10 br-blue">
-                                                    <span class="clr-grey italic" data-class="">Pilih sumber :</span>
-                                                    <i class="arrow fas fa-chevron-right fz-16 clr-blue"></i>
+                                                <div class="select-trigger w-100 p-10 borad-10 br-orange">
+                                                    <span class="clr-grey italic" data-class="">Select Something :</span>
+                                                    <i class="arrow fas fa-chevron-right fz-16 clr-orange"></i>
                                                 </div>
                                                 <div class="select-options w-100">
-                                                    <div class="option" data-value="pengadaan" data-clr="">Penggunaan <!-- <span class="italic">(Permanen)</span> --></div>
+                                                    <div class="option" data-value="pengadaan" data-clr="">Select 01 <!-- <span class="italic">(Permanen)</span> --></div>
                                                     <!-- <div class="option" data-value="tarikan_lapangan" data-clr="">Penggunaan <span class="italic">(Return)</span></div> -->
-                                                    <div class="option" data-value="selesai_perbaikan" data-clr="">Maintenance</div>
+                                                    <div class="option" data-value="selesai_perbaikan" data-clr="">Select 02</div>
                                                     <!-- <div class="option" data-value="selesai_pakai" data-clr="">Dipinjamkan</div> -->
-                                                    <div class="option" data-value="hibah_pemeberian" data-clr="">Hibahkan <!-- <span class="italic">(Gift)</span> --></div>
+                                                    <div class="option" data-value="hibah_pemeberian" data-clr="">Select 03 <!-- <span class="italic">(Gift)</span> --></div>
                                                     <!-- <div class="option" data-value="hibah_pemeberian" data-clr="">Jual</div> -->
                                                 </div>
                                                 <input type="hidden" name="type" class="select-input w-100" id="maku-value" value="">
                                             </div>
                                         </div>
                                     </div>
+
                                     <!-- Vendor -->
                                     <div class="form-group w-100">
-                                        <label class="form-label">Keterangan Tujuan</label>
-                                        <input type="text" class="form-input br-blue" placeholder="Masukan Keterangan">
+                                        <label class="form-label">Nama Barang</label>
+                                        <input type="text" class="form-input" placeholder="Masukan Nama">
                                     </div>
                                     <!-- Penerima -->
                                     <div class="form-group w-100">
                                         <label class="form-label">Pengambil</label>
-                                        <input type="text" class="form-input br-blue" placeholder="Penerima Barang Masuk">
+                                        <input type="text" class="form-input" placeholder="Penerima Barang Masuk">
                                     </div>
                                     <!-- Tanggal Masuk -->
                                     <div class="form-group w-100">
                                         <label class="form-label">Tanggal Diambil</label>
-                                        <input type="date" class="form-input br-blue" placeholder="Masukan Keterangan tekait Sumber Barang">
+                                        <input type="date" class="form-input" placeholder="Masukan Keterangan tekait Sumber Barang">
                                     </div>
-                                    <!-- File Input -->
-                                    <div class="form-group w-100 br-blue borad-10">
-                                        <label for="file-input" class="form-label">File (Doc/Image) <span class="fz-8">Max 4 File - 10 MB Total</span></label>
-                                        <div class="upload-wrapper m-0 p-0 w-100">
-                                            <input type="file" id="file-input" class="hidden-input" multiple>
-                                            <label for="file-input" class="custom-button  flex-start gap-10 p-10 borad-10">
-                                                <span class="icon"><i class="fas fa-file  clr-blue"></i></span> Pilih File
-                                            </label>
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                                 
                                 

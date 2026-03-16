@@ -619,7 +619,10 @@ table#inventory-table th span {
     color: inherit;
     border: 2px solid deepskyblue !important;
 }
-
+#form-tambah .form-input {
+    color: inherit;
+    border: 2px solid orange !important;
+}
 table#items-search td {
     padding: 5px 10px;
 }
@@ -666,4 +669,11 @@ table#items-search td {
     border-radius: 4px;
     aspect-ratio: 5/3;
     color: inherit;
+}
+
+
+#tambah-img-box {
+    width: 350px;
+    aspect-ratio: 1;
+    background-color: rgba(105, 105, 105, .1);
 }

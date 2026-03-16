@@ -978,7 +978,7 @@ input::-webkit-inner-spin-button {
 .custom-button {
     display: inline-block;
     /* padding: 12px; */
-    color: white;
+    /* color: white; */
     border-radius: 8px;
     cursor: pointer;
     /* font-family: 'Segoe UI', sans-serif; */
@@ -1002,7 +1002,6 @@ input::-webkit-inner-spin-button {
     color: #555;
     font-size: 14px;
   }
-
   .file-item {
     background: #f1f3f4;
     padding: 8px;
