@@ -13,18 +13,9 @@ export default class trx {
 
         this.calendarDate       = new Date()
         this.calendarData       = null
+        this.monthControl       = document.querySelector("#month-control")
         
     } 
-    monthControl () {
-        const monthCtrl     = document.querySelector("#month-control")
-        const headSelect    = document.querySelector("#cal-head-select")
-        const selectClose   = document.querySelector("#cal-select-close")
-        
-        monthCtrl.addEventListener("click", () => headSelect.classList.remove("dis-none"))
-        selectClose.addEventListener("click", () => headSelect.classList.add("dis-none"))
-
-    }
-
     makuChange () {
         let dataBar     = document.querySelectorAll(".data-bar")
         let fronts      = document.querySelectorAll(".front") 
@@ -64,8 +55,6 @@ export default class trx {
             else return
         })
     }
-
-    
     getData () {
         const trxItemsData = [
             { id: "01", code: "97928749823", items: "Laptop ASUS VivoBook", masuk: 10, keluar: 2, note: "Sesuai" },
@@ -234,25 +223,33 @@ export default class trx {
         });
     }
     calendarSet() {
-        let date    = new Date(this.calendarDate).getDate()
-        let month   = new Date(this.calendarDate).getMonth() + 1
 
         let prevButton  = document.querySelector("#calendar-previous")
         let nextButton  = document.querySelector("#calendar-next")
 
-        console.log(new Date(2026, month, date))
-
+        nextButton.onclick = (e) => {
+            this.calendarDate.setMonth(this.calendarDate.getMonth() + 1)
+            this.renderCalendar()
+        }
         prevButton.onclick = (e) => {
-
+            this.calendarDate.setMonth(this.calendarDate.getMonth() - 1)
+            this.renderCalendar()
         }
 
     }
     renderCalendar() {
-        const container = document.getElementById('calendar-date');
-        const spans = `<span></span><span></span>`
-        container.innerHTML = spans; // Clear dulu
+        
+        const last      = new Date(this.calendarDate.getFullYear(), this.calendarDate.getMonth() + 1, 0),
+            month       = this.calendarDate.getMonth(),
+            monthName   = this.calendarDate.toLocaleDateString("id-ID", { month: "long", year: "numeric" }).toUpperCase(),
+            year        = this.calendarDate.getFullYear(),
+            firstDay    = new Date(year, month, 1).getDay()
 
-        // Loop 1-31 (Gua asumsiin 31 hari dulu buat contoh)
+        this.monthControl.textContent = monthName
+    
+        const container = document.getElementById('calendar-date');
+        container.innerHTML = ((firstDay) => Array(firstDay).fill("<span></span>").join(""))(firstDay   )
+
         for (let i = 1; i <= 31; i++) {
             const dayStr = i.toString().padStart(2, '0');
             const dayData = this.getData()[2].find(d => d.date === dayStr) || { date: dayStr, low: true, masuk: 0, keluar: 0 };
@@ -278,10 +275,28 @@ export default class trx {
 
     }
 
+    getMasukForm() {
+        const sumber        = document.querySelector("#sumber-masuk"),
+            ketSumber       = document.querySelector("#keterangan-sumber-masuk"),
+            penerima        = document.querySelector("#penerima-masuk"),
+            tanggalMasuk    = document.querySelector("#tanggal-masuk"),
+            docs            = null,
+            itemgroups      = document.querySelectorAll("#items-form-masuk-list .form-items-group")
+        
+    }
+
 
 
 
     play () {
+
+
+        // Month Control
+        const headSelect    = document.querySelector("#cal-head-select")
+        const selectClose   = document.querySelector("#cal-select-close")
+        
+        this.monthControl.addEventListener("click", () => headSelect.classList.remove("dis-none"))
+        selectClose.addEventListener("click", () => headSelect.classList.add("dis-none"))
 
         document.querySelector("#trx-detail-close").onclick = () => this.trxDetailBox.classList.add("dis-none")
         document.querySelector("#trx-item-detail-close").onclick = () => this.trxItemDetailBox.classList.add("dis-none")
@@ -315,7 +330,7 @@ export default class trx {
         this.calendarSet()
 
 
-        this.monthControl()
+        // this.monthControl()
         this.makuChange()
         this.typeChange()
         this.renderItemsTable()

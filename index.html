@@ -943,23 +943,23 @@
                                                     <div class="option" data-value="hibah_pemeberian" data-clr="">Hibah/Pemberian</div>
                                                     <!-- <div class="option" data-value="sewa" data-clr="">Sewa</div> -->
                                                 </div>
-                                                <input type="hidden" name="type" class="select-input w-100" id="maku-value" value="semua">
+                                                <input type="hidden" name="type" class="select-input w-100" id="sumber-masuk" value="">
                                             </div>
                                         </div>
                                     </div>
                                     <!-- Vendor -->
                                     <div class="form-group w-100">
                                         <label class="form-label">Keterangan Sumber</label>
-                                        <input type="text" class="form-input" placeholder="Masukan Keterangan">
+                                        <input type="text" class="form-input" placeholder="Masukan Keterangan" id="keterangan-sumber-masuk">
                                     </div>
                                     <!-- Penerima -->
                                     <div class="form-group w-100">
                                         <label class="form-label">Penerima</label>
-                                        <input type="text" class="form-input" placeholder="Penerima Barang Masuk">
+                                        <input type="text" class="form-input" placeholder="Penerima Barang Masuk" id="penerima-masuk">
                                     </div>
                                     <!-- Tanggal Masuk -->
                                     <div class="form-group w-100">
-                                        <label class="form-label">Tanggal Diterima</label>
+                                        <label class="form-label">Tanggal Masuk</label>
                                         <input type="date" class="form-input" placeholder="Masukan Keterangan tekait Sumber Barang">
                                     </div>
                                     <!-- File Input -->
@@ -1098,7 +1098,7 @@
                                             <div class="flex-beetwen gap-10 uppercase fz-14 bolder">
                                                 <div class="form-icons-group p-5 borad-5">
                                                     <span><i class="fas fa-thumbs-up grid-center dis-none"></i>Jumlah : </span>
-                                                    <input type="number" name="" min="1" max="9999" class="">
+                                                    <input type="number" name="" min="1" max="9999" class="masuk-input" data-masuk="">
                                                 </div>
                                                 <!-- <div class="form-icons-group p-5 borad-5 dis-none">
                                                     <span><i class="fas fa-close grid-center dis-none"></i>Rusak : </span>
@@ -1421,7 +1421,7 @@
                             </div>
 
                             <!-- form keluar -->
-                            <div id="form-keluar" data-form="keluar" class="forms w-100 h-100 w-100">
+                            <div id="form-keluar" data-form="keluar" class="forms w-100 h-100 w-100 dis-none">
                                 <!-- keluar main inputs -->
                                 <div class="flex-start gap-10">
                                     <!-- Sumber -->
