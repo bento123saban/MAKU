@@ -45,7 +45,7 @@ availableChart()
 navigation()
 themeChange()
 
-document.querySelector("[data-nav='add']").click()
+document.querySelector("[data-nav='transaksi']").click()
 document.querySelector("#theme-button").click()
 // document.querySelector("#type-barang").click()
 

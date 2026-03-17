@@ -10,7 +10,11 @@ export default class trx {
         this.detailSearch       = document.querySelector("input#search-input")
         this.makuValue          = document.querySelector("input#maku-value")
         this.typeValue          = document.querySelector("input#type-value")
-    }
+
+        this.calendarDate       = new Date()
+        this.calendarData       = null
+        
+    } 
     monthControl () {
         const monthCtrl     = document.querySelector("#month-control")
         const headSelect    = document.querySelector("#cal-head-select")
@@ -62,7 +66,6 @@ export default class trx {
     }
 
     
-
     getData () {
         const trxItemsData = [
             { id: "01", code: "97928749823", items: "Laptop ASUS VivoBook", masuk: 10, keluar: 2, note: "Sesuai" },
@@ -230,6 +233,20 @@ export default class trx {
             }
         });
     }
+    calendarSet() {
+        let date    = new Date(this.calendarDate).getDate()
+        let month   = new Date(this.calendarDate).getMonth() + 1
+
+        let prevButton  = document.querySelector("#calendar-previous")
+        let nextButton  = document.querySelector("#calendar-next")
+
+        console.log(new Date(2026, month, date))
+
+        prevButton.onclick = (e) => {
+
+        }
+
+    }
     renderCalendar() {
         const container = document.getElementById('calendar-date');
         const spans = `<span></span><span></span>`
@@ -294,6 +311,8 @@ export default class trx {
         //         }
         //     }
         // })
+
+        this.calendarSet()
 
 
         this.monthControl()
