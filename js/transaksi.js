@@ -281,7 +281,7 @@ export default class trx {
             penerima        = document.querySelector("#penerima-masuk"),
             tanggalMasuk    = document.querySelector("#tanggal-masuk"),
             docs            = null,
-            itemgroups      = document.querySelectorAll("#items-form-masuk-list .form-items-group")
+            itemgroups      = document.querySelectorAll("#items-form-masuk-list .form-items-group .masuk-input  ")
         
     }
 
