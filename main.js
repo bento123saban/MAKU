@@ -4,11 +4,16 @@ import trx from "./js/transaksi"
 import form from "./js/form";
 import inv from "./js/inventory"
 import { CustomContextMenu, CustomSelect, CustomMore } from "./js/custom";
+import { getInventory } from "./js/request";
+
+
 
 
 CustomContextMenu()
 CustomMore()
 CustomSelect()
+
+getInventory()
 
 
 
