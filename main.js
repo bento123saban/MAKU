@@ -6,17 +6,16 @@ Object.defineProperty(window, 'DB', {
     configurable: false // Tidak bisa dihapus
 });
 
-import { availableChart, lineChart } from "./js/chart";
-import { navigation, themeChange } from "./js/nav";
+import { availableChart, lineChart, navigation, themeChange, CustomContextMenu, CustomSelect, CustomMore } from "./js/UI";
 import trx from "./js/transaksi"
 import form from "./js/form";
 import inv from "./js/inventory"
-import { CustomContextMenu, CustomSelect, CustomMore } from "./js/custom";
-import { requestBarang } from "./js/request";
+import requestBarang from "./js/request";
+import initGoogleLogin from "./js/auth";
 
 
 
-
+initGoogleLogin()
 CustomContextMenu()
 CustomMore()
 CustomSelect()

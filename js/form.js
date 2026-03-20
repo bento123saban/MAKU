@@ -17,7 +17,7 @@ export default class form {
 
     play () {
         const dataBarang = this.getBarang()
-        console.log(dataBarang)
+        // console.log(dataBarang)
         this.jenisInput.onchange = (e) => {
             const value = e.target.value
             console.log(value)
