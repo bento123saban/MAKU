@@ -1,14 +1,19 @@
-export async function getInventory() {
+export async function requestBarang() {
   const URL_GAS = "https://maku.dlhpambon2025.workers.dev/";
+  // const indexedDB = new DBStart()
   
   try {
     const response = await fetch(URL_GAS);
     const data = await response.json();
+
+    // await DB().upsert(data)
+    await window.DB.upsert("barang", data)
+
+    // console.log(DB)
     
-    console.log(data); // Cek di console browser
+
     
-    // Contoh akses data pertama:
-    // console.log(data[0].nama); 
+    
     
   } catch (error) {
     console.error("Gagal memuat data:", error);

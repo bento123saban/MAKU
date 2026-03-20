@@ -1,12 +1,15 @@
-
-
-
-class IDBManager {
+export default class IDBManager {
     // Properti statis untuk menyimpan satu-satunya instance (Singleton Pattern)
     // Ini memastikan tidak ada dua koneksi database yang bertabrakan di satu tab browser.
     static instance = null;
 
-    constructor(dbName, version, schema) {
+    constructor(dbName = "MAKU", version = 1, schema = {
+        // Master data barang
+        barang: { 
+            keyPath: "kode", 
+            indexes: ["nama", "type", "timestamp"] 
+        }
+    }) {
         // Jika instance sudah ada, kembalikan instance tersebut (jangan buat baru)
         if (IDBManager.instance) return IDBManager.instance;
 
@@ -185,36 +188,3 @@ class IDBManager {
     }
 
 }
-
-const inventorySchema = {
-    // Master data barang
-    barang: { 
-        keyPath: "kode", 
-        indexes: ["Nama", "type", "timestamp"] 
-    },
-    
-    // Catatan masuk/keluar barang (History)
-    log_transaksi: { 
-        keyPath: "id_log", 
-        indexes: ["kode_barang", "tanggal", "operator"] 
-    },
-    
-    // Ringkasan stok per periode atau per kategori
-    rekap_stok: { 
-        keyPath: "id_rekap", 
-        indexes: ["bulan", "tahun", "type"] 
-    },
-    
-    // Penyimpanan gambar (Blob atau Base64)
-    // Dipisah agar tabel 'barang' tetap ringan saat loading awal
-    image: { 
-        keyPath: "kode_barang", 
-        indexes: ["last_update"] 
-    },
-    
-    // Data akun pengguna/operator
-    user: { 
-        keyPath: "username", 
-        indexes: ["role", "nama_lengkap"] 
-    }
-};

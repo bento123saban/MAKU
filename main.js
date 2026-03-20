@@ -1,10 +1,18 @@
+import DB from "./js/indexedDB"
+
+Object.defineProperty(window, 'DB', {
+    value: new DB(),
+    writable: false, // Tidak bisa diubah (appDB = "sesuatu" akan error)
+    configurable: false // Tidak bisa dihapus
+});
+
 import { availableChart, lineChart } from "./js/chart";
 import { navigation, themeChange } from "./js/nav";
 import trx from "./js/transaksi"
 import form from "./js/form";
 import inv from "./js/inventory"
 import { CustomContextMenu, CustomSelect, CustomMore } from "./js/custom";
-import { getInventory } from "./js/request";
+import { requestBarang } from "./js/request";
 
 
 
@@ -13,11 +21,11 @@ CustomContextMenu()
 CustomMore()
 CustomSelect()
 
-getInventory()
+requestBarang()
 
 
 
-// new custom().play()
+// DBStart()
 
 
 

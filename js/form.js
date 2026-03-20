@@ -9,9 +9,15 @@ export default class form {
         this.forms      = document.querySelectorAll(".forms")
     }
 
+    async getBarang () {
+        return await window.DB.getAll("barang")
+    }
+
 
 
     play () {
+        const dataBarang = this.getBarang()
+        console.log(dataBarang)
         this.jenisInput.onchange = (e) => {
             const value = e.target.value
             console.log(value)
