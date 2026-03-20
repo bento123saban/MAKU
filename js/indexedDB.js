@@ -1,3 +1,6 @@
+
+
+
 export default class IDBManager {
     // Properti statis untuk menyimpan satu-satunya instance (Singleton Pattern)
     // Ini memastikan tidak ada dua koneksi database yang bertabrakan di satu tab browser.

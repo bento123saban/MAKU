@@ -1,4 +1,4 @@
-import {CustomContextMenu} from "./custom"
+import {CustomContextMenu} from "./UI"
 
 
 // const CUSTOM = new custom()

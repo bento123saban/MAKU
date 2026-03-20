@@ -10,8 +10,8 @@ import { availableChart, lineChart, navigation, themeChange, CustomContextMenu, 
 import trx from "./js/transaksi"
 import form from "./js/form";
 import inv from "./js/inventory"
-import requestBarang from "./js/request";
-import initGoogleLogin from "./js/auth";
+import { requestBarang }from "./js/request";
+import { initGoogleLogin } from "./js/auth";
 
 
 
