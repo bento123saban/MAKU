@@ -1,5 +1,4 @@
-
-
+import { request } from "./request"
 
 
 export default class form {
@@ -7,16 +6,25 @@ export default class form {
         this.jenisInput = document.querySelector("#form-jenis-input")
         this.submitBtn  = document.querySelector("#form-submit-button")
         this.forms      = document.querySelectorAll(".forms")
+
+        this.itemsUpdateButtons = document.querySelectorAll(".items-update-button")
     }
 
-    async getBarang () {
+    async updateBarang () {
+        this.itemsUpdateButtons.array.forEach(element => {
+            element.onclick = () => {
+                
+            }
+        });
         return await window.DB.getAll("barang")
     }
 
 
 
+
+
     play () {
-        const dataBarang = this.getBarang()
+        // const dataBarang = this.getBarang()
         // console.log(dataBarang)
         this.jenisInput.onchange = (e) => {
             const value = e.target.value

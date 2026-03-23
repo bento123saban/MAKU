@@ -1,12 +1,6 @@
 
 
 
-
-
-
-
-
-
 export default class inven {
     constructor () {
 

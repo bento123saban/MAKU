@@ -1,194 +1,8 @@
 import { Chart } from "chart.js/auto"
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { request } from "./request";
 
-
-
-
-Chart.register(ChartDataLabels)
-
-const lineData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"],
-    datasets: [{
-        label: 'Barang Masuk',
-        data: [0,65,90, 59, 80, 81, 56, 55, 40, 59, 80, 81, 56, 55, 40],
-        fill: false,
-        borderColor: 'deepskyblue',
-        tension: 0.4,
-        fill: true, 
-        backgroundColor: 'rgba(66, 184, 131, 0.2)', // Warna area (transparan)
-    },
-    {
-        label: 'Barang Keluar',
-        data: [0,56, 89, 30, 23, 1, 55, 89, 56, 89, 30, 23, 1, 55],
-        fill: false,
-        borderColor: 'limegreen',
-        tension: 0.4,
-        fill: true, 
-        backgroundColor: 'rgba(3, 175, 255, 0.2)', // Warna area (transparan)
-    }]
-};
-const lineConfig = {
-    type: 'line',
-    data: lineData,
-    options: {
-        layouts : {
-            padding : {
-                left : "40",
-                right : "40",
-                top: "0",
-                bottom: "0"
-            },
-        },
-        responsive: true,
-        plugins: {
-            legend: {
-                position: 'top',
-            },
-            title: {
-                display:  true,
-                text: 'Barang Masuk dan Keluar - 2026',
-                font : {size: 20},
-                family: "barlow, san-serif"
-            },
-            datalabels : {display: false}
-        },
-        maintainAspectRatio: false, // INI KUNCINYA
-        scales: {
-            y: {
-                grid: {
-                    borderDash: [7, 7]
-                }
-            },
-            x: {
-                grid: { display: false }
-            }
-        }
-    },
-}
-
-export const lineChart = () => {
-    const lineCanvas = document.querySelector("#line-chart")
-    new Chart(lineCanvas, lineConfig)
-}
-
-
-const availableData = {
-    labels: ['Ready','Habis'],
-    datasets: [{
-        data: [37, 2],
-        fill: true, 
-        backgroundColor: ['#00ab00', "darkgrey"], // Warna area (transparan)
-        spacing: 2,
-        borderColor: "transparent",                    
-        borderRadius: 4,              // Biar ujungnya tetap tumpul
-        hoverOffset: 15        // Efek membesar saat di-hover (biar makin keren)
-    }]
-};
-const availableConfig = {
-    type: 'doughnut',
-    data: availableData,
-    options: {
-        // cutout : "75%",
-        responsive: true,
-        plugins: {
-            legend: {
-                position: 'top',
-            },
-            title: {
-                display: true,
-                text: 'Kondisi Barang',
-                font : {size: 20}
-            },
-            datalabels: {
-                display: false,
-                color: '#fff',
-                font: {
-                    size: 12
-                },
-                formatter: (value, ctx) => {
-                    // 1. Hitung total semua data
-                    let sum = 0;
-                    let dataArr = ctx.chart.data.datasets[0].data;
-                    dataArr.map(data => {
-                        sum += data;
-                    });
-                    // 2. Hitung persentase
-                    let percentage = (value * 100 / sum).toFixed(0) + "%";
-                    return percentage; // Tampilkan persentase di chart
-                },
-            },
-            tooltip: {
-                callbacks: {
-                    // Modifikasi teks label di dalam tooltip
-                    label: function(context) {
-                        let label = context.label || '';
-                        let value = context.raw; // Nilai asli (misal: 300)
-
-                        // 1. Hitung total data
-                        const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-
-                        // 2. Hitung persentase
-                        const percentage = ((value / total) * 100).toFixed(1) + '%';
-
-                        // 3. Gabungkan: "Label: Value (Percentage)"
-                        return ` ${label}: ${value} (${percentage})`;
-                    }
-                }
-            }
-        },
-        maintainAspectRatio: false, // INI KUNCINYA
-    },
-}
-export const availableChart = () => {
-    const availCanvas = document.querySelector("#available-chart")
-    new Chart(availCanvas, availableConfig)
-}
-
-
-
-const navGroups = document.querySelectorAll(".nav-group")
-const contents  = document.querySelectorAll(".content")
-export const navigation = () => {
-    navGroups.forEach(nav => {
-        nav.onclick = () => {
-            navGroups.forEach(nv => nv.classList.remove("white"))
-            nav.classList.add("white")
-            contents.forEach(content => {
-                if (content.id == nav.dataset.nav) content.classList.remove("dis-none")
-                else content.classList.add("dis-none")
-            })
-        }
-    })
-}
-
-const themeBtn  = document.querySelector("#theme-button")
-const nav       = document.querySelector("nav")
-const main      = document.querySelector("main")
-export const themeChange = () => {
-    themeBtn.onclick = () => {
-        if (themeBtn.classList.contains("on")) {
-            themeBtn.classList.remove("on")
-            nav.classList.remove("green")
-            nav.classList.add("black")
-            main.classList.remove("white")
-            main.classList.add("black")
-        } else {
-            themeBtn.classList.add("on")
-            nav.classList.add("green")
-            nav.classList.remove("black")
-            main.classList.add("white")
-            main.classList.remove("black")
-        }
-        
-    }
-}
-
-
-
-
-
-
-export const CustomSelect   = (selector = '.custom-select-container', callback = null) => {
+export function CustomSelect (selector = '.custom-select-container', callback = null) {
     const allSelects = document.querySelectorAll(selector);
     if (allSelects.length === 0) return;
 
@@ -268,13 +82,13 @@ export const CustomSelect   = (selector = '.custom-select-container', callback =
                 container.classList.remove('open');
             });
         });
+        UI_log("Custom Select ✅")
     });
 
     // Klik di luar area select mana pun akan menutup semua dropdown
     document.addEventListener('click', () => closeAllSelects());
 }
-
-export const CustomMore     = (selector = ".more-box", callback = null) => {
+export function CustomMore (selector = ".more-box", callback = null) {
     const allMore = document.querySelectorAll(selector);
     if (allMore.length === 0) return;
 
@@ -325,9 +139,10 @@ export const CustomMore     = (selector = ".more-box", callback = null) => {
 
     // Menutup menu jika klik di luar area menu mana pun
     document.addEventListener('click', () => closeAll());
+    
+    UI_log("Custom More ✅")
 }
-export const CustomContextMenu  = () => {
-
+export function CustomContextMenu () {
     const dateBox = document.querySelectorAll(".date-box")
     
     const contextMenu = document.getElementById("context-menu");
@@ -400,6 +215,284 @@ export const CustomContextMenu  = () => {
         startBox.classList.remove("shake-constant", "blink")
         endBox.classList.remove("shake-constant", "blink")
     }
+    
+    UI_log("Custom ContextMenu ✅")
+
+}
+export function navBar () {
+    const themeBtn  = document.querySelector("#theme-button")
+    const nav       = document.querySelector("nav")
+    const main      = document.querySelector("main")
+    const navGroups = document.querySelectorAll(".nav-group")
+    const contents  = document.querySelectorAll(".content")
+    navGroups.forEach(nav => {
+        nav.onclick = () => {
+            navGroups.forEach(nv => nv.classList.remove("white"))
+            nav.classList.add("white")
+            contents.forEach(content => {
+                if (content.id == nav.dataset.nav) content.classList.remove("dis-none")
+                else content.classList.add("dis-none")
+            })
+        }
+    })
+    
+    UI_log("Navbar ✅")
+}
+export function themeChange () {
+    const themeBtn  = document.querySelector("#theme-button")
+    const nav       = document.querySelector("nav")
+    const main      = document.querySelector("main")
+
+    themeBtn.onclick = () => {
+        if (themeBtn.classList.contains("on")) {
+            themeBtn.classList.remove("on")
+            nav.classList.remove("green")
+            nav.classList.add("black")
+            main.classList.remove("white")
+            main.classList.add("black")
+        } else {
+            themeBtn.classList.add("on")
+            nav.classList.add("green")
+            nav.classList.remove("black")
+            main.classList.add("white")
+            main.classList.remove("black")
+        }
+        
+    }
+    
+    UI_log("Theme Change ✅")
+}
+export function setChart () {
+    Chart.register(ChartDataLabels)
+    const lineData = {
+        labels: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"],
+        datasets: [{
+            label: 'Barang Masuk',
+            data: [0,65,90, 59, 80, 81, 56, 55, 40, 59, 80, 81, 56, 55, 40],
+            fill: false,
+            borderColor: 'deepskyblue',
+            tension: 0.4,
+            fill: true, 
+            backgroundColor: 'rgba(66, 184, 131, 0.2)', // Warna area (transparan)
+        },
+        {
+            label: 'Barang Keluar',
+            data: [0,56, 89, 30, 23, 1, 55, 89, 56, 89, 30, 23, 1, 55],
+            fill: false,
+            borderColor: 'limegreen',
+            tension: 0.4,
+            fill: true, 
+            backgroundColor: 'rgba(3, 175, 255, 0.2)', // Warna area (transparan)
+        }]
+    };
+    const lineConfig = {
+        type: 'line',
+        data: lineData,
+        options: {
+            layouts : {
+                padding : {
+                    left : "40",
+                    right : "40",
+                    top: "0",
+                    bottom: "0"
+                },
+            },
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display:  true,
+                    text: 'Barang Masuk dan Keluar - 2026',
+                    font : {size: 20},
+                    family: "barlow, san-serif"
+                },
+                datalabels : {display: false}
+            },
+            maintainAspectRatio: false, // INI KUNCINYA
+            scales: {
+                y: {
+                    grid: {
+                        borderDash: [7, 7]
+                    }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            }
+        },
+    }
+    const lineCanvas = document.querySelector("#line-chart")
+    new Chart(lineCanvas, lineConfig)
+    
+    UI_log("Line Chart ✅")
+    
+
+    const availableData = {
+        labels: ['Ready','Habis'],
+        datasets: [{
+            data: [37, 2],
+            fill: true, 
+            backgroundColor: ['#00ab00', "darkgrey"], // Warna area (transparan)
+            spacing: 2,
+            borderColor: "transparent",                    
+            borderRadius: 4,              // Biar ujungnya tetap tumpul
+            hoverOffset: 15        // Efek membesar saat di-hover (biar makin keren)
+        }]
+    };
+    const availableConfig = {
+        type: 'doughnut',
+        data: availableData,
+        options: {
+            // cutout : "75%",
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Kondisi Barang',
+                    font : {size: 20}
+                },
+                datalabels: {
+                    display: false,
+                    color: '#fff',
+                    font: {
+                        size: 12
+                    },
+                    formatter: (value, ctx) => {
+                        // 1. Hitung total semua data
+                        let sum = 0;
+                        let dataArr = ctx.chart.data.datasets[0].data;
+                        dataArr.map(data => {
+                            sum += data;
+                        });
+                        // 2. Hitung persentase
+                        let percentage = (value * 100 / sum).toFixed(0) + "%";
+                        return percentage; // Tampilkan persentase di chart
+                    },
+                },
+                tooltip: {
+                    callbacks: {
+                        // Modifikasi teks label di dalam tooltip
+                        label: function(context) {
+                            let label = context.label || '';
+                            let value = context.raw; // Nilai asli (misal: 300)
+
+                            // 1. Hitung total data
+                            const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+
+                            // 2. Hitung persentase
+                            const percentage = ((value / total) * 100).toFixed(1) + '%';
+
+                            // 3. Gabungkan: "Label: Value (Percentage)"
+                            return ` ${label}: ${value} (${percentage})`;
+                        }
+                    }
+                }
+            },
+            maintainAspectRatio: false, // INI KUNCINYA
+        },
+    }
+    const availCanvas = document.querySelector("#available-chart")
+    new Chart(availCanvas, availableConfig)
+
+    UI_log("Round Chart ✅")
+    
+}   
+export function UI_log() { 
+    try { 
+        var args = Array.prototype.slice.call(arguments);
+        console.log.apply(console, ["[UI Control]" ].concat(args)); 
+    } catch(_) {}
+}
+
+export function generateUUID() {
+    try {
+        return crypto.randomUUID();
+    } catch (e) {
+        // Fallback jika browser sangat lama (misal HP Android jadul staf)
+        return 'xxxx-xxxx-4xxx-yxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        }) + "-" + Date.now();
+    }
+}
+export function UI_Login() {
+    document.querySelector("#login").classList.remove("dis-none")
+    document.querySelector("#main").classList.add("dis-none")
+}
+
+async function isReallyOnline() {
+    // 1. Cek dasar: Jika browser bilang offline, biasanya memang offline.
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+        console.log("❌ Offline: No Network Access.");
+        return false;
+    }
+    // console.log(navigator.onLine)
+
+    const checkEndpoints = [
+        "https://clients3.google.com/generate_204", // Endpoint sangat ringan dari Google
+        this.URL // Mencoba ping ke Base URL kamu sendiri
+    ];
+
+    let attempts = 0;
+    const maxPingAttempts = 2;
+
+    while (attempts < maxPingAttempts) {
+        attempts++;
+        try {
+            console.log(`🔍 Network Checking (Attemp ${attempts})...`);
+            
+            // Gunakan mode no-cors agar lebih cepat dan tidak terhambat kebijakan CORS
+            // Timeout pendek (5 detik) agar user tidak menunggu terlalu lama
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+            const ping = await fetch(checkEndpoints[0], { 
+                mode: 'no-cors', 
+                cache: 'no-store',
+                signal: controller.signal 
+            });
+
+            clearTimeout(timeoutId);
+            
+            // Jika sampai sini tanpa error, berarti paket data berhasil keluar-masuk
+            console.log("📶 Network : Online.");
+            return true; 
+
+        } catch (err) {
+            console.log(`⚠️ Ping attemps ${attempts} failed.`);
+            if (attempts < maxPingAttempts) {
+                // Beri jeda 1 detik sebelum cek ulang
+                await new Promise(r => setTimeout(r, 1000));
+            }
+        }
+    }
+
+    console.log("❌ Network : No Internet Acces.");
+    return false;
+}
+
+export function UI_Play () {
+    document.addEventListener('contextmenu', (e) => e.preventDefault());
+    
+    Object.defineProperty(window, 'isOnline', {
+        value: isReallyOnline,
+        writable: false, // Tidak bisa diubah (appDB = "sesuatu" akan error)
+        configurable: false // Tidak bisa dihapus
+    });
+
+    UI_log("Play ✅")
+    CustomContextMenu()
+    CustomMore()
+    CustomSelect()
+
+    navBar()
+    themeChange()
+    setChart()
 
 }
 

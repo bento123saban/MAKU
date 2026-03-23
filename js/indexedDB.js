@@ -1,18 +1,12 @@
 
 
 
-export default class IDBManager {
+class IDBManager {
     // Properti statis untuk menyimpan satu-satunya instance (Singleton Pattern)
     // Ini memastikan tidak ada dua koneksi database yang bertabrakan di satu tab browser.
     static instance = null;
 
-    constructor(dbName = "MAKU", version = 1, schema = {
-        // Master data barang
-        barang: { 
-            keyPath: "kode", 
-            indexes: ["nama", "type", "timestamp"] 
-        }
-    }) {
+    constructor(dbName = "MAKU", version = 1, schema = null) {
         // Jika instance sudah ada, kembalikan instance tersebut (jangan buat baru)
         if (IDBManager.instance) return IDBManager.instance;
 
@@ -45,21 +39,39 @@ export default class IDBManager {
             // Dipanggil HANYA jika versi DB naik atau DB baru dibuat pertama kali
             request.onupgradeneeded = (e) => {
                 const db = e.target.result;
-                
-                // Iterasi melalui skema yang kita buat
+                const transaction = e.target.transaction; // Ambil transaksi upgrade
+
                 for (const [storeName, config] of Object.entries(this.schema)) {
-                    // Jika tabel (Object Store) belum ada, buat baru
+                    let store;
+                    
                     if (!db.objectStoreNames.contains(storeName)) {
-                        const store = db.createObjectStore(storeName, { keyPath: config.keyPath });
-                        
-                        // Jika ada index (untuk pencarian cepat), daftarkan ke tabel
-                        if (config.indexes) {
-                            config.indexes.forEach(idx => {
-                                // createIndex(nama_index, field_sumber, {unique: false})
-                                store.createIndex(idx, idx, { unique: false });
-                            });
-                        }
+                        // Jika tabel belum ada, buat baru
+                        store = db.createObjectStore(storeName, { keyPath: config.keyPath });
+                    } else {
+                        // Jika tabel SUDAH ada, ambil store-nya dari transaksi
+                        store = transaction.objectStore(storeName);
                     }
+
+                    // Kelola Index
+                    if (config.indexes) {
+                        config.indexes.forEach(idx => {
+                            // Cek apakah index ini sudah ada di tabel?
+                            if (!store.indexNames.contains(idx)) {
+                                // Jika belum ada, buat index baru
+                                store.createIndex(idx, idx, { unique: false });
+                                console.log(`Index baru '${idx}' ditambahkan ke ${storeName}`);
+                            }
+                        });
+                    }
+                    
+                    // OPSIONAL: Hapus index lama yang tidak ada lagi di skema baru
+                    
+                    Array.from(store.indexNames).forEach(existingIdx => {
+                        if (!config.indexes.includes(existingIdx)) {
+                            store.deleteIndex(existingIdx);
+                        }
+                    });
+                    
                 }
             };
 
@@ -190,4 +202,24 @@ export default class IDBManager {
         return this._execute(storeName, "readwrite", (store) => store.clear());
     }
 
+}
+
+export default function DB_Play () {
+
+    const DBX = new IDBManager("MAKU", 1, {
+        barang : {
+            keyPath : "code",
+            indexes : ["code", "name", "note", "type"]
+        },
+        device  : {
+            keyPath : "email",
+            indexes : ["email", "version"]
+        }
+    })
+
+    Object.defineProperty(window, 'DB', {
+        value: DBX,
+        writable: false, // Tidak bisa diubah (appDB = "sesuatu" akan error)
+        configurable: false // Tidak bisa dihapus
+    });
 }

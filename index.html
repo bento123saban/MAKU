@@ -19,7 +19,7 @@
         <!-- <img src="./img/hexagonal.jpg" alt="" id="background">
         <img src="./img/tree-bg.png" alt="" id="tree"> -->
     </div>
-    <div id="login" class="relative vh-100 p-20 clr-darkgrey align-center m-0 p-0 grid-center green">
+    <div id="login" class="dis-none relative vh-100 p-20 clr-darkgrey align-center m-0 p-0 grid-center green">
         <div id="login-content" class="p-10 borad-20 p-20 white">
             <img src="./img/logo-dlhp.png" alt="" id="logo-dlhp">
             <div class="hr grey"></div>
@@ -34,7 +34,7 @@
     </div>
 
 
-    <div id="main" class="clr-darkgrey vh-100 vw-100 p-10 dis-none">
+    <div id="main" class="clr-darkgrey vh-100 vw-100 p-10 ">
         <div id="main-content" class="h-100 flex-start h-100 w-100 gap-10">
             <!-- Navbar -->
             <nav class="p-20 h-100 green clr-darkgrey borad-20 relative">
@@ -972,7 +972,7 @@
                                                 <label class="form-label">Nama Barang</label>
                                                 <input type="text" class="form-input" placeholder="Masukan Nama Barang">
                                             </div>|
-                                            <i class="fas fa-arrows-rotate clr-green pointer"></i>
+                                            <i class="fas fa-arrows-rotate clr-green pointer items-update-button"></i>
                                         </div>
                                         <br>
                                         <div id="form-items-search" class="">
@@ -1254,7 +1254,7 @@
                                                 <label class="form-label">Nama Barang</label>
                                                 <input type="text" class="form-input" placeholder="Masukan Nama Barang">
                                             </div>|
-                                            <i class="fas fa-arrows-rotate clr-blue pointer"></i>
+                                            <i class="fas fa-arrows-rotate clr-blue pointer items-update-button"></i>
                                         </div>
                                         <br>
                                         <div id="form-items-search" class="">
@@ -1854,17 +1854,12 @@
         </div>
     </div>
 
-  
+    <div id="pop-up">
+        <div id="toast"></div>
+        <div id="alert"></div>
+        <div id="confirm"></div>
         
-
-
-    <script>
-        function loginGoogle (e) {
-            // document.querySelector("#login").classList.add("dis-none")
-            // document.querySelector("#main").classList.remove("dis-none")
-            
-        }
-    </script>
+    </div>
 
     <script type="module" src="main.js"></script>
    
