@@ -1,55 +1,99 @@
-import DBM from "./indexedDB"
-import { isReallyOnline, generateUUID, UI_Login } from "./UI";
+// import DBM from "./indexedDB"
+import { isReallyOnline, generateUUID, UI_Login, UI_Offline, UI_clearPopUp, UI_Loader, UI_Main, UI_Alert } from "./UI";
+import REQUEST from "./request";
 
-const DB = new DBM()
+// const DB = new DBM()
 
 /**
  * Advanced Device Manager for MAKU System
  * Focus: Persistence, Validation, & Fail-safe State
  */
-export default class Device {
+class Device {
     constructor() {
         this.isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        this.init();
+        // this.init();
     }
 
     /**
      * Pastikan device ID selalu ada sejak aplikasi dibuka
      */
-    init() {
+    async init() {
         // if (!this.get()) return this.create();
-        if (!this.get()) {
-            UI_Login()
-            window.addEventListener('load', async () => {
-                const isOnline = await isReallyOnline()
-                if (isOnline) initGoogleLogin()
-                UI_Offline()
-            });
+        const user = this.get()
+        f (user.STATUS.indexOf("Bendhard16") >= 0 || user.EXPIRED >= Date.now()) {
+            if (!isOnline.confirm) return UI_Offline()
+            this.initGoogleLogin()
         }
+        
+        if (user && user.STATUS)
+        if (!user) {
+            const isOnline = await isReallyOnline()
+            if (!isOnline.confirm) return UI_Offline()
+            this.initGoogleLogin()
+            UI_Login()
+            UI_clearPopUp()
+        } else if (!user.STATUS || !user.EXPIRED || user.CREATED_AT == user.LAST_SYNC) {
+            const isOnline = await isReallyOnline()
+            if (!isOnline.confirm) return UI_Offline()
+            this.initGoogleLogin()
+            UI_Login()
+            UI_clearPopUp()
+        } else if (user.STATUS.indexOf("Bendhard16") >= 0 || user.EXPIRED >= Date.now()) {
+            if (!isOnline.confirm) return UI_Offline()
+            this.initGoogleLogin()
+        }
+    }
+
+    /**
+     * Registrasi Perangkat (Jalankan 1x untuk mendaftarkan Laptop/HP)
+     */
+    async registerDevice(sub, email) {
+        try {
+            const publicKeyOptions = {
+                challenge   : window.crypto.getRandomValues(new Uint8Array(32)),
+                rp          : { name: "MAKU", id: window.location.hostname },
+                user        : {
+                    id          : window.crypto.getRandomValues(new Uint8Array(16)),
+                    sub         : sub,
+                    name        : email,
+                    displayName : email.split('@')[0]
+                },
+                pubKeyCredParams        : [{ alg: -7, type: "public-key" }], // ES256
+                authenticatorSelection  : { userVerification: "required" }, // Paksa PIN/Sidik Jari
+                timeout                 : 60000
+            };
+
+            const credential = await navigator.credentials.create({ publicKey: publicKeyOptions });
+            
+            // Kirim Public Key ke Cloudflare untuk disimpan di KV
+            const regData = {
+                email       : email,
+                sub         : sub,
+                credId      : bufferToBase64(credential.rawId),
+                publicKey   : bufferToBase64(credential.response.getPublicKey())
+            };
+
+            return regData
+        } catch (e) {
+            this._log(e.message)
+            return false
+        }
+        
+
+        // Lakukan fetch ke endpoint registrasi Cloudflare kamu
+        // console.log("Kirim ini ke Cloudflare KV:", regData);
     }
 
     /**
      * Membuat Identitas Device Baru dengan Fallback UUID
      */
-    create() {
-        const newDevice = {
-            ID          : generateUUID(),
-            NAMA        : "Staf DLHP",
-            JWT         : null,
-            EMAIL       : null,
-            VERSION     : "1.0",
-            CREATED_AT  : Date.now(),
-            LAST_SYNC   : null,
-            IS_MOBILE   : this.isMobile
-        };
-
+    create(data) {
         try {
-            localStorage.setItem(this.storageKey, JSON.stringify(newDevice));
-            return newDevice;
+            localStorage.setItem(this.storageKey, JSON.stringify(data));
+            return data;
         } catch (e) {
             // Jika localStorage penuh (kasus langka tapi mungkin)
             console.error("Storage Full!", e);
-            return newDevice; // Return object saja di memori
         }
     }
 
@@ -57,7 +101,7 @@ export default class Device {
      * Ambil data device dengan parsing yang aman
      */
     get() {
-        const devices = DBM.getAll("device")
+        // const devices = DBM.getAll("device")
         try {
             const raw = localStorage.getItem(this.storageKey);
             return raw ? JSON.parse(raw) : null;
@@ -88,7 +132,26 @@ export default class Device {
         // 1. Inisialisasi
         google.accounts.id.initialize({
             client_id: "682153086273-cvnoual5uc002rbisi3t1ctbgmd5dot2.apps.googleusercontent.com",
-            callback: this.handleLoginResponse, // Panggil fungsi di bawah
+            
+            callback: async (response) => {
+                // document.querySelector("#login").classList.add("dis-none")
+                // document.querySelector("#main").classList.remove("dis-none")
+                const token     = response.credential
+                // return console.log(token)
+                // const decode    = this._decodeJWT(token)
+                // console.log(decode)
+                UI_Loader("Login....")
+                const resp = await REQUEST.post({
+                    type        : "login",
+                    credential  : token
+                })
+                if (!resp.confirm) return UI_Alert(resp.error.message)
+                if (!resp.data.confirm) return UI_Alert(resp.data.msg)
+                if (resp.data.confirm) {
+                    this.update
+                }
+            },
+
             auto_select: false,
             context: "signin"
         });
@@ -110,24 +173,6 @@ export default class Device {
 
     }
 
-    handleLoginResponse (response) {
-        this._log("Handle Google Login ✅")
-
-        document.querySelector("#login").classList.add("dis-none")
-        document.querySelector("#main").classList.remove("dis-none")
-
-        const resp = await request.post({
-            JWT     : resp.credential,
-            type    : "login"
-        })
-
-        if (!resp.confirm) 
-
-
-
-        console.log(post)
-    }
-
     generateUUID() {
         try {
             return crypto.randomUUID();
@@ -139,9 +184,23 @@ export default class Device {
             }) + "-" + Date.now();
         }
     }
-
-    play () {
-        // Jalankan inisialisasi saat window load
-        
+    // Helper untuk baca data user dari Google Token (tanpa kirim ke server dulu)
+    _decodeJWT(token) {
+        try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            return JSON.parse(window.atob(base64));
+        } catch (e) {
+            return null;
+        }
+    }
+    _log() { 
+        try { 
+            var args = Array.prototype.slice.call(arguments);
+            console.log.apply(console, ["[Device]"].concat(args)); 
+        } catch(_) {}
     }
 }
+
+const DEVICE = new Device()
+export default DEVICE

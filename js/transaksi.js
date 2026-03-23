@@ -1,6 +1,5 @@
-import { CustomSelect } from "./UI"
 
-export default class trx {
+class trx {
     constructor () {
         this.trxItemDetailBox   = document.querySelector("#trx-items-detail")
         this.trxDetailBox       = document.querySelector("#trx-detail")
@@ -280,10 +279,6 @@ export default class trx {
             itemgroups      = document.querySelectorAll("#items-form-masuk-list .form-items-group .masuk-input  ")
         
     }
-
-
-
-
     play () {
         // Month Control
         const headSelect    = document.querySelector("#cal-head-select")
@@ -304,3 +299,5 @@ export default class trx {
     }
 }
 
+const TRANSACTION = new trx()
+export default TRANSACTION

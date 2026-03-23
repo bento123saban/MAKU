@@ -1,7 +1,6 @@
-import { request } from "./request"
+import { isReallyOnline } from "./UI"
 
-
-export default class form {
+class form {
     constructor () {
         this.jenisInput = document.querySelector("#form-jenis-input")
         this.submitBtn  = document.querySelector("#form-submit-button")
@@ -10,20 +9,18 @@ export default class form {
         this.itemsUpdateButtons = document.querySelectorAll(".items-update-button")
     }
 
-    async updateBarang () {
-        this.itemsUpdateButtons.array.forEach(element => {
-            element.onclick = () => {
+    // async updateBarang () {
+    //     this.itemsUpdateButtons.array.forEach(element => {
+    //         element.onclick = () => {
                 
-            }
-        });
-        return await window.DB.getAll("barang")
-    }
+    //         }
+    //     });
+    //     return await DB.getAll("barang")
+    // }
 
-
-
-
-
-    play () {
+    async play () {
+        const isOnline = await isReallyOnline()
+        if (isOnline) document.querySelector("#tambah-button").classList.remove("dis-none")
         // const dataBarang = this.getBarang()
         // console.log(dataBarang)
         this.jenisInput.onchange = (e) => {
@@ -53,3 +50,6 @@ export default class form {
         }
     }
 }
+
+const FORM = new form()
+export default FORM

@@ -1,35 +1,14 @@
-import DB_Play from "./js/indexedDB"
-import {UI_Play} from "./js/UI";
+import DB from "./js/indexedDB"
+import DEVICE from "./js/device"
+import { UI_Loader } from "./js/UI"
+UI_Loader("Starting")
+document.addEventListener("DOMContentLoaded", () => {
+	setTimeout(async () => {
+		DB
+		DEVICE.init()
+		console.log("APP Init")
+	}, 1500)
+})
 
 
-import trx from "./js/transaksi"
-import form from "./js/form";
-import inv from "./js/inventory"
-
-// alert("tes")
-class appCTRL {
-	constructor () {
-		this.TRX 	= new trx()
-		this.FORM	= new form()
-		this.INV 	= new inv()
-	}
-	init () {
-		
-	}
-	auth () {
-
-	}
-
-	play () {
-		document.addEventListener("DOMContentLoaded", () => {
-			DB_Play()
-			UI_Play()
-			
-			this.TRX.play()
-			this.FORM.play()
-			this.INV.play()
-		})
-	}
-}
-
-new appCTRL().play()
+// https://gemini.google.com/share/ac68c54323e9

@@ -1,3 +1,9 @@
+import { isReallyOnline } from "./UI";
+
+
+
+
+
 /**
  * RequestManager - Ultra-Robust Fetch Handler for MAKU Project
  * Optimasi: Fix bug penanganan failRes, penyesuaian abort signal, dan integrasi GAS/Workers.
@@ -5,15 +11,16 @@
 class RequestManager {
 
     constructor() {
+        if (RequestManager.instance) return RequestManager.instance;
         this.maxRetries         = 3;
         this.retryDelay         = 1000;      // ms
         this.timeoutMs          = 60000;    // ms
         this.deferWhenHidden    = false;
         this.maxHiddenDeferMs   = 4000;
         this.appCTRL            = {
-            baseURL : "https://maku.dlhpambon2025.workers.dev/"
+            baseURL : "https://maku.dlhpambon2025.workers.devc/"
         };
-        this.baseURL            = (typeof STATIC !== "undefined" && STATIC.URL) ? STATIC.URL : "https://maku.dlhpambon2025.workers.dev/";
+        this.baseURL            = (typeof STATIC !== "undefined" && STATIC.URL) ? STATIC.URL : "https://maku.dlhpambon2025.workers.dec. UIv/";
         var self = this;
         if (!Object.getOwnPropertyDescriptor(this, "URL")) {
             Object.defineProperty(this, "URL", {
@@ -25,6 +32,7 @@ class RequestManager {
                 }
             });
         }
+        RequestManager.instance = this;
     }
 
 	/**
@@ -42,7 +50,7 @@ class RequestManager {
         const url = this._joinURL(base, path);
         
         // Pre-check Online Status
-        const online = await this.isReallyOnline();
+        const online = await isReallyOnline();
 		if (!online) {
 			const offlineRes = this._makeResult(false, "OFFLINE", null, { 
 				code: "OFFLINE", 
@@ -152,7 +160,7 @@ class RequestManager {
         }
 
         // Pre-check Online Status
-        const online = await this.isReallyOnline();
+        const online = await isReallyOnline();
         if (!online) {
             return this._makeResult(false, "OFFLINE", null, { 
                 code: "OFFLINE", 
@@ -206,7 +214,7 @@ class RequestManager {
 
             } catch (err) {
                 clearTimeout(timeoutId);
-                const code = this._classifyFetchError(err);
+                const code = await this._classifyFetchError(err);
 
                 if (code === "ABORTED" && attempt >= this.maxRetries) {
                     return this._makeResult(false, "ABORTED", null, { 
@@ -234,10 +242,12 @@ class RequestManager {
     }
 
     // --- Private Helper yang disempurnakan ---
-    _classifyFetchError(err) {
+    async _classifyFetchError(err) {
         if (err.name === 'AbortError' || err === 'TIMEOUT') return "TIMEOUT";
-        if (!this.isReallyOnline()) return "OFFLINE";
-        return "NETWORK_ERROR";
+        const isOnline = await isReallyOnline()
+        if (isOnline.status == 0) return "OFFLINE"
+        if (isOnline.status == 1) return "NETWORK_ERROR"
+        return "INVALID_ENDPOINT";
     }
 
     _computeBackoff(attempt, baseDelay, res) {
@@ -272,7 +282,7 @@ class RequestManager {
     }
     _requireBaseURL() {
         var u = this.URL;
-        if (!u) throw new Error("RequestManager.baseURL belum diset (baseURL kosong).");
+        if (!u || u == "INVALID_URL") throw new Error("RequestManager : baseURL belum diset (baseURL kosong) atau URL tidak valid");
         return u;
     }
     _nowMs() {
@@ -347,6 +357,7 @@ class RequestManager {
         if (code === "TIMEOUT") return "Timeout! Periksa koneksi.";
         if (code === "OFFLINE")    return "Offline. Cek koneksi.";
         if (code === "NETWORK_ERROR") return "Jaringan error. Cek koneksi.";
+        if (code === "INVALID_ENDPOINT") return "Alamat server tidak ditemukan (DNS Error/Invalid URL).";
         if (code === "ABORTED") return "Permintaan dibatalkan.";
         return (err && err.message) || "Terjadi kesalahan jaringan.";
     }
@@ -369,5 +380,5 @@ class RequestManager {
         } catch(_) {}
     }
 }
-const rm = new RequestManager()
-export const request = rm
+const REQUEST = new RequestManager()
+export default REQUEST

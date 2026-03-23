@@ -19,8 +19,8 @@
         <!-- <img src="./img/hexagonal.jpg" alt="" id="background">
         <img src="./img/tree-bg.png" alt="" id="tree"> -->
     </div>
-    <div id="login" class="dis-none relative vh-100 p-20 clr-darkgrey align-center m-0 p-0 grid-center green">
-        <div id="login-content" class="p-10 borad-20 p-20 white">
+    <div id="login" class="relative vh-100 p-20 clr-darkgrey align-center m-0 p-0 grid-center green">
+        <div id="login-content" class="p-10 borad-20 p-20 white dis-none">
             <img src="./img/logo-dlhp.png" alt="" id="logo-dlhp">
             <div class="hr grey"></div>
             <h1>Invetaris Barang <br>Masuk dan Keluar</h1>
@@ -34,7 +34,7 @@
     </div>
 
 
-    <div id="main" class="clr-darkgrey vh-100 vw-100 p-10 ">
+    <div id="main" class="clr-darkgrey vh-100 vw-100 p-10 dis-none">
         <div id="main-content" class="h-100 flex-start h-100 w-100 gap-10">
             <!-- Navbar -->
             <nav class="p-20 h-100 green clr-darkgrey borad-20 relative">
@@ -45,7 +45,7 @@
                 <div class="nav-group" data-nav="inventory"><i class="fas fa-boxes"></i> Inventory</div>
                 <hr class="br-white">
                 <br>
-                <div class="nav-group" data-nav="add"><i class="fas fa-add"></i> Tambah</div>
+                <div class="nav-group dis-none" data-nav="add" id="tambah-button"><i class="fas fa-add"></i> Tambah</div>
                 <hr  class="br-white">
                 <br>
                 <div class="nav-group"><i class="fa-solid fa-arrow-right-from-bracket"></i> Keluar</div>
@@ -1855,9 +1855,18 @@
     </div>
 
     <div id="pop-up">
-        <div id="toast"></div>
-        <div id="alert"></div>
-        <div id="confirm"></div>
+        <div class="pop-up dis-none" id="toast"></div>
+        <div class="pop-up dis-none" id="alert"></div>
+        <div class="pop-up dis-none" id="confirm"></div>
+        <div class="pop-up " id="loader">
+            <div class="loaderx grid-center">
+                <div class="loader-content relative clr-black br-black grid-center" id="loader-content">
+                    <div class="loader" id="the-loader"></div>
+                    <br>
+                    <div class="align-center loader-text fz-12 bolder clr-darkgrey" id="loader-text">Verifikasi Perangkat</div>
+                </div>
+            </div>
+        </div>
         
     </div>
 

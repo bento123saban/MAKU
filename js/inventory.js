@@ -1,7 +1,7 @@
 
 
 
-export default class inven {
+class inventory {
     constructor () {
 
     }
@@ -50,3 +50,7 @@ export default class inven {
         this.renderInvenTable()
     }
 }
+
+const INVENTORY = new inventory()
+export default INVENTORY
+

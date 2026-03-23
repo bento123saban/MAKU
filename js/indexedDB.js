@@ -204,22 +204,16 @@ class IDBManager {
 
 }
 
-export default function DB_Play () {
+const DB = new IDBManager("MAKU", 1, {
+    barang : {
+        keyPath : "code",
+        indexes : ["code", "name", "note", "type"]
+    },
+    device  : {
+        keyPath : "email",
+        indexes : ["email", "version"]
+    }
+})
 
-    const DBX = new IDBManager("MAKU", 1, {
-        barang : {
-            keyPath : "code",
-            indexes : ["code", "name", "note", "type"]
-        },
-        device  : {
-            keyPath : "email",
-            indexes : ["email", "version"]
-        }
-    })
+export default DB
 
-    Object.defineProperty(window, 'DB', {
-        value: DBX,
-        writable: false, // Tidak bisa diubah (appDB = "sesuatu" akan error)
-        configurable: false // Tidak bisa dihapus
-    });
-}

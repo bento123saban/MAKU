@@ -1,7 +1,74 @@
 import { Chart } from "chart.js/auto"
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { request } from "./request";
 
+// import REQUEST from "./request";
+// import TRANSACTION from "./transaksi"
+// import FORM from "./form";
+// import INVENTORY from "./inventory"
+
+
+// Async Function
+export async function isReallyOnline() {
+    // 1. Cek dasar: Jika browser bilang offline, biasanya memang offline.
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+        console.log("❌ Offline: No Network Access.");
+        return {
+            confirm : false,
+            status  : 0
+        };
+    }
+    // console.log(navigator.onLine)
+
+    const checkEndpoints = [
+        "https://clients3.google.com/generate_204", // Endpoint sangat ringan dari Google
+        "" // Mencoba ping ke Base URL kamu sendiri
+    ];
+
+    let attempts = 0;
+    const maxPingAttempts = 2;
+
+    while (attempts < maxPingAttempts) {
+        attempts++;
+        try {
+            console.log(`🔍 Network Checking (Attemp ${attempts})...`);
+            
+            // Gunakan mode no-cors agar lebih cepat dan tidak terhambat kebijakan CORS
+            // Timeout pendek (5 detik) agar user tidak menunggu terlalu lama
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+            const ping = await fetch(checkEndpoints[0], { 
+                mode: 'no-cors', 
+                cache: 'no-store',
+                signal: controller.signal 
+            });
+
+            clearTimeout(timeoutId);
+            
+            // Jika sampai sini tanpa error, berarti paket data berhasil keluar-masuk
+            console.log("📶 Network : Online.");
+            return {
+                confirm : true,
+                status  : 2
+            }; 
+
+        } catch (err) {
+            console.log(`⚠️ Ping attemps ${attempts} failed.`);
+            if (attempts < maxPingAttempts) {
+                // Beri jeda 1 detik sebelum cek ulang
+                await new Promise(r => setTimeout(r, 1000));
+            }
+        }
+    }
+
+    console.log("❌ Network : Connected WIth No Internet Acces.");
+    return {
+        confirm : false,
+        status  : 1
+    };
+}
+
+// 
 export function CustomSelect (selector = '.custom-select-container', callback = null) {
     const allSelects = document.querySelectorAll(selector);
     if (allSelects.length === 0) return;
@@ -401,12 +468,6 @@ export function setChart () {
 
     UI_log("Round Chart ✅")
     
-}   
-export function UI_log() { 
-    try { 
-        var args = Array.prototype.slice.call(arguments);
-        console.log.apply(console, ["[UI Control]" ].concat(args)); 
-    } catch(_) {}
 }
 
 export function generateUUID() {
@@ -420,70 +481,44 @@ export function generateUUID() {
         }) + "-" + Date.now();
     }
 }
+export function bufferToBase64(buffer) {
+    return btoa(String.fromCharCode(...new Uint8Array(buffer)));
+}
+
+export function UI_log() { 
+    try { 
+        var args = Array.prototype.slice.call(arguments);
+        console.log.apply(console, ["[UI Control]" ].concat(args)); 
+    } catch(_) {}
+}
+export function UI_clearPopUp () {
+    document.querySelector("#pop-up").classList.add("dis-none")
+    document.querySelectorAll(".pop-up").forEach(popup => popup.classList.add("dis-none"))
+    document.querySelector("#loader-text").textContent = ""
+}
 export function UI_Login() {
     document.querySelector("#login").classList.remove("dis-none")
     document.querySelector("#main").classList.add("dis-none")
+    document.querySelector("#login-content").classList.remove("dis-none")
 }
-
-async function isReallyOnline() {
-    // 1. Cek dasar: Jika browser bilang offline, biasanya memang offline.
-    if (typeof navigator !== "undefined" && !navigator.onLine) {
-        console.log("❌ Offline: No Network Access.");
-        return false;
-    }
-    // console.log(navigator.onLine)
-
-    const checkEndpoints = [
-        "https://clients3.google.com/generate_204", // Endpoint sangat ringan dari Google
-        this.URL // Mencoba ping ke Base URL kamu sendiri
-    ];
-
-    let attempts = 0;
-    const maxPingAttempts = 2;
-
-    while (attempts < maxPingAttempts) {
-        attempts++;
-        try {
-            console.log(`🔍 Network Checking (Attemp ${attempts})...`);
-            
-            // Gunakan mode no-cors agar lebih cepat dan tidak terhambat kebijakan CORS
-            // Timeout pendek (5 detik) agar user tidak menunggu terlalu lama
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-            const ping = await fetch(checkEndpoints[0], { 
-                mode: 'no-cors', 
-                cache: 'no-store',
-                signal: controller.signal 
-            });
-
-            clearTimeout(timeoutId);
-            
-            // Jika sampai sini tanpa error, berarti paket data berhasil keluar-masuk
-            console.log("📶 Network : Online.");
-            return true; 
-
-        } catch (err) {
-            console.log(`⚠️ Ping attemps ${attempts} failed.`);
-            if (attempts < maxPingAttempts) {
-                // Beri jeda 1 detik sebelum cek ulang
-                await new Promise(r => setTimeout(r, 1000));
-            }
-        }
-    }
-
-    console.log("❌ Network : No Internet Acces.");
-    return false;
+export function UI_Loader (text ="", all = false) {
+    document.querySelector("#pop-up").classList.remove("dis-none")
+    if (all) document.querySelectorAll(".pop-up").forEach(popup => popup.classList.add("dis-none"))
+    document.querySelector("#loader").classList.remove("dis-none")
+    document.querySelector("#loader-text").textContent = text
 }
-
+export function UI_Main () {
+    document.querySelector("#login").classList.add("dis-none")
+    document.querySelector("#main").classList.remove("dis-none")
+    document.querySelector("#login-content").classList.add("dis-none")
+    UI_Play()
+    UI_clearPopUp()
+    FORM.play()
+}
+export function UI_Offline() {
+}
 export function UI_Play () {
     document.addEventListener('contextmenu', (e) => e.preventDefault());
-    
-    Object.defineProperty(window, 'isOnline', {
-        value: isReallyOnline,
-        writable: false, // Tidak bisa diubah (appDB = "sesuatu" akan error)
-        configurable: false // Tidak bisa dihapus
-    });
 
     UI_log("Play ✅")
     CustomContextMenu()
@@ -494,5 +529,8 @@ export function UI_Play () {
     themeChange()
     setChart()
 
+}
+export function UI_Alert() {
+    
 }
 
