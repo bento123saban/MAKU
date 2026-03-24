@@ -3,9 +3,9 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 // import REQUEST from "./request";
 // import TRANSACTION from "./transaksi"
-// import FORM from "./form";
+import FORM from "./form";
+import DEVICE from "./device";
 // import INVENTORY from "./inventory"
-
 
 // Async Function
 export async function isReallyOnline() {
@@ -14,7 +14,8 @@ export async function isReallyOnline() {
         console.log("❌ Offline: No Network Access.");
         return {
             confirm : false,
-            status  : 0
+            status  : "NETWORK_ERROR",
+            code    : 0
         };
     }
     // console.log(navigator.onLine)
@@ -25,7 +26,7 @@ export async function isReallyOnline() {
     ];
 
     let attempts = 0;
-    const maxPingAttempts = 2;
+    const maxPingAttempts = 3;
 
     while (attempts < maxPingAttempts) {
         attempts++;
@@ -49,22 +50,24 @@ export async function isReallyOnline() {
             console.log("📶 Network : Online.");
             return {
                 confirm : true,
-                status  : 2
+                status  : "ONLINE",
+                code    : 2
             }; 
 
         } catch (err) {
             console.log(`⚠️ Ping attemps ${attempts} failed.`);
             if (attempts < maxPingAttempts) {
                 // Beri jeda 1 detik sebelum cek ulang
-                await new Promise(r => setTimeout(r, 1000));
+                await new Promise(r => setTimeout(r, 100));
             }
         }
     }
 
-    console.log("❌ Network : Connected WIth No Internet Acces.");
+    console.log("❌ No Internet Acces.");
     return {
         confirm : false,
-        status  : 1
+        status  : "NO_INTERNET_ACCESS",
+        code    : 1
     };
 }
 
@@ -500,6 +503,7 @@ export function UI_Login() {
     document.querySelector("#login").classList.remove("dis-none")
     document.querySelector("#main").classList.add("dis-none")
     document.querySelector("#login-content").classList.remove("dis-none")
+    DEVICE.initGoogleLogin()
 }
 export function UI_Loader (text ="", all = false) {
     document.querySelector("#pop-up").classList.remove("dis-none")
@@ -515,7 +519,19 @@ export function UI_Main () {
     UI_clearPopUp()
     FORM.play()
 }
-export function UI_Offline() {
+export function UI_Offline(text = "OFFLINE") {
+    document.querySelector("#pop-up").classList.remove("dis-none")
+    document.querySelectorAll(".pop-up").forEach(popup => popup.classList.add("dis-none"))
+    document.querySelector("#loader-text").textContent = ""
+    document.querySelector("#offline-text").textContent = text
+    document.querySelector("#offline").classList.remove("dis-none")
+}
+export function UI_Alert(text = "") {
+    document.querySelector("#pop-up").classList.remove("dis-none")
+    document.querySelectorAll(".pop-up").forEach(popup => popup.classList.add("dis-none"))
+    document.querySelector("#loader-text").textContent = ""
+    document.querySelector("#alert").classList.remove("dis-none")
+    document.querySelector("#alert-text").textContent = text
 }
 export function UI_Play () {
     document.addEventListener('contextmenu', (e) => e.preventDefault());
@@ -527,10 +543,9 @@ export function UI_Play () {
 
     navBar()
     themeChange()
-    setChart()
+    // setChart()
 
-}
-export function UI_Alert() {
-    
+    document.querySelectorAll(".content-loader").forEach(content => content.classList.remove("dis-none"))
+
 }
 

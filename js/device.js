@@ -18,31 +18,27 @@ class Device {
      * Pastikan device ID selalu ada sejak aplikasi dibuka
      */
     async init() {
+        // const isOnline = await isReallyOnline()
+        // if (!isOnline.confirm) return UI_Offline(isOnline.status)
+        // UI_Login()
         // if (!this.get()) return this.create();
-        const user = this.get()
-        f (user.STATUS.indexOf("Bendhard16") >= 0 || user.EXPIRED >= Date.now()) {
-            if (!isOnline.confirm) return UI_Offline()
-            this.initGoogleLogin()
-        }
-        
-        if (user && user.STATUS)
-        if (!user) {
-            const isOnline = await isReallyOnline()
-            if (!isOnline.confirm) return UI_Offline()
-            this.initGoogleLogin()
-            UI_Login()
-            UI_clearPopUp()
-        } else if (!user.STATUS || !user.EXPIRED || user.CREATED_AT == user.LAST_SYNC) {
-            const isOnline = await isReallyOnline()
-            if (!isOnline.confirm) return UI_Offline()
-            this.initGoogleLogin()
-            UI_Login()
-            UI_clearPopUp()
-        } else if (user.STATUS.indexOf("Bendhard16") >= 0 || user.EXPIRED >= Date.now()) {
-            if (!isOnline.confirm) return UI_Offline()
-            this.initGoogleLogin()
-        }
+        // const user = this.get()
+        // if (!user) this.pushToLogin()
+        // else if (user.status !== "active" || user.expired <= Date.now() || user.token.indexOf("Bendhard16") < 0) this.pushToLogin()
+        // else if (user && (user.token.indexOf("Bendhard16") >= 0 || user.expired >= Date.now())) {
+        //     const isOnline = await isReallyOnline()
+        //     if (!isOnline.confirm) return UI_Offline(isOnline.status)
+        //     UI_Login()
+        // }
     }
+
+    // async pushToLogin() {
+    //     const isOnline = await isReallyOnline()
+    //     if (!isOnline.confirm) return UI_Offline(isOnline.status)
+    //     this.initGoogleLogin()
+    //     UI_Login()
+    //     UI_clearPopUp()
+    // }
 
     /**
      * Registrasi Perangkat (Jalankan 1x untuk mendaftarkan Laptop/HP)
@@ -89,7 +85,7 @@ class Device {
      */
     create(data) {
         try {
-            localStorage.setItem(this.storageKey, JSON.stringify(data));
+            localStorage.setItem("device", JSON.stringify(data));
             return data;
         } catch (e) {
             // Jika localStorage penuh (kasus langka tapi mungkin)
@@ -103,7 +99,7 @@ class Device {
     get() {
         // const devices = DBM.getAll("device")
         try {
-            const raw = localStorage.getItem(this.storageKey);
+            const raw = localStorage.getItem("device");
             return raw ? JSON.parse(raw) : null;
         } catch (e) {
             return null;
@@ -119,8 +115,8 @@ class Device {
             // Gunakan Spread Operator untuk merging data secara elegan
             const updated = { ...current, ...newData, UPDATED_AT: Date.now() };
             
-            localStorage.setItem(this.storageKey, JSON.stringify(updated));
-            this.main._log("Device Updated", newData);
+            localStorage.setItem("device", JSON.stringify(updated));
+            this._log("Device Updated", newData);
             return updated;
         } catch (err) {
             console.error("Gagal update device:", err);
@@ -134,22 +130,18 @@ class Device {
             client_id: "682153086273-cvnoual5uc002rbisi3t1ctbgmd5dot2.apps.googleusercontent.com",
             
             callback: async (response) => {
-                // document.querySelector("#login").classList.add("dis-none")
-                // document.querySelector("#main").classList.remove("dis-none")
                 const token     = response.credential
-                // return console.log(token)
-                // const decode    = this._decodeJWT(token)
-                // console.log(decode)
+                console.log(token)
                 UI_Loader("Login....")
                 const resp = await REQUEST.post({
                     type        : "login",
                     credential  : token
                 })
+                console.log(resp)
                 if (!resp.confirm) return UI_Alert(resp.error.message)
                 if (!resp.data.confirm) return UI_Alert(resp.data.msg)
-                if (resp.data.confirm) {
-                    this.update
-                }
+                this.update(resp.data.data)
+                UI_Main()
             },
 
             auto_select: false,

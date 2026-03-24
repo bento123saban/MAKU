@@ -1,4 +1,4 @@
-import { isReallyOnline } from "./UI"
+import { isReallyOnline, UI_Offline } from "./UI"
 
 class form {
     constructor () {
@@ -9,14 +9,17 @@ class form {
         this.itemsUpdateButtons = document.querySelectorAll(".items-update-button")
     }
 
-    // async updateBarang () {
-    //     this.itemsUpdateButtons.array.forEach(element => {
-    //         element.onclick = () => {
-                
-    //         }
-    //     });
-    //     return await DB.getAll("barang")
-    // }
+    init () {
+        this.updateBarang()
+    }
+
+
+
+    async updateBarang () {
+        const isOnline = await isReallyOnline()
+        if (!isOnline.confirm) return UI_Offline(isOnline.status)
+        return await DB.getAll("barang")
+    }
 
     async play () {
         const isOnline = await isReallyOnline()

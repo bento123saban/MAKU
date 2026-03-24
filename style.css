@@ -15,6 +15,33 @@
     width: clamp(300px, 20%, 500px);
 }
 
+#pop-up {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: 100000;
+}
+.pop-up {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: 100000;
+}
+.fa-wifi.offline::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    height: 3px;
+    background-color: red;
+    width: 100%;
+    border-radius: 10px;
+}
 
 .black input, .black i {
     border-color: white !important;
@@ -34,7 +61,53 @@
 #main {
     width: clamp(300px, 100%, 1600p);
     margin: auto;
+    display: none ;
 }
+.content {
+    position: relative;
+    min-height: 600px !important;
+}
+
+.content-loader {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: calc(100% - 60px);
+    width: 100%;
+    border-radius: 20px;
+    z-index: 1000;
+    background: #eee;
+    background: linear-gradient(
+        110deg, 
+        #d5d5d5 8%, 
+        #f5f5f5 18%, 
+        #d5d5d5 33%
+    );
+    background-size: 200% 100%;
+    animation: shimmer .8s linear infinite;
+}
+/* Animasi pergeseran background */
+@keyframes shimmer {
+  to {
+    background-position-x: -200%;
+  }
+}
+
+/* Ukuran tambahan untuk bentuk */
+.shimer-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-bottom: 15px;
+}
+
+.shimer-lin e {
+  height: 15px;
+  margin-bottom: 10px;
+}
+.shimer-75 { width: 75%; }
+.shimer-50 { width: 50%; }
+
 
 .content h3 {
     width: 100%;
@@ -94,6 +167,11 @@ nav {
 
 
 
+
+
+
+
+/* Dashboard */
 /* Boxes */
 .boxes {
     width: 100%;
@@ -594,7 +672,7 @@ table#inventory-table th span {
     bottom: calc(100%);
     padding: 4px 5px;
 }
-.form-group .form-input {
+.form-group .form-input, .form-textarea {
     width: 100%;
     padding: 10px;
     font-size: 17px;
@@ -604,10 +682,6 @@ table#inventory-table th span {
     border: 2px solid inherit;
     color: inherit;
 }
-
-/* i.form-icon {
-    
-} */
 .form-group input::placeholder {
     font-style: italic;
 }
@@ -619,7 +693,7 @@ table#inventory-table th span {
     color: inherit;
     border: 2px solid deepskyblue !important;
 }
-#form-tambah .form-input {
+#form-tambah .form-input, .form-textarea {
     color: inherit;
     border: 2px solid orange !important;
 }

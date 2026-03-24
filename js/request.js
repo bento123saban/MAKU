@@ -18,7 +18,7 @@ class RequestManager {
         this.deferWhenHidden    = false;
         this.maxHiddenDeferMs   = 4000;
         this.appCTRL            = {
-            baseURL : "https://maku.dlhpambon2025.workers.devc/"
+            baseURL : "https://maku.dlhpambon2025.workers.dev/"
         };
         this.baseURL            = (typeof STATIC !== "undefined" && STATIC.URL) ? STATIC.URL : "https://maku.dlhpambon2025.workers.dec. UIv/";
         var self = this;
@@ -245,8 +245,8 @@ class RequestManager {
     async _classifyFetchError(err) {
         if (err.name === 'AbortError' || err === 'TIMEOUT') return "TIMEOUT";
         const isOnline = await isReallyOnline()
-        if (isOnline.status == 0) return "OFFLINE"
-        if (isOnline.status == 1) return "NETWORK_ERROR"
+        if (isOnline.code == 0) return "OFFLINE"
+        if (isOnline.code == 1) return "NETWORK_ERROR"
         return "INVALID_ENDPOINT";
     }
 
