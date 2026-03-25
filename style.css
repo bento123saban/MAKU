@@ -61,7 +61,6 @@
 #main {
     width: clamp(300px, 100%, 1600p);
     margin: auto;
-    display: none ;
 }
 .content {
     position: relative;

@@ -1,15 +1,27 @@
-import DB from "./js/indexedDB"
-import DEVICE from "./js/device"
-import { UI_Loader, UI_Login, UI_Main} from "./js/UI"
+
+import indexedDB from "./js/indexedDB"
+window.DB = new indexedDB("MAKU", 1, {
+    items : {
+        keyPath : "code",
+        indexes : ["code", "name", "note", "type"]
+    },
+    device  : {
+        keyPath : "email",
+        indexes : ["email", "version"]
+    }
+})
+
+import request from "./js/request"
+window.REQUEST = new request()
+
+import { UI_Loader, UI_Login, isReallyOnline } from "./js/UI"
+window.isReallyOnline = isReallyOnline
+
 UI_Loader("Starting")
 document.addEventListener("DOMContentLoaded", () => {
 	setTimeout(async () => {
-		DB
-		// UI_Login()
-		console.log("APP Init")
+		UI_Login()
 	}, 2500)
 })
-UI_Main()
-
 
 // https://gemini.google.com/share/ac68c54323e9

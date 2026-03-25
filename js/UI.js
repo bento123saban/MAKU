@@ -1,10 +1,12 @@
 import { Chart } from "chart.js/auto"
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
+import { formStart } from "./form";
+import { initGoogleLogin } from "./device";
 // import REQUEST from "./request";
 // import TRANSACTION from "./transaksi"
-import FORM from "./form";
-import DEVICE from "./device";
+// import FORM from "./form";
+// import DEVICE from "./device";
 // import INVENTORY from "./inventory"
 
 // Async Function
@@ -497,27 +499,30 @@ export function UI_log() {
 export function UI_clearPopUp () {
     document.querySelector("#pop-up").classList.add("dis-none")
     document.querySelectorAll(".pop-up").forEach(popup => popup.classList.add("dis-none"))
-    document.querySelector("#loader-text").textContent = ""
 }
-export function UI_Login() {
+export function UI_Login(text = "") {
+    console.log("UI Login " + text)
+    UI_clearPopUp()
     document.querySelector("#login").classList.remove("dis-none")
     document.querySelector("#main").classList.add("dis-none")
     document.querySelector("#login-content").classList.remove("dis-none")
-    DEVICE.initGoogleLogin()
+    initGoogleLogin()
 }
 export function UI_Loader (text ="", all = false) {
+    console.log("UI Loader")
+    UI_clearPopUp()
     document.querySelector("#pop-up").classList.remove("dis-none")
-    if (all) document.querySelectorAll(".pop-up").forEach(popup => popup.classList.add("dis-none"))
     document.querySelector("#loader").classList.remove("dis-none")
     document.querySelector("#loader-text").textContent = text
 }
 export function UI_Main () {
+    console.log("UI Main")
     document.querySelector("#login").classList.add("dis-none")
     document.querySelector("#main").classList.remove("dis-none")
     document.querySelector("#login-content").classList.add("dis-none")
     UI_Play()
     UI_clearPopUp()
-    FORM.play()
+    formStart()
 }
 export function UI_Offline(text = "OFFLINE") {
     document.querySelector("#pop-up").classList.remove("dis-none")
@@ -527,9 +532,10 @@ export function UI_Offline(text = "OFFLINE") {
     document.querySelector("#offline").classList.remove("dis-none")
 }
 export function UI_Alert(text = "") {
+    console.log("UI Alert")
+    UI_clearPopUp()
+
     document.querySelector("#pop-up").classList.remove("dis-none")
-    document.querySelectorAll(".pop-up").forEach(popup => popup.classList.add("dis-none"))
-    document.querySelector("#loader-text").textContent = ""
     document.querySelector("#alert").classList.remove("dis-none")
     document.querySelector("#alert-text").textContent = text
 }

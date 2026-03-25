@@ -1,14 +1,10 @@
-import { isReallyOnline } from "./UI";
-
-
-
 
 
 /**
  * RequestManager - Ultra-Robust Fetch Handler for MAKU Project
  * Optimasi: Fix bug penanganan failRes, penyesuaian abort signal, dan integrasi GAS/Workers.
  */
-class RequestManager {
+export default class RequestManager {
 
     constructor() {
         if (RequestManager.instance) return RequestManager.instance;
@@ -34,12 +30,6 @@ class RequestManager {
         }
         RequestManager.instance = this;
     }
-
-	/**
-	 * Super Advance Online Check
-	 * Melakukan verifikasi hingga 3 kali dengan sistem 'ping' ke real-world server.
-	 */
-	
 
     async post(pathOrData, dataArg, optionsArg) {
         let path = typeof pathOrData === "string" ? pathOrData : "";
@@ -261,7 +251,6 @@ class RequestManager {
         return Math.max(retryAfterMs, expo + jitter);
     }
     
-    // ... sisa method utility lainnya tetap sama seperti kode kamu ...
 
 	_log() { 
         try { 
@@ -380,5 +369,3 @@ class RequestManager {
         } catch(_) {}
     }
 }
-const REQUEST = new RequestManager()
-export default REQUEST

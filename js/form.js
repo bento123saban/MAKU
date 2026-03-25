@@ -1,58 +1,44 @@
-import { isReallyOnline, UI_Offline } from "./UI"
 
-class form {
-    constructor () {
-        this.jenisInput = document.querySelector("#form-jenis-input")
-        this.submitBtn  = document.querySelector("#form-submit-button")
-        this.forms      = document.querySelectorAll(".forms")
+import { getDevice } from "./device";
+import { UI_Login } from "./UI";
 
-        this.itemsUpdateButtons = document.querySelectorAll(".items-update-button")
-    }
-
-    init () {
-        this.updateBarang()
-    }
+const jenisInput = document.querySelector("#form-jenis-input")
+const submitBtn  = document.querySelector("#form-submit-button")
+const forms      = document.querySelectorAll(".forms")
+const itemsUpdateButtons = document.querySelectorAll(".items-update-button")
 
 
-
-    async updateBarang () {
-        const isOnline = await isReallyOnline()
-        if (!isOnline.confirm) return UI_Offline(isOnline.status)
-        return await DB.getAll("barang")
-    }
-
-    async play () {
-        const isOnline = await isReallyOnline()
-        if (isOnline) document.querySelector("#tambah-button").classList.remove("dis-none")
-        // const dataBarang = this.getBarang()
-        // console.log(dataBarang)
-        this.jenisInput.onchange = (e) => {
-            const value = e.target.value
-            console.log(value)
-            if (value == "masuk") {
-                this.submitBtn.classList.remove("blue", "orange", "grey", "purple")
-                this.submitBtn.classList.add("green")
-            }
-            else if (value == "keluar") {
-                this.submitBtn.classList.remove("green", "orange", "grey", "purple")
-                this.submitBtn.classList.add("blue")
-            }
-            else if (value == "tambah") {
-                this.submitBtn.classList.remove("blue", "green", "grey", "purple")
-                this.submitBtn.classList.add("orange")
-            }
-            else if (value == "edit") {
-                this.submitBtn.classList.remove("blue", "green", "grey", "orange")
-                this.submitBtn.classList.add("purple")
-            }
-            else return
-            this.forms.forEach(form => {
-                if (form.dataset.form == value) form.classList.remove("dis-none")
-                else form.classList.add("dis-none") 
-            })
+export async function updateBarang (loaderCallback = null) {
+    try {
+        console.log("")
+        console.log("[Update Barang] Request ke server...")
+        const user = getDevice()
+        if (!user) return UI_Login()
+        if (typeof loaderCallback == "function") loaderCallback()
+        const resp = await window.REQUEST.post({
+            type : "getAllItems",
+            ...user
+        })
+        console.log("[Update Barang] Response : ", resp)
+        if (resp.data.confirm) {
+            const data      = resp.data.data
+            const inserts   = await window.DB.upsert("items", data)
+            console.log("[Update Barang] Data barang sudah terupdate ")
+            return {confirm : true, data : data}
+        }
+        console.log("[Update Barang] Update Gagal...")
+        if (!resp.confirm) return {confirm : false, msg : "[Update Barang] Gagal : " + resp.error.message}
+        if (!resp.data.confirm) return {confirm : false, msg : "[Update Barang] Gagal : " + resp.data.msg}
+        console.log("")
+    } catch (e) {
+        console.log("[Update Barang] Gagal : " + e.message)
+        return {
+            confirm : false,
+            msg     : "[Update Barang] Gagal : " + e.message
         }
     }
 }
 
-const FORM = new form()
-export default FORM
+export async function formStart () {
+    updateBarang()
+}

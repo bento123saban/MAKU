@@ -1,7 +1,7 @@
 
 
 
-class IDBManager {
+export default class IDBManager {
     // Properti statis untuk menyimpan satu-satunya instance (Singleton Pattern)
     // Ini memastikan tidak ada dua koneksi database yang bertabrakan di satu tab browser.
     static instance = null;
@@ -59,7 +59,7 @@ class IDBManager {
                             if (!store.indexNames.contains(idx)) {
                                 // Jika belum ada, buat index baru
                                 store.createIndex(idx, idx, { unique: false });
-                                console.log(`Index baru '${idx}' ditambahkan ke ${storeName}`);
+                                // console.log(`Index baru '${idx}' ditambahkan ke ${storeName}`);
                             }
                         });
                     }
@@ -204,16 +204,5 @@ class IDBManager {
 
 }
 
-const DB = new IDBManager("MAKU", 1, {
-    barang : {
-        keyPath : "code",
-        indexes : ["code", "name", "note", "type"]
-    },
-    device  : {
-        keyPath : "email",
-        indexes : ["email", "version"]
-    }
-})
 
-export default DB
 
