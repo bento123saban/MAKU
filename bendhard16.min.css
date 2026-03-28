@@ -376,10 +376,6 @@ input::-webkit-inner-spin-button {
 .pt-4 {padding-top: 2rem !important;}
 .pt-5 {padding-top: 2.5rem !important;}
 
-
-.dis-none {display: none !important;}
-
-
 /* COLOR SET */
 
 /* Green */
@@ -550,6 +546,9 @@ input::-webkit-inner-spin-button {
 .no-border {border: none !important;}
 
 .transparent {background: transparent !important;}
+
+.dis-none {display: none !important;}
+
 
 /* gradasi cahaya yang bergerak */
 .skeleton-box {
@@ -1055,3 +1054,22 @@ input::-webkit-inner-spin-button {
 #toast.error { background-color: var(--error); }
 #toast.warning { background-color: var(--warning); }
 #toast.info { background-color: var(--info); }
+
+
+
+#notif-box {
+    position: fixed;
+    top: 5px;
+    right: 5px;
+    min-width: 170px;
+    height: fit-content;
+    padding: 3px;
+    z-index: 10000000000000000000;
+}
+.notif-box {
+    position: relative;
+    padding: 15px;
+    text-align: justify;
+    font-size: 18px;
+    border-radius: 20px;
+}

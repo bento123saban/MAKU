@@ -8,6 +8,18 @@ window.DB = new indexedDB("MAKU", 1, {
     device  : {
         keyPath : "email",
         indexes : ["email", "version"]
+    },
+    trxHeader : {
+        keyPath : "code",
+        indexes : ["user", "createTime", "type", "staff", "date", "itemsCount", "stocksCount"]
+    },
+    trxItems : {
+        keyPath : "code",
+        indexes : ["code", "itemsID"]
+    },
+    stock : {
+        keyPath : "code",
+        indexes : ["in", "out", "stock"]
     }
 })
 
@@ -17,11 +29,8 @@ window.REQUEST = new request()
 import { UI_Loader, UI_Login, isReallyOnline } from "./js/UI"
 window.isReallyOnline = isReallyOnline
 
-UI_Loader("Starting")
-document.addEventListener("DOMContentLoaded", () => {
-	setTimeout(async () => {
-		UI_Login()
-	}, 2500)
-})
+UI_Loader("Connecting...")
+document.addEventListener("DOMContentLoaded", () => UI_Login())
 
 // https://gemini.google.com/share/ac68c54323e9
+ 

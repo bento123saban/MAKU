@@ -1,5 +1,4 @@
 import { UI_Loader, UI_Main, UI_Alert } from "./UI";
-import REQUEST from "./request";
 
 /**
  * Advanced Device Manager for MAKU System
@@ -94,7 +93,7 @@ export function initGoogleLogin () {
             console.log(resp)
             if (!resp.confirm) return UI_Alert(resp.error.message)
             if (!resp.data.confirm) return UI_Alert(resp.data.msg)
-            updateDevice(resp.data.data)
+            updateDevice(resp.data.user)
             UI_Main()
         },
 

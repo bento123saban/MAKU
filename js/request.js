@@ -10,7 +10,7 @@ export default class RequestManager {
         if (RequestManager.instance) return RequestManager.instance;
         this.maxRetries         = 3;
         this.retryDelay         = 1000;      // ms
-        this.timeoutMs          = 60000;    // ms
+        this.timeoutMs          = 120000;    // ms
         this.deferWhenHidden    = false;
         this.maxHiddenDeferMs   = 4000;
         this.appCTRL            = {
@@ -40,22 +40,11 @@ export default class RequestManager {
         const url = this._joinURL(base, path);
         
         // Pre-check Online Status
-        const online = await isReallyOnline();
-		if (!online) {
-			const offlineRes = this._makeResult(false, "OFFLINE", null, { 
-				code: "OFFLINE", 
-				message: "Internet tidak stabil atau terputus." 
-			}, url);
-			
-			// this._safeToast("error", "Koneksi bermasalah!");
-			return offlineRes;
-		}
-
-        // Visibility Deferring
-        // if (this.deferWhenHidden && typeof document !== "undefined" && document.hidden) {
-        //     this._log("⏸️ Menunda POST karena tab hidden");
-        //     await this._waitUntilVisible(this.maxHiddenDeferMs);
-        // }
+        const isOnline = await isReallyOnline();
+		if (!isOnline.confirm) return this._makeResult(false, "OFFLINE", null, { 
+            code: isOnline.status, 
+            message: "Internet tidak stabil atau terputus." 
+        }, url)
 
         const requestId = this._makeUUID();
 
@@ -135,103 +124,104 @@ export default class RequestManager {
         }
     }
 
-    async get(pathOrParams, paramsArg, optionsArg) {
-        let path = typeof pathOrParams === "string" ? pathOrParams : "";
-        let params = typeof pathOrParams === "object" ? pathOrParams : paramsArg || {};
-        let options = optionsArg || (typeof pathOrParams === "object" ? paramsArg : {}) || {};
+    // async get(pathOrParams, paramsArg, optionsArg) {
+    //     let path = typeof pathOrParams === "string" ? pathOrParams : "";
+    //     let params = typeof pathOrParams === "object" ? pathOrParams : paramsArg || {};
+    //     let options = optionsArg || (typeof pathOrParams === "object" ? paramsArg : {}) || {};
 
-        const base = this._requireBaseURL();
-        let url = this._joinURL(base, path);
+    //     const base = this._requireBaseURL();
+    //     let url = this._joinURL(base, path);
 
-        // Append Query Parameters ke URL
-        if (Object.keys(params).length > 0) {
-            const queryString = new URLSearchParams(params).toString();
-            url += (url.includes("?") ? "&" : "?") + queryString;
-        }
+    //     // Append Query Parameters ke URL
+    //     if (Object.keys(params).length > 0) {
+    //         const queryString = new URLSearchParams(params).toString();
+    //         url += (url.includes("?") ? "&" : "?") + queryString;
+    //     }
 
-        // Pre-check Online Status
-        const online = await isReallyOnline();
-        if (!online) {
-            return this._makeResult(false, "OFFLINE", null, { 
-                code: "OFFLINE", 
-                message: "Internet tidak stabil atau terputus." 
-            }, url);
-        }
+    //     // Pre-check Online Status
+    //     const online = await isReallyOnline();
+    //     if (!online) {
+    //         return this._makeResult(false, "OFFLINE", null, { 
+    //             code: "OFFLINE", 
+    //             message: "Internet tidak stabil atau terputus." 
+    //         }, url);
+    //     }
 
-        const requestId = this._makeUUID();
-        const headers = Object.assign({
-            "Accept": "application/json, text/plain;q=0.9, */*;q=0.8",
-            "X-Request-Id": requestId // GET biasanya tidak pakai Idempotency-Key, tapi bagus untuk tracing
-        }, options.headers || {});
+    //     const requestId = this._makeUUID();
+    //     const headers = Object.assign({
+    //         "Accept": "application/json, text/plain;q=0.9, */*;q=0.8",
+    //         "X-Request-Id": requestId // GET biasanya tidak pakai Idempotency-Key, tapi bagus untuk tracing
+    //     }, options.headers || {});
 
-        let attempt = 0;
-        let retried = false;
-        const startAll = this._nowMs();
+    //     let attempt = 0;
+    //     let retried = false;
+    //     const startAll = this._nowMs();
 
-        while (attempt < this.maxRetries) {
-            attempt++;
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort("TIMEOUT"), this.timeoutMs);
+    //     while (attempt < this.maxRetries) {
+    //         attempt++;
+    //         const controller = new AbortController();
+    //         const timeoutId = setTimeout(() => controller.abort("TIMEOUT"), this.timeoutMs);
 
-            try {
-                this._log(`📥 GET attempt ${attempt}/${this.maxRetries}`, { url });
-                const res = await fetch(url, {
-                    method: "GET",
-                    headers: headers,
-                    signal: controller.signal
-                });
+    //         try {
+    //             this._log(`📥 GET attempt ${attempt}/${this.maxRetries}`, { url });
+    //             const res = await fetch(url, {
+    //                 method: "GET",
+    //                 headers: headers,
+    //                 signal: controller.signal
+    //             });
 
-                clearTimeout(timeoutId);
-                const parsed = await this._smartParseResponse(res);
+    //             clearTimeout(timeoutId);
+    //             const parsed = await this._smartParseResponse(res);
 
-                if (res.ok) {
-                    return this._makeResult(true, "SUCCESS", res.status, null, url, attempt, this._nowMs() - startAll, retried, requestId, parsed.data);
-                }
+    //             if (res.ok) {
+    //                 return this._makeResult(true, "SUCCESS", res.status, null, url, attempt, this._nowMs() - startAll, retried, requestId, parsed.data);
+    //             }
 
-                // Error handling untuk non-ok status
-                if (!this._shouldRetryHTTP(res) || attempt >= this.maxRetries) {
-                    const failRes = this._makeResult(false, this._statusFromHttp(res.status), res.status, {
-                        code: parsed.errorCode || "ERROR",
-                        message: parsed.errorMessage || `Gagal (status ${res.status})`
-                    }, url, attempt, this._nowMs() - startAll, retried, requestId, parsed.data);
+    //             // Error handling untuk non-ok status
+    //             if (!this._shouldRetryHTTP(res) || attempt >= this.maxRetries) {
+    //                 const failRes = this._makeResult(false, this._statusFromHttp(res.status), res.status, {
+    //                     code: parsed.errorCode || "ERROR",
+    //                     message: parsed.errorMessage || `Gagal (status ${res.status})`
+    //                 }, url, attempt, this._nowMs() - startAll, retried, requestId, parsed.data);
                     
-                    this._safeToast("error", failRes.error.message);
-                    return failRes;
-                }
+    //                 this._safeToast("error", failRes.error.message);
+    //                 return failRes;
+    //             }
 
-                retried = true;
-                await this._delay(this._computeBackoff(attempt, this.retryDelay, res));
+    //             retried = true;
+    //             await this._delay(this._computeBackoff(attempt, this.retryDelay, res));
 
-            } catch (err) {
-                clearTimeout(timeoutId);
-                const code = await this._classifyFetchError(err);
+    //         } catch (err) {
+    //             clearTimeout(timeoutId);
+    //             const code = await this._classifyFetchError(err);
 
-                if (code === "ABORTED" && attempt >= this.maxRetries) {
-                    return this._makeResult(false, "ABORTED", null, { 
-                        code, 
-                        message: "Request Timeout setelah beberapa kali mencoba." 
-                    }, url, attempt, this._nowMs() - startAll, retried, requestId);
-                }
+    //             if (code === "ABORTED" && attempt >= this.maxRetries) {
+    //                 return this._makeResult(false, "ABORTED", null, { 
+    //                     code, 
+    //                     message: "Request Timeout setelah beberapa kali mencoba." 
+    //                 }, url, attempt, this._nowMs() - startAll, retried, requestId);
+    //             }
 
-                if (attempt >= this.maxRetries) {
-                    const fail = this._makeResult(false, code, null, { 
-                        code, 
-                        message: this._readableFetchError(err, code) 
-                    }, url, attempt, this._nowMs() - startAll, retried, requestId);
+    //             if (attempt >= this.maxRetries) {
+    //                 const fail = this._makeResult(false, code, null, { 
+    //                     code, 
+    //                     message: this._readableFetchError(err, code) 
+    //                 }, url, attempt, this._nowMs() - startAll, retried, requestId);
                     
-                    this._safeToast("error", fail.error.message);
-                    return fail;
-                }
+    //                 this._safeToast("error", fail.error.message);
+    //                 return fail;
+    //             }
 
-                retried = true;
-                const backoff = this._computeBackoff(attempt, this.retryDelay);
-                this._log(`🔄 Retrying GET in ${backoff}ms due to:`, code);
-                await this._delay(backoff);
-            }
-        }
-    }
+    //             retried = true;
+    //             const backoff = this._computeBackoff(attempt, this.retryDelay);
+    //             this._log(`🔄 Retrying GET in ${backoff}ms due to:`, code);
+    //             await this._delay(backoff);
+    //         }
+    //     }
+    // }
 
     // --- Private Helper yang disempurnakan ---
+    
     async _classifyFetchError(err) {
         if (err.name === 'AbortError' || err === 'TIMEOUT') return "TIMEOUT";
         const isOnline = await isReallyOnline()

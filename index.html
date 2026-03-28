@@ -107,7 +107,7 @@
                     </div>
 
                     <!-- Transaksi -->
-                    <div id="transaksi" class="content w-100 dis-none transparent">
+                    <div id="transaksi" class="content w-100 dis-none">
                         <div class="content-loader">
                             <div class="shimer shimer-circle"></div>
                             <div class="shimer shimer-75"></div>
@@ -888,11 +888,12 @@
 
                     <!-- Add Form -->
                     <div id="add" class="content w-100 dis-none">
-                        <div class="content-loader" id="add-shimer">
+                        <div class="content-loade dis-none" id="add-shimer">jfhwejfhwhf
                             <div class="shimer shimer-circle"></div>
                             <div class="shimer shimer-75"></div>
                             <div class="shimer shimer-50"></div>
                         </div>
+
                         <div class="flex-beetwen">
                             <h3 class="uppercase pb-1 m-0 flex-start items-end gap-20"><i class="fas fa-list fz-40"></i> Form</h3>
                         </div>
@@ -1471,7 +1472,7 @@
                             </div>
 
                             <!-- form barang -->
-                            <div id="form-tambah" data-form="tambah" class="forms w-100 h-100 dis-none">
+                            <div id="form-tambah" data-form="tambah" class="forms w-100 h-100 dis-none">    
                                 <div class="flex-strech gap-10">
 
                                     <!-- Foto Barang -->
@@ -1486,7 +1487,7 @@
                                         <div class="form-group w-100 br-orange borad-10">
                                             <label for="file-input" class="form-label">Foto Barang <span class="fz-8">Max 5 MB</span></label>
                                             <div class="upload-wrapper m-0 p-0 w-100">
-                                                <input type="file" id="file-input" class="hidden-input" accept="image/*">
+                                                <input type="file" id="item-file-add"  data-label="link" class="hidden-input" accept="image/*">
                                                 <label for="file-input" class="custom-button flex-start gap-10 p-10 borad-10">
                                                     <span class="icon"><i class="fas fa-file clr-orange"></i></span> Pilih File
                                                 </label>
@@ -1501,16 +1502,16 @@
                                         <!-- Kode Barang -->
                                         <div class="form-group w-100">
                                             <label class="form-label">Kode Barang</label>
-                                            <input type="text" name="kode_barang" class="form-input" placeholder="Contoh: BRG-001">
+                                            <input id="item-code-add" data-label="code" type="text" name="kode_barang" class="form-input" placeholder="Contoh: BRG-001">
                                         </div>
                                         
                                         <!-- Nama Barang -->
                                         <div class="form-group w-100">
                                             <label class="form-label">Nama Barang</label>
-                                            <input type="text" name="nama_barang" class="form-input" placeholder="Masukan Nama Barang">
+                                            <input id="item-name-add"  data-label="name" type="text" name="nama_barang" class="form-input" placeholder="Masukan Nama Barang">
                                         </div>
 
-                                        <!-- Selector Barang -->
+                                        <!-- Tipe Barang -->
                                         <div class="form-group w-100">
                                             <label class="form-label">Selector Barang</label>
                                             <div class="select-custom borad-10 fz-14 grid-center w-100">
@@ -1524,14 +1525,15 @@
                                                         <div class="option" data-value="Select 02">Select 02</div>
                                                         <div class="option" data-value="Select 03">Select 03</div>
                                                     </div>
-                                                    <input type="hidden" name="sumber" class="select-input" id="maku-value">
+                                                    <input type="hidden" name="sumber" class="select-input" id="item-type-add"  data-label="type">
                                                 </div>
                                             </div>
                                         </div>
                                         
+                                        <!-- Note Barang -->
                                         <div class="form-group w-100">
                                             <label class="form-label">Keterangan</label>
-                                            <textarea name="pengambil" class="form-textarea" placeholder="Keterangan"></textarea>
+                                            <textarea id="item-note-add" name="pengambil" data-label="note" class="form-textarea" placeholder="Keterangan"></textarea>
                                         </div>
                                         
                                     </div>
@@ -1617,6 +1619,7 @@
                                 
 
                             </div>
+
                         </div>
                         
                     </div>
@@ -1654,6 +1657,8 @@
         </div>
         
     </div>
+
+    <div id="notif-box" class=""></div>
 
     <script type="module" src="main.js"></script>
    

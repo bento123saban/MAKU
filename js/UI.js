@@ -10,6 +10,7 @@ import { initGoogleLogin } from "./device";
 // import INVENTORY from "./inventory"
 
 // Async Function
+
 export async function isReallyOnline() {
     // 1. Cek dasar: Jika browser bilang offline, biasanya memang offline.
     if (typeof navigator !== "undefined" && !navigator.onLine) {
@@ -108,6 +109,7 @@ export function CustomSelect (selector = '.custom-select-container', callback = 
             const val = option.getAttribute('data-value') || '';
             const text = option.innerHTML;
             const clrClass = option.getAttribute('data-clr');
+            hiddenInput.dataset.clr = clrClass
 
             // 1. Update Span & Simpan data-value asli
             if (triggerSpan) {
@@ -120,6 +122,7 @@ export function CustomSelect (selector = '.custom-select-container', callback = 
             if (hiddenInput) {
                 hiddenInput.value = val;
                 hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+                hiddenInput.dataset.clr = clrClass
             }
 
             // 3. Update Visual Active State pada Opsi
@@ -500,7 +503,10 @@ export function UI_clearPopUp () {
     document.querySelector("#pop-up").classList.add("dis-none")
     document.querySelectorAll(".pop-up").forEach(popup => popup.classList.add("dis-none"))
 }
-export function UI_Login(text = "") {
+export async function UI_Login(text = "") {
+    // return UI_Main()
+    const isOnline = await isReallyOnline()
+    if (!isOnline.confirm) return UI_Offline()
     console.log("UI Login " + text)
     UI_clearPopUp()
     document.querySelector("#login").classList.remove("dis-none")
@@ -539,6 +545,17 @@ export function UI_Alert(text = "") {
     document.querySelector("#alert").classList.remove("dis-none")
     document.querySelector("#alert-text").textContent = text
 }
+export function UI_Notif (text = "", color = "green", timeout = 4000) {
+    const notifBox  = document.querySelector("#notif-box")
+    const ntf       = document.createElement("div")
+    ntf.className = "notif-box items-start gap-10 flex-end " + color
+    ntf.innerHTML = `
+        <p class="p-0 m-0">${text}</p>
+        <i class="fas fa-close p-3 pointer notif-close"></i>
+    `
+    notifBox.appendChild(ntf)
+    setTimeout(()=> ntf.remove(), timeout)
+}
 export function UI_Play () {
     document.addEventListener('contextmenu', (e) => e.preventDefault());
 
@@ -552,6 +569,8 @@ export function UI_Play () {
     // setChart()
 
     document.querySelectorAll(".content-loader").forEach(content => content.classList.remove("dis-none"))
-
+    window.addEventListener("click", (e) => {
+        if (e.target.classList.contains("notif-close")) e.target.closest(".notif-box").remove()
+    })
 }
 
