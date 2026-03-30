@@ -3,12 +3,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 import { formStart } from "./form";
 import { initGoogleLogin } from "./device";
-// import REQUEST from "./request";
-// import TRANSACTION from "./transaksi"
-// import FORM from "./form";
-// import DEVICE from "./device";
-// import INVENTORY from "./inventory"
-
+import TRANSACTION from "./transaksi";
 // Async Function
 
 export async function isReallyOnline() {
@@ -337,13 +332,14 @@ export function themeChange () {
     
     UI_log("Theme Change ✅")
 }
-export function setChart () {
+export async function setChart (data) {
     Chart.register(ChartDataLabels)
+
     const lineData = {
         labels: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"],
         datasets: [{
             label: 'Barang Masuk',
-            data: [0,65,90, 59, 80, 81, 56, 55, 40, 59, 80, 81, 56, 55, 40],
+            data: data.lineMasuk,
             fill: false,
             borderColor: 'deepskyblue',
             tension: 0.4,
@@ -352,7 +348,7 @@ export function setChart () {
         },
         {
             label: 'Barang Keluar',
-            data: [0,56, 89, 30, 23, 1, 55, 89, 56, 89, 30, 23, 1, 55],
+            data: data.lineKeluar,
             fill: false,
             borderColor: 'limegreen',
             tension: 0.4,
@@ -407,7 +403,7 @@ export function setChart () {
     const availableData = {
         labels: ['Ready','Habis'],
         datasets: [{
-            data: [37, 2],
+            data: [data.available, data.unavailable],
             fill: true, 
             backgroundColor: ['#00ab00', "darkgrey"], // Warna area (transparan)
             spacing: 2,
@@ -492,7 +488,12 @@ export function generateUUID() {
 export function bufferToBase64(buffer) {
     return btoa(String.fromCharCode(...new Uint8Array(buffer)));
 }
-
+export function UI_ClearShimmer (elm = null) {
+    console.log("")
+    console.log("[UI] Clear shimmer")
+    if (!elm) return document.querySelectorAll(".content-loader").forEach(content => content.classList.add("dis-none"))
+    elm.classList.add("dis-none")
+    }
 export function UI_log() { 
     try { 
         var args = Array.prototype.slice.call(arguments);
@@ -521,14 +522,17 @@ export function UI_Loader (text ="", all = false) {
     document.querySelector("#loader").classList.remove("dis-none")
     document.querySelector("#loader-text").textContent = text
 }
-export function UI_Main () {
+export async function UI_Main () {
     console.log("UI Main")
     document.querySelector("#login").classList.add("dis-none")
     document.querySelector("#main").classList.remove("dis-none")
     document.querySelector("#login-content").classList.add("dis-none")
     UI_Play()
     UI_clearPopUp()
-    formStart()
+    await formStart()
+    await updateDashboard()
+    TRANSACTION.play()
+    UI_ClearShimmer()
 }
 export function UI_Offline(text = "OFFLINE") {
     document.querySelector("#pop-up").classList.remove("dis-none")
@@ -566,7 +570,6 @@ export function UI_Play () {
 
     navBar()
     themeChange()
-    // setChart()
 
     document.querySelectorAll(".content-loader").forEach(content => content.classList.remove("dis-none"))
     window.addEventListener("click", (e) => {
@@ -574,3 +577,32 @@ export function UI_Play () {
     })
 }
 
+export async function updateDashboard () {
+    
+    const counter = await window.DB.getAll("counter")
+
+    const trxHeader     = counter.find(data => data.type === "trxHeader")
+    const hedaerCount   = trxHeader.count
+    const headerMonth   = trxHeader?.month
+    const lineMasuk     = [headerMonth.januari.in, headerMonth.februari.in, headerMonth.maret.in, headerMonth.april.in, headerMonth.mei.in, headerMonth.juni.in, headerMonth.juli.in, headerMonth.agustus.in, headerMonth.september.in, headerMonth.oktober.in, headerMonth.november.in, headerMonth.desember.in]
+    const lineKeluar    = [headerMonth.januari.out, headerMonth.februari.out, headerMonth.maret.out, headerMonth.april.out, headerMonth.mei.out, headerMonth.juni.out, headerMonth.juli.out, headerMonth.agustus.out, headerMonth.september.out, headerMonth.oktober.out, headerMonth.november.out, headerMonth.desember.out]
+
+    const stocks        = counter.find(data => data.type === "stocks")
+    const available     = stocks?.available
+    const unavailable   = stocks?.unavailable
+    const total         = stocks.total
+
+    const items         = counter.find(data => data.type === "items")
+    const itemsCount    = items.count
+
+    document.querySelector("#trx-boxes").textContent    = hedaerCount
+    document.querySelector("#items-boxes").textContent  = itemsCount
+    document.querySelector("#qty-boxes").textContent    = total
+
+    setChart({
+        lineMasuk   : lineMasuk,
+        lineKeluar  : lineKeluar,
+        available   : available,
+        unavailable : unavailable
+    })
+}

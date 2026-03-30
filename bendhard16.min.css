@@ -448,7 +448,7 @@ input::-webkit-inner-spin-button {
     /* border:  none !important; */
 }
 .clr-dark-pink {
-    color: #FF002F;
+    color: #FF002F !important;
 }
 .br-dark-pink {
     border-color: #FF002F !important;
@@ -1023,6 +1023,7 @@ input::-webkit-inner-spin-button {
   .context-menu .menu-item {
     padding: 5px 10px;
     cursor: pointer;
+    color: white;
   }
   
   .context-menu .menu-item:hover {

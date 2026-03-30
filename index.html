@@ -64,7 +64,7 @@
 
                     <!-- Dashboard -->
                     <div id="dashboard" class="content scroll w-100 h-100">
-                        <div class="content-loader">
+                        <div class="content-loader" id="dashboard-shimmer">
                             <div class="shimer shimer-circle"></div>
                             <div class="shimer shimer-line shimer-75"></div>
                             <div class="shimer shimer-line shimer-50"></div>
@@ -72,22 +72,22 @@
                         <h3 class="uppercase pb-1 m-0 flex-start items-end gap-20"><i class="fas fa-chart-line fz-40"></i> Dashboard</h3><br>
                         
                         <!-- Boxes -->
-                        <div id="boxes" class="w-100 gap-10 p-0 m-0 hidden flex-start dis-none">
+                        <div id="boxes" class="w-100 gap-10 p-0 m-0 hidden flex-start">
                             <div class="boxes p-15 borad-20 blue">
                                 <i class="fas fa-handshake"></i>
-                                <h1 class="align-center p-0 m-0">4</h1>
+                                <h1 class="align-center p-0 m-0" id="trx-boxes">4</h1>
                                 <span class="p-0 m-0 mb-1"> Transaksi</span>
                             </div>
                             <br>
                             <div class="boxes p-15 borad-20 orange">
                                 <i class="fas fa-boxes"></i>
-                                <h1 class="align-center p-0 m-0">40</h1>
+                                <h1 class="align-center p-0 m-0" id="items-boxes">40</h1>
                                 <span class="p-0 m-0 mb-1"> Barang</span>
                             </div>
                             <br>
                             <div class="boxes p-15 borad-20 purple">
                                 <i class="fas fa-database"></i>
-                                <h1 class="align-center p-0 m-0">400</h1>
+                                <h1 class="align-center p-0 m-0" id="qty-boxes">400</h1>
                                 <span class="p-0 m-0 mb-1"> Qty</span>
                             </div>
                         </div>
@@ -545,10 +545,11 @@
                                                 <th><span>#</span></th>
                                                 <th><span>Tanggal</span></th>
                                                 <th><span>Code</span></th>
-                                                <th><span>Pengawas</span></th>
+                                                <th><span>Staff</span></th>
                                                 <th><span>Event</span></th>
                                                 <th><span>Barang</span></th>
                                                 <th><span>Qty</span></th>
+                                                <th><span>Note</span></th>
                                             </thead>
                                             <tbody class="fz-14">
                                                 <tr class="">

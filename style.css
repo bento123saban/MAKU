@@ -589,12 +589,12 @@ i.far.fa-circle {
 }
 i.far.fa-circle::after {
     content: "";
-    width: 90%;
-    height: 2px;
+    height: calc(50% + 12px);
+    width: 2px;
     position: absolute;
     /* top: 0; */
     /* left: 50%; */
-    transform: rotate(-45deg);
+    transform: rotate(45deg);
     background-color: white;
     border-radius: 1000px;
 }

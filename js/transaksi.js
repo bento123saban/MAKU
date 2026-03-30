@@ -1,3 +1,5 @@
+import { CustomContextMenu } from "./UI"
+
 
 class trx {
     constructor () {
@@ -10,6 +12,8 @@ class trx {
         this.calendarDate       = new Date()
         this.calendarData       = null
         this.monthControl       = document.querySelector("#month-control")
+        this.onMonth            = new Date().toLocaleDateString("in-ID",{month : "long"})
+        this.onYear             = new Date().toLocaleDateString("in-ID",{year : "numeric"})
         
     } 
     makuChange () {
@@ -171,38 +175,35 @@ class trx {
             }
         });
     }
-    renderTrxTable() {
+    async renderTrxTable() {
+        const trxHeader = await window.DB.getAll("trxHeader")
+        console.log(trxHeader)
         const tableBody = document.querySelector("#trx-table tbody");
-    
+        
+
         // Pastikan tableBody ditemukan
         if (!tableBody) return;
 
         // Kosongkan baris yang ada di HTML sebelumnya
         tableBody.innerHTML = "";
 
-        this.getData()[1].forEach(item => {
-            // Generate list pengawas dengan format span per baris
-            const pengawasHtml = item.pengawas
-                .map(nama => `<span>- ${nama}</span>`)
-                .join("");
-
+        trxHeader.forEach((item, i)=> {
+            if (item.month.toUpperCase() !== this.onMonth.toUpperCase()) return
             // Buat elemen baris (tr)
             const row = document.createElement("tr");
             row.dataset.code = item.code
+            row.dataset.type = item.type
             
             // Isi konten baris sesuai struktur HTML yang Anda minta
             row.innerHTML = `
-                <td class="pointer"><span class="borad-5 w-100 h-100 green p-5 tr-front grid-center">${item.id}</span></td>
-                <td>${item.tanggal}</td>
+                <td class="pointer"><span class="borad-5 w-100 h-100 ${item.type === "OUT" ? "blue" : "green"} p-5 tr-front grid-center">${(i + 1 <= 9) ? "0" + (i+1) : i+1}</span></td>
+                <td>${item.dateCreate}</td>
                 <td>${item.code}</td>
-                <td>
-                    <div class="flex-start flex-column align-left items-start">
-                        ${pengawasHtml}
-                    </div>
-                </td>
-                <td>${item.event}</td>
-                <td>${item.barang}</td>
-                <td>${item.qty}</td>
+                <td>${item.staff}</td>
+                <td>${item.typeNote}</td>
+                <td>${item.itemsCount}</td>
+                <td>${item.stocksCount}</td>
+                <td>${item.stocksCount}</td>
             `;
 
             // Masukkan baris ke dalam tbody
@@ -234,19 +235,20 @@ class trx {
 
     }
     renderCalendar() {
-        
-        const last      = new Date(this.calendarDate.getFullYear(), this.calendarDate.getMonth() + 1, 0),
+        const last      = new Date(this.calendarDate.getFullYear(), this.calendarDate.getMonth() + 1, 0).getDate(),
             month       = this.calendarDate.getMonth(),
-            monthName   = this.calendarDate.toLocaleDateString("id-ID", { month: "long", year: "numeric" }).toUpperCase(),
+            monthName   = this.calendarDate.toLocaleDateString("id-ID", { month: "long"}).toUpperCase(),
             year        = this.calendarDate.getFullYear(),
             firstDay    = new Date(year, month, 1).getDay()
 
-        this.monthControl.textContent = monthName
+        // return console.log(last)
+        this.onMonth = monthName
+        this.monthControl.textContent = monthName + " " + year
     
         const container = document.getElementById('calendar-date');
         container.innerHTML = ((firstDay) => Array(firstDay).fill("<span></span>").join(""))(firstDay   )
 
-        for (let i = 1; i <= 31; i++) {
+        for (let i = 1; i <= last; i++) {
             const dayStr = i.toString().padStart(2, '0');
             const dayData = this.getData()[2].find(d => d.date === dayStr) || { date: dayStr, low: true, masuk: 0, keluar: 0 };
             const html = `
@@ -262,7 +264,8 @@ class trx {
             `;
             container.innerHTML += html;
         }
-        // ui.CustomContextMenu()
+        this.renderTrxTable()
+        CustomContextMenu()
     }
     renderTRXDetail(elm) {
         
@@ -293,9 +296,8 @@ class trx {
         this.calendarSet()
         this.makuChange()
         this.typeChange()
-        this.renderItemsTable()
-        this.renderTrxTable()
         this.renderCalendar();
+        CustomContextMenu()
     }
 }
 
