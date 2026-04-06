@@ -160,6 +160,7 @@ input::-webkit-inner-spin-button {
 
 /* opacity set0 */
 .opacity-0 {opacity: 0 !important;}
+.opacity-10 {opacity: .1 !important;}
 .opacity-30 {opacity: .33 !important;}
 .opacity-50 {opacity: .5 !important;}
 .opacity-100 {opacity: 1 !important;}
@@ -262,6 +263,8 @@ input::-webkit-inner-spin-button {
 .borad-10 {border-radius: 10px !important}
 .borad-15 {border-radius: 15px !important}
 .borad-20 {border-radius: 20px !important}
+.borad-30 {border-radius: 30px !important}
+.borad-40 {border-radius: 40px !important}
 
 .hr {
     height: 2px;
@@ -741,15 +744,25 @@ input::-webkit-inner-spin-button {
 }
 
 
-
+.spin {
+    animation: spining 1s linear infinite;
+}
+@keyframes spining {
+    to {
+        transform: rotate(360deg);
+    }
+}
 
 
 /* Custom Select */
 
 .select-custom {
     width: 100% !important;
-    max-width: 500px !important;
+    max-width: 300px !important;
     min-width: 200px;
+}
+#items-selector-add {
+    max-width: 100vw !important;
 }
 /* --- CSS CORE --- */
 .custom-select-container {
@@ -1019,6 +1032,7 @@ input::-webkit-inner-spin-button {
     background-color: #333;
     padding: 10px;
     border-radius: 20px;
+    z-index: 1000000;
   }
   .context-menu .menu-item {
     padding: 5px 10px;

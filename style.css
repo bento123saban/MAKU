@@ -114,7 +114,7 @@
 
 /* Navbar */
 nav {
-    width: clamp(250px, 20%, 400px);
+    width: 250px;
 }
 .nav-group {
     padding: 10px;
@@ -215,13 +215,13 @@ nav {
 /* Calendar */
 #calendar-box {
     width: 100%;
-    height: 540px !important;
+    height: 560px !important;
     overflow: hidden;
 }
 #calendar {
     height: 100%;
     width: 100%;
-    max-width: 380px;
+    max-width: 400px;
 }
 #calendar-head i {
     width: 40px;
@@ -266,15 +266,14 @@ nav {
 #calendar-date {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
+    gap: 10px;
 }
 .date-box {
-    cursor: pointer;
-    /* background-color: rgba(105, 105, 105, .15); */
+    /* cursor: pointer; */
 }
 .date-content {
     border-radius: 30%;
-    /* border: 1.3px solid lightgray; */
+    border: 1px solid lightgray;
     width: 100%;
     aspect-ratio: 1;
 }
@@ -285,7 +284,8 @@ nav {
     display: flex;
     flex-direction: column;
     justify-content: stretch;
-    /* border: 1.3px solid lightgray; */
+    background-color: rgba(105, 105, 105, .5); 
+    border: 1.3px solid lightgray;
 }
 
 /* detail search */
@@ -324,6 +324,16 @@ span.dot {
     /* background-color: transparent; */
 }
 
+#antar-tanggal {
+    position: absolute;
+    left: 0;
+    top: 0;
+    backdrop-filter: blur(1000px);
+    padding: 15px;
+    width: 100%;
+    border-radius: 10px;
+}
+
 /* Hide spin buttons */
 /* input[type="date"]::-webkit-inner-spin-button {
   color: dimgray;
@@ -338,17 +348,20 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     outline: none;
 } */
 
+#render-counter {
+    padding-right: 30px;
+}
 
 
 /* Trx list */
 #cal-trx-list, #cal-items-list {
-    height: 470px;
+    height: 418px;
     overflow-y: overlay;
     scrollbar-color: grey transparent; /* HEX dengan Alpha 00 (transparan total) */
     scrollbar-width: thin;
     background: transparent;
     width: 100%;
-    max-width: 750px;
+    max-width: 780px;
     overflow: auto;
 }
 .cal-trx-date {
@@ -401,9 +414,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 
-table#items-table, table#trx-table, #inventory-table {
+table#items-table, table#trx-table {
     width: fit-content;
-    min-width:900px;
+    min-width: 1500px;
     border-spacing: 3px;
 }
 #items-table thead, #trx-table thead, #inventory-table thead {
@@ -433,34 +446,27 @@ table#items-table, table#trx-table, #inventory-table {
     aspect-ratio: 1;
     width: 30px !important;
 }
+#items-table {min-width: 900px !important;}
 #items-table tr td, #trx-table tr td, #inventory-table tr td {
     padding: 4px 10px;
 }
 #items-table tr td:nth-child(1) {
-    width: 50px;
+    width: 50px !important;
     text-align: right;
 }
 #items-table tr td:nth-child(2) {
-    width: 30px;
+    width: 120px;
     text-align: center;
-
+    /* display: none !important; */
 }
 #items-table tr td:nth-child(3) {
-    width: 110px;
+    width: 250px;
 }
 #items-table tr td:nth-child(4) {
-    width: 300px;
+    width: 120px;
 }
 #items-table tr td:nth-child(5) {
-    width: 70px;
-    text-align: center;
-}
-#items-table tr td:nth-child(6) {
-    width: 70px;
-    text-align: center;
-}
-#items-table tr td:nth-child(7) {
-    width: 200px;
+    width: 120px;
     text-align: center;
 }
 
@@ -472,22 +478,25 @@ table#items-table, table#trx-table, #inventory-table {
     width: 150px;
 }
 #trx-table tr td:nth-child(3) {
-    width: 150px;
+    width: 100px;
 }
 #trx-table tr td:nth-child(4) {
-    width: 300px;
+    width: 200px;
 }
 #trx-table tr td:nth-child(5) {
-    width: 200px;
+    width: 120px;
     text-align: center;
 }
 #trx-table tr td:nth-child(6) {
-    width: 70px;
+    width: 120px;
     text-align: center;
 }
 #trx-table tr td:nth-child(7) {
-    width: 70px;
-    text-align: center;
+    width: 400px;
+    text-align: left;
+}
+#trx-table tr td:nth-child(8) {
+    text-align: left;
 }
 
 
@@ -515,6 +524,10 @@ table#items-table, table#trx-table, #inventory-table {
     aspect-ratio: 1;
     width: 100px !important;
 }
+.item-detail-name {
+    width: 100%;
+    display: block;
+}
 .itms-group {
     padding: 5px 10px;
 }
@@ -539,20 +552,29 @@ span.in-out {
     overflow: auto;
 }
 
-
+th.sortable {
+    position: relative;
+    cursor: pointer;
+}
+th.sortable i {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+}
 
 
 
 
 
  #inventory-list  {
-    height: 370px;
+    height: 420px;
     overflow-y: overlay;
     scrollbar-color: grey transparent; /* HEX dengan Alpha 00 (transparan total) */
     scrollbar-width: thin;
     background: transparent;
     width: 100%;
-    max-width: 2050px;
+    max-width: 1210px;
     overflow: auto;
  }
 #inven-search-box {
@@ -598,25 +620,34 @@ i.far.fa-circle::after {
     background-color: white;
     border-radius: 1000px;
 }
+#inventory-table {
+    min-width: 1000px;
+}
 table#inventory-table th span {
     padding: 5px 10px;
     font-weight: normal;
-    border: 2px solid deepskyblue;
+    border: 2px solid grey !important;
     border-radius: 5px;
     display: block;
     backdrop-filter: blur(100px);
 }
 #inventory-table tr td:nth-child(1) {
     /* Style kamu di sini */
-    /* background-color: #f0f0f0; */
+    background-color: #f0f0f0;
     text-align: center;
     width: 50px;
+}
+#inventory-table tr td:nth-child(2) {
+    /* Style kamu di sini */
+    background-color: #f0f0f0;
+    text-align: center;
+    width: 150px;
 }
 #inventory-table tr td:nth-child(n+4):nth-child(-n+8) {
     /* Style kamu di sini */
     /* background-color: #f0f0f0; */
     text-align: center;
-    width: 50px;
+    width: 100px;
 }
 
 
@@ -661,7 +692,7 @@ table#inventory-table th span {
     position: relative;
     display: flex;
     min-width: 200px;
-    max-width: 400px;
+    max-width: 100%;
     border: 2px solid transparent;
 }
 .form-group .form-label {

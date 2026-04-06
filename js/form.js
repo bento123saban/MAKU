@@ -1,12 +1,12 @@
 
 import { getDevice } from "./device";
-import { UI_Alert, UI_Login, UI_Notif } from "./UI";
+import { UI_Alert, UI_Login, UI_Notif, defaultFetchResponse } from "./UI";
 
 const jenisInput = document.querySelector("#form-jenis-input")
 const submitBtn  = document.querySelector("#form-submit-button")
 const forms      = document.querySelectorAll(".forms")
-const itemsUpdateButtons = document.querySelectorAll(".items-update-button")
 const navFrom    = document.querySelector("#tambah-button")
+const itemsUpdateButtons = document.querySelectorAll(".items-update-button")
 
 
 export async function updateItems (loaderCallback = null) {
@@ -21,17 +21,16 @@ export async function updateItems (loaderCallback = null) {
             ...user
         })
         console.log("[Update Barang] Response : ", resp)
-        if (resp.data?.confirm) {
-            const data      = resp.data.data
-            await window.DB.upsert("items", data.list)
-            await  window.DB.upsert("counter", {type : "items", count : data.count})
-            console.log("[Update Barang] Data barang sudah terupdate ")
-            return {confirm : true, data : data}
-        }
-        if (!resp.confirm || !resp.data.confirm) {
-            console.log("[Update Barang] Gagal : " + (!resp.confirm) ? resp.error.message : resp.data.msg)
-            return {confirm : false, msg : "[Update Barang] Gagal : " + (!resp.confirm) ? resp.error.message : resp.data.msg}
-        }
+
+        await defaultFetchResponse(resp, {
+            success : async (param) => {
+                const data      = resp.data.data
+                await window.DB.upsert("items", data.list)
+                await  window.DB.upsert("counter", {type : "items", count : data.count})
+                console.log("[Update Barang] Data barang sudah terupdate ")
+            },
+            note : "[Update Barang ] "
+        })
         console.log("")
     } catch (e) {
         console.log("[Update Barang] Gagal : " + e.message)
@@ -54,32 +53,32 @@ export async function updateTRX (loaderCallback = null) {
             ...user
         })
         console.log("[Update Transaksi] Response : ", resp)
-        if (resp.data?.confirm) {
-            const trxHeader = resp.data.header
-            const trxItems  = resp.data.items
-            await window.DB.upsert("trxHeader", trxHeader.list)
-            await window.DB.upsert("counter", {
-                type    : "trxHeader",
-                count   : trxHeader.count,
-                month   : trxHeader.month
-            })
 
-            await window.DB.upsert("trxItems", trxItems.list)
-            await window.DB.upsert("counter", {
-                type    : "trxItems",
-                month   : trxItems.month
-            })
-            console.log("[Update Transaksi] Data transaksi sudah terupdate ")
-            return {confirm : true}
-        }
-        
-        if (!resp.confirm || !resp.data.confirm) {
-            console.log("[Update Transaksi] Gagal : " + (!resp.confirm) ? resp.error.message : resp.data.msg)
-            return {confirm : false, msg : "[Update Transaksi] Gagal : " + (!resp.confirm) ? resp.error.message : resp.data.msg}
-        }
-        console.log("")
+        await defaultFetchResponse(resp, {
+            success : async (param) => {
+                try {
+                    const trxHeader = param.data.header
+                    const trxItems  = param.data.items
+                    await window.DB.upsert("trxHeader", trxHeader.list)
+                    await window.DB.upsert("counter", {
+                        type    : "trxHeader",
+                        count   : trxHeader.count,
+                        month   : trxHeader.month
+                    })
+                    await window.DB.upsert("trxItems", trxItems.list)
+                    await window.DB.upsert("counter", {
+                        type    : "trxItems",
+                        month   : trxItems.month
+                    })
+                    console.log("[Update Transaksi] Data transaksi sudah terupdate ")
+                } catch (e) {
+                    return UI_Notif(e.message)
+                }
+            },
+            note : "[Update Transaksi] "
+        })
     } catch (e) {
-        console.log("[Update Transaksi] Gagal : " + e.message)
+        console.log("[Update Transaksi] Gagal : " + e)
         return {
             confirm : false,
             msg     : "[Update Transaksi] Gagal : " + e.message
@@ -99,24 +98,21 @@ export async function updateStocks (loaderCallback = null) {
             ...user
         })
         console.log("[Update Stock] Response : ", resp)
-        if (resp.data?.confirm) {
-            const data      = resp.data.data
-            await window.DB.upsert("stocks", data.list)
-            await window.DB.upsert("counter", {
-                type        : "stocks",
-                unavailable : data.unavailable,
-                available   : data.available,
-                total       : data.total
-            })
-            console.log("[Update Stock] Data stock sudah terupdate ")
-            return {confirm : true, data : data}
-        }
-        if (!resp.confirm || !resp.data?.confirm) {
-            console.log("[Update Stock] Gagal : " + (!resp.confirm) ? resp.error.message : resp.data.msg)
-            return {confirm : false, msg : "[Update Stock] Gagal : " + (!resp.confirm) ? resp.error.message : resp.data.msg}
-        }
-        console.log("[Update Stock] Gagal : Undefined")
-        console.log("")
+
+        await defaultFetchResponse(resp, {
+            success : async (param) => {
+                const data      = param.data.data
+                await window.DB.upsert("stocks", data.list)
+                await window.DB.upsert("counter", {
+                    type        : "stocks",
+                    unavailable : data.unavailable,
+                    available   : data.available,
+                    total       : data.total
+                })
+                console.log("[Update Stock] Data stock sudah terupdate ")
+            },
+            note : "[Update Stock] "
+        })
     } catch (e) {
         console.log("[Update Stock] Gagal : " + e.message)
         return {
@@ -191,16 +187,14 @@ export async function addItem() {
 }
 
 export async function formStart () {
-    const updatetrx     = await updateTRX()
-    if (!updatetrx.confirm) return UI_Alert(updatetrx.msg)
+    const isOnline = await window.isReallyOnline()
+    if (!isOnline.confirm) return UI_Notif("Offline", "red")
+        
+    // const updatetrx     = await updateTRX()
+    // const updateitems   = await updateItems()
+    // const updatestocks  = await updateStocks()
 
-    const updateitems   = await updateItems()
-    if (!updateitems.confirm) return UI_Alert(updateitems.msg)
-
-    const updatestocks  = await updateStocks()
-    if (!updatestocks.confirm) return UI_Alert(updatestocks.msg)
-
-    console.log("")
+    // console.log("")
     navFrom.classList.remove("dis-none")
     document.querySelectorAll(".content-loader").forEach(load => load.classList.add("dis-none"))
     
@@ -211,405 +205,697 @@ export async function formStart () {
     }
     itemsUpdateButtons.forEach(btn => btn.onclick = async () => {
         btn.classList.add("spin")
-        const update = await updateItems()
-        if (!update.confirm) UI_Alert(update.msg)
+        await updateItems()
+        await updateStocks()
         btn.classList.remove("spin")
+        UI_Notif("Update Berhasil", "green")
     })
+
+    FormMasuk.init()
+    // FormKeluar.init()
+    // FormTambah.init()
+    // FormEdit.init() 
+
+    window.ITEMS    = await window.DB.getAll("items")
+    window.STOCKS   = await window.DB.getAll("stocks")
+
+    document.querySelector("#form-submit-button").onclick = (e) => {
+        if (jenisInput.value == "masuk") {
+            const data = FormMasuk.getData() || []
+            console.log(data)
+        }
+    }
 }
 
-/**
- * UPDATED KELUAR MODULE WITH STOCK CHECK
- */
-const KeluarModule = {
-    cart: [],
-
-    // 1. Tambah ke keranjang tetap sama, tapi pastikan stokTersedia ikut disimpan
-    addToCart: function(kode, nama, stokTersedia) {
-        if (stokTersedia <= 0) return alert("Stok Kosong! Tidak bisa mengeluarkan barang ini.");
-        
-        if (this.cart.some(item => item.kode === kode)) return alert("Barang sudah ada di list!");
-
-        this.cart.push({ 
-            kode: kode, 
-            nama: nama, 
-            stokMax: parseInt(stokTersedia), // Simpan batas maksimum stok
-            jumlah: 1 
-        });
-        this.renderCart();
-    },
-
-    // 2. Fungsi Validasi saat User mengubah angka jumlah di input
-    updateQty: function(kode, inputElement) {
-        const val = parseInt(inputElement.value);
-        const item = this.cart.find(i => i.kode === kode);
-
-        if (item) {
-            if (val > item.stokMax) {
-                alert(`Stok tidak mencukupi! Maksimal stok tersedia: ${item.stokMax}`);
-                inputElement.value = item.stokMax; // Paksa balik ke stok maksimal
-                item.jumlah = item.stokMax;
-            } else if (val <= 0 || isNaN(val)) {
-                inputElement.value = 1;
-                item.jumlah = 1;
-            } else {
-                item.jumlah = val;
-            }
-        }
-    },
-
-    // 3. Final Check sebelum Data Benar-benar dikirim ke GAS
-    validateBeforeSubmit: function() {
-        if (this.cart.length === 0) {
-            alert("Keranjang masih kosong!");
-            return false;
-        }
-
-        // Cari apakah ada jumlah yang melebihi stok (Double Check)
-        const overflowItems = this.cart.filter(item => item.jumlah > item.stokMax);
-        
-        if (overflowItems.length > 0) {
-            const namaBarang = overflowItems.map(i => i.nama).join(", ");
-            alert(`Gagal! Barang berikut melebihi stok: ${namaBarang}`);
-            return false;
-        }
-
-        return true;
-    },
-
-    getFinalPayload: function() {
-        if (!this.validateBeforeSubmit()) return null;
-
-        return {
-            action: 'BARANG_KELUAR',
-            header: {
-                tujuan: document.getElementById('tujuan-keluar-value').value,
-                pengambil: document.querySelector('input[name="pengambil"]').value,
-                tanggal: document.querySelector('input[name="tanggal_keluar"]').value
-            },
-            items: this.cart // Mengirim array barang yang sudah divalidasi
-        };
-    }
-};
-
-function processTransaction(payload) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const sheetMaster = ss.getSheetByName("MasterBarang");
-  const dataMaster = sheetMaster.getDataRange().getValues();
-
-  if (payload.action === 'BARANG_KELUAR') {
-    // Looping setiap barang yang mau dikeluarkan
-    for (let item of payload.items) {
-      // Cari baris barang di Master
-      let row = dataMaster.find(r => r[0] == item.kode); // r[0] adalah kolom Kode
-      let stokSekarang = row[3]; // r[3] contoh kolom Stok
-
-      if (stokSekarang < item.jumlah) {
-        throw new Error("Stok untuk " + item.nama + " tiba-tiba tidak mencukupi di server!");
-      }
-    }
+const FormMasuk = (() => {
+    // 1. State Management Terpusat
+    const state = { items: new Map(), files: [] };
+    // let src   = []
     
-    // Jika semua lolos cek, baru jalankan fungsi simpan
-    return simpanKeSheets(payload);
-  }
-}
+    // 2. DOM Selector Cache (Lebih cepat & ringkas)
+    const el = (id) => document.getElementById(id);
+    const dom = {
+        list    : el('items-form-masuk-list'),
+        search  : el('masuk-items-search'),
+        sumber  : el('sumber-masuk'),
+        ket     : el('keterangan-sumber-masuk'),
+        penerima: el('penerima-masuk'),
+        tgl     : el('tanggal-masuk'),
+        file    : el('file-input'),
+        find    : el('masuk-search-input')
+    };
 
-/**
- * FORM BARANG MASUK
- */
-const BarangMasukModule = {
-    // 1. Preview Gambar Dokumentasi (Opsional)
-    initPreview: function() {
-        const fileInput = document.getElementById('file-masuk');
-        if (fileInput) {
-            fileInput.addEventListener('change', function(e) {
-                // Logika notifikasi jumlah file yang dipilih
-                const label = e.target.nextElementSibling;
-                const count = e.target.files.length;
-                if (count > 0) {
-                    label.innerHTML = `<span class="icon"><i class="fas fa-check-circle clr-green"></i></span> ${count} File Terpilih`;
+    // 3. Render UI Reactive
+    const render = () => {
+        dom.list.innerHTML = state.items.size ? '' : '<div class="p-20 clr-grey grid-center">Belum ada barang dipilih</div>';
+        state.items.forEach((val, kode) => {
+            dom.list.insertAdjacentHTML('beforeend', `
+                <div class="form-items-group flex-beetwen w-100 gap-10" data-kode="${kode}">
+                    <i class="fas fa-trash p-7 borad-5 red pointer fz-14 btn-del"></i> |
+                    <div class="form-items-left flex-start items-start flex-column w-100">
+                        <span class="fz-12">${kode}</span>
+                        <span class="fz-18">${val.nama}</span>
+                    </div>
+                    <div class="flex-beetwen gap-10">
+                        <div class="form-icons-group p-5 borad-5">
+                            <span>Jumlah : </span>
+                            <input type="number" min="1" value="${val.qty}" class="masuk-qty">
+                        </div>
+                    </div>
+                </div>`);
+        });
+    };
+
+    const renderSearch = (list) => {
+        const html = list.map(item => {
+            return `
+                <tr>
+                    <td><i class="fas fa-plus-circle clr-green pointer"></i></td>
+                    <td>${item.code}</td>
+                    <td>${item.name}</td>
+                    <td><i class="fas fa-image pointer" onclick="window.location.href('${item.link}')"></i></td>
+                </tr>
+            `
+        }).join("")
+        dom.search.innerHTML = html
+    }
+
+    return {
+        // 4. Inisialisasi Event Listener
+        init: () => {
+            // A. Tambah Barang (Dari Tabel Search)
+            dom.search.addEventListener('click', e => {
+                if (!e.target.closest('.fa-plus-circle')) return;
+                const cells = e.target.closest('tr').cells;
+                const [kode, nama] = [cells[1].innerText, cells[2].innerText];
+                // Tambah Qty jika sudah ada, atau buat baru dengan Qty 1
+                const qty = state.items
+                state.items.set(kode, { nama, qty: (state.items.get(kode)?.qty || 0) + 1 });
+                render();
+            });
+
+            // B. Hapus & Update Qty (Delegation di List Container)
+            dom.list.addEventListener('click', e => {
+                if (e.target.classList.contains('btn-del')) {
+                    state.items.delete(e.target.closest('[data-kode]').dataset.kode);
+                    render();
                 }
             });
-        }
-    },
 
-    // 2. Ambil Data Form Masuk
-    getData: async function() {
-        const fileInput = document.getElementById('file-masuk');
-        let filesData = [];
+            dom.list.addEventListener('input', e => {
+                const target = e.target
+                const value = target.value
+                if (target.classList.contains('masuk-qty')) {
+                    const kode = e.target.closest('[data-kode]').dataset.kode;
+                    const stock = window.STOCKS.find(stok => stok.code == kode).stock
+                    if (stock <= value) {
+                        UI_Notif("Stock tidak cukup", "red")
+                        target.value = stock
+                    }
+                    state.items.get(kode).qty = parseInt((stoc <= value) ? stock : value) || 0; // Jika dikosongkan, set 0
+                }
+            });
 
-        // Jika ada file (nota/faktur), proses semua
-        if (fileInput && fileInput.files.length > 0) {
-            for (let file of fileInput.files) {
-                const base64 = await this.toBase64(file);
-                filesData.push({
-                    name: file.name,
-                    data: base64
-                });
+            // C. Handle File (Max 4 File, Max 10MB)
+            dom.file.addEventListener('change', e => {
+                const newFiles = Array.from(e.target.files);
+                if (state.files.length + newFiles.length > 4) return alert("Maksimal 4 file!");
+                if ([...state.files, ...newFiles].reduce((acc, f) => acc + f.size, 0) > 10485760) return alert("Total file melebihi 10MB!");
+                state.files.push(...newFiles);
+            });
+
+            dom.find.addEventListener("keyup", (e) => {
+                if (e.target.value == "") return renderSearch([])
+                let src = []
+                const value = e.target.value.toUpperCase()
+
+                window.ITEMS.forEach(item => {
+                    if (parseInt(item.stock <= 0)) return
+                    // console.log(item)
+                    const code  = item.code.toUpperCase()
+                    const name  = item.name.toUpperCase()
+                    if (code.indexOf(value) >= 0 || name.indexOf(value) >= 0) src.push({name : item.name, code : item.code, stock : item.stock, link : item.link})
+                })
+
+                renderSearch(src)
+            })
+
+            render(); // Initial render state kosong
+        },
+
+        // 5. Validasi Tahan Banting & Ambil Payload
+        getData: () => {
+            const errs = [];
+            
+            // Validasi Header (Otomatis toggle class 'br-red')
+            [
+                { val: dom.sumber.value, ref: dom.sumber, msg: "Sumber" },
+                { val: dom.penerima.value, ref: dom.penerima, msg: "Penerima" },
+                { val: dom.tgl.value, ref: dom.tgl, msg: "Tanggal" }
+            ].forEach(({ val, ref, msg }) => {
+                ref.classList.toggle('br-red', !val);
+                if (!val) errs.push(`${msg} wajib diisi!`);
+            });
+
+            // Validasi Items & Qty
+            if (!state.items.size) errs.push("Daftar barang masih kosong!");
+            state.items.forEach((val, kode) => {
+                const isInvalid = !val.qty || val.qty <= 0;
+                const inputEl = dom.list.querySelector(`[data-kode="${kode}"] .masuk-qty`);
+                
+                if (inputEl) inputEl.classList.toggle('br-red', isInvalid);
+                if (isInvalid) errs.push(`Jumlah barang "${val.nama}" belum diisi/valid!`);
+            });
+
+            // Stop jika ada error
+            if (errs.length) {
+                UI_Notif("⚠️ PERBAIKI DATA BERIKUT:\n\n- " + errs.join("\n- "), "red");
+                return null;
             }
+
+            // Kembalikan Object Bersih Siap Kirim
+            return {
+                header: { 
+                    sumber: dom.sumber.value, 
+                    keterangan: dom.ket.value, 
+                    penerima: dom.penerima.value, 
+                    tanggal: dom.tgl.value 
+                },
+                items: Array.from(state.items.entries()).map(([kode, data]) => ({ kode, ...data })),
+                files: state.files
+            };
         }
+    };
+})();
 
-        const payload = {
-            action: 'BARANG_MASUK',
-            header: {
-                sumber: document.getElementById('item-type-add')?.value || "", // Sumber pengadaan
-                penerima: document.querySelector('input[placeholder="Penerima Barang Masuk"]')?.value || "",
-                tanggal: document.querySelector('input[type="date"]')?.value || "",
-                keterangan: document.querySelector('textarea[placeholder="Keterangan"]')?.value || ""
-            },
-            // Di sini kita asumsikan barang masuk bisa banyak (bulk) atau satu per satu
-            // Jika satu per satu, ambil dari field input utama
-            items: [{
-                kode: document.getElementById('item-code-add')?.value || "",
-                nama: document.getElementById('item-name-add')?.value || "",
-                jumlah: parseInt(document.querySelector('input[type="number"]')?.value) || 0
-            }],
-            dokumentasi: filesData
-        };
-
-        // Validasi
-        if (!payload.items[0].kode || payload.items[0].jumlah <= 0) {
-            alert("Kode barang dan jumlah harus diisi dengan benar!");
-            return null;
-        }
-
-        return payload;
-    },
-
-    toBase64: file => new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-    })
-};
-
-// Inisialisasi event listener file
-// BarangMasukModule.initPreview();
-
-/**
- * SERVER COMMUNICATION
- */
-async function submitData(moduleType) {
-    let payload;
-    
-    // Tentukan modul mana yang sedang aktif
-    if (moduleType === 'TAMBAH') payload = await AddItemModule.getData();
-    if (moduleType === 'KELUAR') payload = KeluarModule.getFinalPayload();
-    if (moduleType === 'EDIT') payload = await EditModule.getData();
-
-    if (!payload) return;
-
-    console.log("Kirim ke GAS:", payload);
-
-    // Un-comment kode di bawah jika sudah diintegrasikan ke Google Apps Script:
-    /*
-    google.script.run
-        .withSuccessHandler(res => {
-            alert("Transaksi Berhasil!");
-            location.reload(); 
-        })
-        .withFailureHandler(err => alert("Gagal: " + err))
-        .processTransaction(payload);
-    */
-}
-
-// Bind ke tombol submit masing-masing
-document.getElementById('btn-submit-keluar')?.addEventListener('click', () => submitData('KELUAR'));
-document.getElementById('btn-save-item')?.addEventListener('click', () => submitData('TAMBAH'));
-document.getElementById('btn-update-item')?.addEventListener('click', () => submitData('EDIT'));
+// Eksekusi saat DOM Ready
+// document.addEventListener('DOMContentLoaded', FormMasuk.init);
 
 
-/**
- * FORM EDIT BARANG
- */
-const EditModule = {
-    // Fungsi ini dipanggil saat tombol Edit di tabel diklik
-    populateForm: function(data) {
-        document.getElementById('edit-code').value = data.kode;
-        document.getElementById('edit-name').value = data.nama;
-        document.getElementById('edit-type-value').value = data.tipe;
-        document.getElementById('edit-type-label').innerText = data.tipe;
-        
-        const preview = document.getElementById('preview-img-edit');
-        const icon = document.getElementById('placeholder-icon-edit');
-        
-        if (data.foto) {
-            preview.src = data.foto;
-            preview.classList.remove('dis-none');
-            icon.classList.add('dis-none');
-        }
-    },
+const FormKeluar = (() => {
+    const state = { items: new Map(), files: [] };
+    const q = (sel) => document.querySelector(sel); // Helper selektor ringkas
 
-    getData: async function() {
-        const fileInput = document.getElementById('item-file-edit');
-        let fotoData = document.getElementById('preview-img-edit').src;
-
-        if (fileInput.files.length > 0) {
-            fotoData = await AddItemModule.toBase64(fileInput.files[0]);
-        }
-
-        return {
-            action: 'UPDATE_BARANG',
-            kode: document.getElementById('edit-code').value,
-            nama: document.getElementById('edit-name').value,
-            tipe: document.getElementById('edit-type-value').value,
-            foto: fotoData
-        };
-    }
-};
-
-
-/**
- * FORM BARANG KELUAR
- */
-const KeluarModule1 = {
-    cart: [],
-
-    // 1. Tambah Barang ke List Keluar
-    addToCart: function(kode, nama, stokTersedia) {
-        if (this.cart.some(item => item.kode === kode)) return alert("Barang sudah ada di list!");
-
-        this.cart.push({ kode, nama, stok: stokTersedia, jumlah: 1 });
-        this.renderCart();
-    },
-
-    // 2. Hapus Barang dari List
-    removeItem: function(kode) {
-        this.cart = this.cart.filter(item => item.kode !== kode);
-        this.renderCart();
-    },
-
-    // 3. Render HTML List Barang Keluar
-    renderCart: function() {
-        const container = document.getElementById('list-barang-keluar');
-        const emptyMsg = document.getElementById('empty-cart-msg');
-        
-        if (this.cart.length === 0) {
-            container.innerHTML = `<div id="empty-cart-msg" class="w-100 txt-center p-20 clr-grey italic">Belum ada barang dipilih</div>`;
-            return;
-        }
-
-        container.innerHTML = '<h4 class="fz-14 clr-blue mb-10"><i class="fas fa-shopping-cart"></i> Daftar Barang Keluar</h4>';
-        
-        this.cart.forEach((item, index) => {
-            const div = document.createElement('div');
-            div.className = 'form-items-group flex-beetwen w-100 gap-10 p-10 borad-10 bg-light-blue mb-10';
-            div.innerHTML = `
-                <i class="fas fa-trash red pointer" onclick="KeluarModule.removeItem('${item.kode}')"></i>
-                <div class="w-100">
-                    <span class="fz-10 clr-grey">${item.kode}</span><br>
-                    <span class="fz-14 bolder">${item.nama}</span>
+    const render = () => {
+        q('#items-keluar-list').innerHTML = `<p class="fz-14 bolder clr-blue w-100"><i class="fas fa-shopping-cart"></i> Daftar Barang Keluar</p>` + 
+            (state.items.size ? [...state.items].map(([k, v]) => `
+            <div class="form-items-group flex-beetwen w-100 gap-10 p-10 borad-10 bg-light-blue" data-kode="${k}">
+                <i class="fas fa-trash p-7 borad-5 red pointer fz-14 btn-del"></i>
+                <div class="form-items-left flex-start items-start flex-column w-100">
+                    <span class="fz-10 clr-grey">${k} | Stok: <b>${v.stok}</b></span>
+                    <span class="fz-16 bolder">${v.nama}</span>
                 </div>
-                <input type="number" class="input-qty" value="${item.jumlah}" min="1" max="${item.stok}" 
-                       onchange="KeluarModule.updateQty('${item.kode}', this.value)">
-            `;
-            container.appendChild(div);
-        });
-    },
+                <div class="form-icons-group p-5 borad-5">
+                    <span class="fz-12">Qty: </span>
+                    <input type="number" min="1" max="${v.stok}" value="${v.qty}" class="keluar-qty border-none w-60 bg-transparent" style="outline:none;">
+                </div>
+            </div>`).join('') : '<div class="p-20 clr-grey grid-center w-100">Belum ada barang dipilih</div>');
+    };
 
-    updateQty: function(kode, val) {
-        const item = this.cart.find(i => i.kode === kode);
-        if (item) item.jumlah = parseInt(val);
-    },
+    return {
+        init: () => {
+            const container = q('#form-keluar');
+            if (!container) return; // Prevent error jika form tidak ada
 
-    // 4. Ambil Payload Akhir
-    getFinalPayload: function() {
-        return {
-            action: 'BARANG_KELUAR',
-            header: {
-                tujuan: document.getElementById('tujuan-keluar-value').value,
-                pengambil: document.querySelector('input[name="pengambil"]').value,
-                tanggal: document.querySelector('input[name="tanggal_keluar"]').value
-            },
-            items: this.cart
-        };
-    }
-};
+            // 1. Event Delegation Super Ringkas untuk Click & Input
+            container.addEventListener('click', async e => {
+                const t = e.target;
 
-/**
- * FORM TAMBAH BARANG
- */
-const AddItemModule = {
-    // Preview Gambar
-    initPreview: function() {
-        document.getElementById('item-file-add').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            const preview = document.getElementById('preview-img');
-            const icon = document.getElementById('placeholder-icon');
+                // Handle Select Tujuan
+                if (t.closest('.select-trigger')) q('.select-options').classList.toggle('show');
+                if (t.classList.contains('option')) {
+                    q('#keluar-tujuan-value').value = t.dataset.value;
+                    q('.select-trigger span').innerText = t.innerText;
+                    q('.select-options').classList.remove('show');
+                }
 
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    preview.src = event.target.result;
-                    preview.classList.remove('dis-none');
-                    icon.classList.add('dis-none');
-                };
-                reader.readAsDataURL(file);
+                // Handle Tambah Barang (+ Async Cek Stok)
+                if (t.closest('.fa-plus-circle')) {
+                    const tr = t.closest('tr');
+                    const [k, n] = [tr.cells[1].innerText, tr.cells[2].innerText];
+                    
+                    const stocks = await window.DB.getAll("stocks");
+                    const dbStock = parseInt(stocks.find(s => s.kode === k || s.id === k)?.stok || 0);
+                    
+                    if (dbStock < 1) return alert(`🚫 Stok "${n}" Kosong!`);
+                    const newQty = (state.items.get(k)?.qty || 0) + 1;
+                    if (newQty > dbStock) return alert(`⚠️ Stok tidak cukup! (Sisa: ${dbStock})`);
+                    
+                    state.items.set(k, { nama: n, qty: newQty, stok: dbStock });
+                    render();
+                }
+
+                // Handle Hapus Item List
+                if (t.classList.contains('btn-del')) {
+                    state.items.delete(t.closest('[data-kode]').dataset.kode);
+                    render();
+                }
+            });
+
+            // 2. Handle Input Real-time (Anti-Nakal Qty)
+            container.addEventListener('input', e => {
+                if (e.target.classList.contains('keluar-qty')) {
+                    const k = e.target.closest('[data-kode]').dataset.kode;
+                    const item = state.items.get(k);
+                    let val = parseInt(e.target.value) || 1; // Default 1 jika dikosongkan
+
+                    if (val > item.stok) {
+                        alert(`❌ Maksimal stok: ${item.stok}`);
+                        e.target.value = val = item.stok; // Paksa reset ke max stock
+                    }
+                    item.qty = val;
+                }
+            });
+
+            // 3. Handle File (Max 4 File, Max 10MB Total)
+            q('#file-input-keluar').addEventListener('change', e => {
+                const newF = [...e.target.files];
+                if (state.files.length + newF.length > 4) return alert("Maksimal 4 file!");
+                if ([...state.files, ...newF].reduce((acc, f) => acc + f.size, 0) > 10485760) return alert("Total file maksimal 10MB!");
+                state.files.push(...newF);
+            });
+
+            render(); // Initial Render
+        },
+
+        // Payload Output & Strict Final Validation
+        getData: () => {
+            // Map input field wajib
+            const req = [
+                { id: '#keluar-tujuan-value', name: 'Tujuan' },
+                { id: 'input[placeholder*="Contoh:"]', name: 'Keterangan' },
+                { id: 'input[placeholder*="Nama personil"]', name: 'Pengambil' },
+                { id: 'input[type="date"]', name: 'Tanggal' }
+            ];
+
+            // Filter input kosong
+            const errs = req.reduce((acc, r) => (!q(r.id)?.value ? [...acc, `${r.name} wajib diisi!`] : acc), []);
+            
+            // Validasi Items & Double Check Stock Bypass
+            if (!state.items.size) errs.push("Daftar barang keluar kosong!");
+            state.items.forEach((v, k) => {
+                if (v.qty < 1 || v.qty > v.stok) errs.push(`Jumlah barang "${v.nama}" (Qty: ${v.qty}) tidak valid / melebihi stok!`);
+            });
+
+            if (errs.length) {
+                alert("⚠️ GAGAL SUBMIT:\n- " + errs.join("\n- "));
+                return null;
             }
-        });
-    },
 
-    // Mengambil Data Form
-    getData: async function() {
-        const fileInput = document.getElementById('item-file-add');
-        let base64Image = null;
-
-        if (fileInput.files.length > 0) {
-            base64Image = await this.toBase64(fileInput.files[0]);
+            // Return Clean Data
+            return {
+                header: req.reduce((acc, r) => ({ ...acc, [r.name.toLowerCase()]: q(r.id).value }), {}),
+                items: [...state.items].map(([kode, data]) => ({ kode, nama: data.nama, qty: data.qty })),
+                files: state.files
+            };
         }
-
-        return {
-            action: 'TAMBAH_BARANG',
-            kode: document.getElementById('item-code-add').value.trim(),
-            nama: document.getElementById('item-name-add').value.trim(),
-            tipe: document.getElementById('item-type-add').value,
-            catatan: document.getElementById('item-note-add').value,
-            foto: base64Image
-        };
-    },
-
-    toBase64: file => new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-    })
-};
-
-// Inisialisasi
-// AddItemModule.initPreview();
+    };
+})();
 
 
-/**
- * GLOBAL UI CONTROLLER
- * Menangani interaksi dropdown dan navigasi antar form
- */
-document.addEventListener('click', function(e) {
-    // Logic Custom Select Dropdown
-    const trigger = e.target.closest('.select-trigger');
-    if (trigger) {
-        const container = trigger.closest('.custom-select-container');
-        container.classList.toggle('active');
-        return;
-    }
+const FormTambah = (() => {
+    // 1. State & Helper
+    const state = { file: null };
+    const q = (sel, ctx = document) => ctx.querySelector(sel);
+    const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
 
-    // Memilih Opsi Dropdown
-    const option = e.target.closest('.option');
-    if (option) {
-        const container = option.closest('.custom-select-container');
-        const hiddenInput = container.querySelector('.select-input');
-        const label = container.querySelector('.select-trigger span');
-        const value = option.dataset.value;
+    // Helper: UI Rendering untuk Preview Gambar
+    const updatePreview = (src) => {
+        const img = q('#preview-img');
+        const icon = q('#tambah-img-box i');
+        if (src) {
+            img.src = src;
+            img.classList.remove('dis-none');
+            if (icon) icon.style.display = 'none';
+        } else {
+            img.src = '';
+            img.classList.add('dis-none');
+            if (icon) icon.style.display = 'block';
+        }
+    };
 
-        hiddenInput.value = value;
-        label.innerText = option.innerText;
-        label.classList.remove('clr-grey', 'italic');
-        container.classList.remove('active');
-        return;
-    }
+    return {
+        init: () => {
+            const container = q('#form-tambah');
+            if (!container) return console.warn('Form Tambah tidak ditemukan di DOM');
 
-    // Tutup dropdown jika klik di luar
-    if (!e.target.closest('.custom-select-container')) {
-        document.querySelectorAll('.custom-select-container').forEach(c => c.classList.remove('active'));
-    }
-});
+            // 2. Event Delegation (Super Ringkas & Cepat)
+            container.addEventListener('click', (e) => {
+                const t = e.target;
+
+                // Handle: Toggle Custom Select
+                if (t.closest('.select-trigger')) {
+                    const optionsBox = q('.select-options', container);
+                    const arrow = q('.arrow', container);
+                    
+                    optionsBox.classList.toggle('dis-none');
+                    if (arrow) arrow.classList.toggle('rotate-90');
+                }
+
+                // Handle: Pilih Opsi Custom Select
+                if (t.classList.contains('option')) {
+                    const val = t.dataset.value;
+                    const text = t.innerText;
+
+                    // Set value ke hidden input & ubah UI
+                    q('#item-type-add', container).value = val;
+                    const triggerText = q('.select-trigger span', container);
+                    triggerText.innerText = text;
+                    triggerText.classList.remove('clr-grey', 'italic');
+                    
+                    // Tutup dropdown
+                    q('.select-options', container).classList.add('dis-none');
+                    const arrow = q('.arrow', container);
+                    if (arrow) arrow.classList.remove('rotate-90');
+                }
+            });
+
+            // Handle: Klik di luar untuk menutup dropdown
+            document.addEventListener('click', (e) => {
+                const selectContainer = q('.custom-select-container', container);
+                if (selectContainer && !selectContainer.contains(e.target)) {
+                    q('.select-options', container)?.classList.add('dis-none');
+                    q('.arrow', container)?.classList.remove('rotate-90');
+                }
+            });
+
+            // 3. Handle File Input (Strict Validation)
+            q('#item-file-add', container).addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                const labelText = q('#file-name-text', container); // Jika kamu pakai perbaikan HTML sebelumnya
+
+                // Reset jika batal pilih
+                if (!file) {
+                    state.file = null;
+                    if (labelText) labelText.innerText = "Pilih File";
+                    return updatePreview(null);
+                }
+
+                // Validasi Tipe MIME (Hanya Gambar)
+                if (!file.type.startsWith('image/')) {
+                    e.target.value = ''; // Reset input
+                    return alert('🚫 File ditolak: Hanya format gambar yang diperbolehkan!');
+                }
+
+                // Validasi Ukuran (Max 5MB)
+                if (file.size > MAX_SIZE) {
+                    e.target.value = ''; // Reset input
+                    return alert('⚠️ Ukuran gambar terlalu besar! (Maksimal 5MB)');
+                }
+
+                // Sukses: Simpan ke state & Render
+                state.file = file;
+                if (labelText) labelText.innerText = file.name.length > 15 ? file.name.substring(0, 15) + '...' : file.name;
+                
+                const reader = new FileReader();
+                reader.onload = (ev) => updatePreview(ev.target.result);
+                reader.readAsDataURL(file);
+            });
+        },
+
+        // 4. Payload Output & Strict Final Validation
+        getData: () => {
+            const container = q('#form-tambah');
+            if (!container) return null;
+
+            // Map input field wajib
+            const req = [
+                { id: '#item-code-add', name: 'Kode Barang' },
+                { id: '#item-name-add', name: 'Nama Barang' },
+                { id: '#item-type-add', name: 'Kategori/Sumber (Selector)' }
+            ];
+
+            // Kumpulkan error jika ada field wajib yang kosong
+            const errs = req.reduce((acc, r) => {
+                const val = q(r.id, container)?.value.trim();
+                return !val ? [...acc, `${r.name} wajib diisi!`] : acc;
+            }, []);
+
+            // Validasi File Terpisah
+            if (!state.file) {
+                errs.push("Foto Barang wajib diunggah!");
+            }
+
+            // Jika ada error, hentikan & notifikasi
+            if (errs.length) {
+                alert("⚠️ GAGAL SUBMIT:\n- " + errs.join("\n- "));
+                return null;
+            }
+
+            // Return Clean Data Object (Bisa dilempar ke FormData dengan mudah)
+            return {
+                kode: q('#item-code-add', container).value.trim(),
+                nama: q('#item-name-add', container).value.trim(),
+                sumber: q('#item-type-add', container).value.trim(),
+                keterangan: q('#item-note-add', container)?.value.trim() || "",
+                file: state.file
+            };
+        },
+
+        // 5. Fungsi Reset Form (Sangat berguna setelah sukses submit)
+        reset: () => {
+            const container = q('#form-tambah');
+            if (!container) return;
+
+            // Clear Inputs
+            q('#item-code-add', container).value = '';
+            q('#item-name-add', container).value = '';
+            q('#item-note-add', container).value = '';
+            q('#item-type-add', container).value = '';
+            q('#item-file-add', container).value = '';
+
+            // Reset Selector UI
+            const triggerText = q('.select-trigger span', container);
+            if (triggerText) {
+                triggerText.innerText = 'Pilih Selector :';
+                triggerText.classList.add('clr-grey', 'italic');
+            }
+
+            // Reset File Label
+            const labelText = q('#file-name-text', container);
+            if (labelText) labelText.innerText = "Pilih File";
+
+            // Clear State & Preview
+            state.file = null;
+            updatePreview(null);
+        }
+    };
+})();
+
+// Cara Inisialisasi:
+// document.addEventListener('DOMContentLoaded', () => { FormTambah.init(); });
+
+// Cara Mengambil Data (Misal dipanggil dari tombol simpan):
+// const dataToSubmit = FormTambah.getData();
+// if (dataToSubmit) { console.log(dataToSubmit); /* Lanjut Fetch / AJAX */ }
+
+
+const FormEdit = (() => {
+    // 1. State & Helper
+    const state = { file: null, originalFileUrl: null }; // Simpan URL gambar asli jika tidak diubah
+    const q = (sel, ctx = document) => ctx.querySelector(sel);
+    const qa = (sel, ctx = document) => ctx.querySelectorAll(sel);
+    const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
+
+    // Helper: UI Rendering untuk Preview Gambar
+    const updatePreview = (src) => {
+        const img = q('#edit-preview-img');
+        const icon = q('#edit-icon-img');
+        if (src) {
+            img.src = src;
+            img.classList.remove('dis-none');
+            if (icon) icon.style.display = 'none';
+        } else {
+            img.src = '';
+            img.classList.add('dis-none');
+            if (icon) icon.style.display = 'block';
+        }
+    };
+
+    return {
+        init: () => {
+            const container = q('#form-edit');
+            if (!container) return console.warn('Form Edit tidak ditemukan di DOM');
+
+            
+
+            // 3. Handle File Input (Strict Validation)
+            q('#edit-file-input', container).addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                const labelText = q('#edit-file-name-text', container);
+
+                // Reset jika batal pilih (kembali ke gambar asli jika ada)
+                if (!file) {
+                    state.file = null;
+                    if (labelText) labelText.innerText = "Pilih File Baru";
+                    return updatePreview(state.originalFileUrl);
+                }
+
+                // Validasi Tipe MIME (Hanya Gambar)
+                if (!file.type.startsWith('image/')) {
+                    e.target.value = ''; 
+                    return alert('🚫 File ditolak: Hanya format gambar!');
+                }
+
+                // Validasi Ukuran (Max 5MB)
+                if (file.size > MAX_SIZE) {
+                    e.target.value = '';
+                    return alert('⚠️ Ukuran gambar terlalu besar! (Maksimal 5MB)');
+                }
+
+                // Sukses: Simpan state & Render Preview File Baru
+                state.file = file;
+                if (labelText) labelText.innerText = file.name.length > 15 ? file.name.substring(0, 15) + '...' : file.name;
+                
+                const reader = new FileReader();
+                reader.onload = (ev) => updatePreview(ev.target.result);
+                reader.readAsDataURL(file);
+            });
+
+            // Tambahkan ini di dalam FormEdit.init() atau setelahnya
+            const handleSearchKode = async (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); // Mencegah form submit tidak sengaja
+                    const kodeCari = e.target.value.trim();
+
+                    if (!kodeCari) return alert("Silahkan masukkan Kode Barang terlebih dahulu.");
+
+                    try {
+                        // Ambil semua data dari database
+                        const allItems = await window.DB.getAll("items");
+                        
+                        // Cari item yang kodenya cocok
+                        const itemFound = allItems.find(item => item.kode === kodeCari);
+
+                        if (itemFound) {
+                            // Gunakan fungsi setInitialData untuk mengisi semua field
+                            // Pastikan struktur itemFound sesuai (kode, nama, sumber, status, dll)
+                            FormEdit.setInitialData({
+                                kode: itemFound.kode,
+                                nama: itemFound.nama,
+                                sumber: itemFound.sumber,
+                                status: itemFound.status,
+                                pengambil: itemFound.pengambil || "",
+                                tanggal: itemFound.tanggal || "",
+                                fotoUrl: itemFound.foto_url // Link Google Drive dari database
+                            });
+                            
+                            console.log("Data ditemukan dan dimuat.");
+                        } else {
+                            alert(`🚫 Kode "${kodeCari}" tidak ditemukan di database.`);
+                            FormEdit.reset(); // Opsional: bersihkan form jika tidak ketemu
+                        }
+                    } catch (err) {
+                        console.error("Gagal mengambil data:", err);
+                        alert("Terjadi kesalahan saat mengakses database.");
+                    }
+                }
+            };
+
+            // Hubungkan ke elemen input kode di HTML
+            document.querySelector('#edit-kode').addEventListener('keypress', handleSearchKode);
+        },
+
+        // Fitur Tambahan Khusus Edit: Memasukkan data awal sebelum diedit
+        setInitialData: (data) => {
+            const container = q('#form-edit');
+            if (!container) return;
+
+            // Isi field teks
+            q('#edit-kode', container).value = data.kode || '';
+            q('#edit-nama', container).value = data.nama || '';
+            q('#edit-pengambil', container).value = data.pengambil || '';
+            q('#edit-tanggal', container).value = data.tanggal || '';
+
+            // Set Dropdown Sumber
+            if (data.sumber) {
+                q('#edit-sumber-value', container).value = data.sumber;
+                const text = q(`.option[data-value="${data.sumber}"]`, container)?.innerText || data.sumber;
+                const trigger = q('#edit-sumber-text', container);
+                trigger.innerText = text;
+                trigger.classList.remove('clr-grey', 'italic');
+            }
+
+            // Set Dropdown Status
+            if (data.status) {
+                q('#edit-status-value', container).value = data.status;
+                const text = q(`.option[data-value="${data.status}"]`, container)?.innerText || data.status;
+                const trigger = q('#edit-status-text', container);
+                trigger.innerText = text;
+                trigger.classList.remove('clr-grey', 'italic');
+            }
+
+            if (data.fotoUrl) {
+                let driveUrl = data.fotoUrl;
+
+                // Trik konversi link Drive agar bisa jadi Source Image
+                // Mengubah '/file/d/ID/view' menjadi '/thumbnail?id=ID&sz=w500'
+                if (driveUrl.includes('drive.google.com')) {
+                    const fileId = driveUrl.match(/[-\w]{25,}/);
+                    if (fileId) {
+                        driveUrl = `https://lh3.googleusercontent.com/d/${fileId}=s500`;
+                    }
+                }
+
+                state.originalFileUrl = driveUrl;
+                updatePreview(driveUrl);
+            }
+        },
+
+        // 4. Payload Output & Final Validation
+        getData: () => {
+            const container = q('#form-edit');
+            if (!container) return null;
+
+            const req = [
+                { id: '#edit-kode', name: 'Kode Barang' },
+                { id: '#edit-nama', name: 'Nama Barang' },
+                { id: '#edit-sumber-value', name: 'Sumber Barang' },
+                { id: '#edit-status-value', name: 'Status Barang' }
+            ];
+
+            const errs = req.reduce((acc, r) => {
+                const val = q(r.id, container)?.value.trim();
+                return !val ? [...acc, `${r.name} wajib diisi!`] : acc;
+            }, []);
+
+            if (errs.length) {
+                alert("⚠️ GAGAL UPDATE:\n- " + errs.join("\n- "));
+                return null;
+            }
+
+            return {
+                kode: q('#edit-kode', container).value.trim(),
+                nama: q('#edit-nama', container).value.trim(),
+                sumber: q('#edit-sumber-value', container).value.trim(),
+                status: q('#edit-status-value', container).value.trim(),
+                pengambil: q('#edit-pengambil', container).value.trim(),
+                tanggal: q('#edit-tanggal', container).value,
+                fileBaru: state.file, // Akan berisi file object jika diupdate, atau null jika tidak diubah
+                fotoLama: state.file ? null : state.originalFileUrl // Indikator ke backend apakah foto berubah
+            };
+        },
+
+        // 5. Reset Form
+        reset: () => {
+            const container = q('#form-edit');
+            if (!container) return;
+
+            qa('.form-input', container).forEach(input => input.value = '');
+            qa('input[type="hidden"]', container).forEach(input => input.value = '');
+            q('#edit-file-input', container).value = '';
+
+            qa('.select-trigger span', container).forEach(span => {
+                span.innerText = span.id.includes('sumber') ? 'Pilih Sumber :' : 'Pilih Status :';
+                span.classList.add('clr-grey', 'italic');
+            });
+
+            const labelText = q('#edit-file-name-text', container);
+            if (labelText) labelText.innerText = "Pilih File Baru";
+
+            state.file = null;
+            state.originalFileUrl = null;
+            updatePreview(null);
+        }
+    };
+})();

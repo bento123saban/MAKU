@@ -1,5 +1,7 @@
-import { CustomContextMenu } from "./UI"
+import { CustomContextMenu, getLastDateOfMonth } from "./UI"
 
+const dateFormatter = new Intl.DateTimeFormat('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+const timeFormatter = new Intl.DateTimeFormat('id-ID', { hour: '2-digit', minute: '2-digit' });
 
 class trx {
     constructor () {
@@ -8,23 +10,30 @@ class trx {
         this.detailSearch       = document.querySelector("input#search-input")
         this.makuValue          = document.querySelector("input#maku-value")
         this.typeValue          = document.querySelector("input#type-value")
+        this.makuMore           = document.querySelector("#maku-more-input")
 
-        this.calendarDate       = new Date()
+        this.countMakuOut       = document.querySelector("#cal-maku-out")
+        this.countMakuIn        = document.querySelector("#cal-maku-in")
+
+        this.calendarDate       = new Date(new Date().setDate(10))
         this.calendarData       = null
+        this.calendarCounter    = async () => await window.DB.search("counter", {query : "trxHeader", fields : ["type"]})
         this.monthControl       = document.querySelector("#month-control")
-        this.onMonth            = new Date().toLocaleDateString("in-ID",{month : "long"})
-        this.onYear             = new Date().toLocaleDateString("in-ID",{year : "numeric"})
-        
-    } 
+        this.onMonth            = () => new Date(this.calendarDate).toLocaleDateString("in-ID",{month : "long"})
+        this.onYear             = () => new Date(this.calendarDate).toLocaleDateString("in-ID",{year : "numeric"})
+
+        this.range              = this.onMonth()
+        this.stringRange        = ""
+    }
+
     makuChange () {
         let dataBar     = document.querySelectorAll(".data-bar")
-        let fronts      = document.querySelectorAll(".front") 
+        let fronts      = document.querySelectorAll(".trx-tr") 
 
         this.makuValue.addEventListener("change", (e) => {
             const value = e.target.value
             dataBar = document.querySelectorAll(".data-bar")
-            fronts  = document.querySelectorAll(".front")
-
+            fronts  = document.querySelectorAll(".trx-tr")
             dataBar.forEach (bar => {
                 if (value == "semua") bar.classList.remove("dis-none")
                 else if (value == "masuk" && bar.classList.contains("green")) bar.classList.remove("dis-none")
@@ -32,10 +41,10 @@ class trx {
                 else bar.classList.add("dis-none")
             })
             fronts.forEach(front => {
-                if (value == "semua") front.closest(".cal-trx-group").classList.remove("dis-none")
-                else if (value == "masuk" && front.classList.contains("green")) front.closest(".cal-trx-group").classList.remove("dis-none")
-                else if (value == "keluar" && front.classList.contains("blue")) front.closest(".cal-trx-group").classList.remove("dis-none")
-                else front.closest(".cal-trx-group").classList.remove("dis-none")
+                console.log(value)
+                if (value == "semua") front.classList.remove("dis-none")
+                else if (value == front.dataset.type) front.classList.remove("dis-none")
+                else front.classList.add("dis-none")
             })
         })
     }
@@ -55,206 +64,274 @@ class trx {
             else return
         })
     }
-    getData () {
-        const trxItemsData = [
-            { id: "01", code: "97928749823", items: "Laptop ASUS VivoBook", masuk: 10, keluar: 2, note: "Sesuai" },
-            { id: "02", code: "97928749824", items: "Mouse Logitech G304", masuk: 25, keluar: 25, note: "Habis" },
-            { id: "03", code: "97928749825", items: "Keyboard Mechanical Keychron", masuk: 15, keluar: 5, note: "Sesuai" },
-            { id: "04", code: "97928749826", items: "Monitor Dell 24 Inch", masuk: 8, keluar: 0, note: "Stok Utuh" },
-            { id: "05", code: "97928749827", items: "Webcam Logitech C922", masuk: 12, keluar: 12, note: "Habis" },
-            { id: "06", code: "97928749828", items: "SSD Samsung EVO 500GB", masuk: 30, keluar: 10, note: "Sesuai" },
-            { id: "07", code: "97928749829", items: "RAM Corsair 16GB DDR4", masuk: 20, keluar: 4, note: "Sesuai" },
-            { id: "08", code: "97928749830", items: "Headset SteelSeries Arctis", masuk: 7, keluar: 7, note: "Habis" },
-            { id: "09", code: "97928749831", items: "Router TP-Link Archer", masuk: 10, keluar: 2, note: "Sesuai" },
-            { id: "10", code: "97928749832", items: "Printer Epson L3110", masuk: 5, keluar: 1, note: "Sesuai" },
-            { id: "11", code: "97928749833", items: "Hardisk External Seagate 1TB", masuk: 18, keluar: 18, note: "Habis" },
-            { id: "12", code: "97928749834", items: "Kabel HDMI 2.0 3m", masuk: 50, keluar: 20, note: "Sesuai" },
-            { id: "13", code: "97928749835", items: "USB Hub 4 Port USB 3.0", masuk: 25, keluar: 5, note: "Sesuai" },
-            { id: "14", code: "97928749836", items: "Power Bank Anker 20000mAh", masuk: 15, keluar: 15, note: "Habis" },
-            { id: "15", code: "97928749837", items: "Microphone Blue Yeti", masuk: 4, keluar: 0, note: "Stok Utuh" },
-            { id: "16", code: "97928749838", items: "Graphic Tablet Wacom Intuos", masuk: 6, keluar: 2, note: "Sesuai" },
-            { id: "17", code: "97928749839", items: "Cooling Pad Laptop", masuk: 30, keluar: 12, note: "Sesuai" },
-            { id: "18", code: "97928749840", items: "Flashdisk SanDisk 64GB", masuk: 100, keluar: 100, note: "Habis" },
-            { id: "19", code: "97928749841", items: "Speaker Simbadda CST", masuk: 10, keluar: 3, note: "Sesuai" },
-            { id: "20", code: "97928749842", items: "Kabel LAN Cat6 10m", masuk: 40, keluar: 10, note: "Sesuai" },
-            { id: "21", code: "97928749843", items: "Converter Type C to HDMI", masuk: 20, keluar: 20, note: "Habis" },
-            { id: "22", code: "97928749844", items: "VGA Card RTX 3060", masuk: 3, keluar: 1, note: "Sesuai" },
-            { id: "23", code: "97928749845", items: "Processor Intel i7-12700K", masuk: 5, keluar: 5, note: "Habis" },
-            { id: "24", code: "97928749846", items: "Motherboard MSI B550", masuk: 8, keluar: 2, note: "Sesuai" },
-            { id: "25", code: "97928749847", items: "Power Supply 650W 80+", masuk: 12, keluar: 4, note: "Sesuai" },
-            { id: "26", code: "97928749848", items: "Casing PC ATX Tempered Glass", masuk: 10, keluar: 0, note: "Stok Utuh" },
-            { id: "27", code: "97928749849", items: "Fan Case RGB 120mm", masuk: 60, keluar: 20, note: "Sesuai" },
-            { id: "28", code: "97928749850", items: "Keyboard Wireless Logitech", masuk: 15, keluar: 15, note: "Habis" },
-            { id: "29", code: "97928749851", items: "Tinta Epson 003 Black", masuk: 40, keluar: 35, note: "Sesuai" },
-            { id: "30", code: "97928749852", items: "Kertas A4 80gr Sinar Dunia", masuk: 100, keluar: 50, note: "Sesuai" },
-            { id: "31", code: "97928749853", items: "Joystick Gamesir G4 Pro", masuk: 6, keluar: 6, note: "Habis" },
-            { id: "32", code: "97928749854", items: "Baterai CMOS CR2032", masuk: 200, keluar: 10, note: "Sesuai" },
-            { id: "33", code: "97928749855", items: "Kabel Power PC", masuk: 50, keluar: 5, note: "Sesuai" },
-            { id: "34", code: "97928749856", items: "Pasta Processor MX-4", masuk: 15, keluar: 15, note: "Habis" },
-            { id: "35", code: "97928749857", items: "Switch Hub 8 Port", masuk: 10, keluar: 2, note: "Sesuai" },
-            { id: "36", code: "97928749858", items: "Bracket Monitor Single", masuk: 5, keluar: 0, note: "Stok Utuh" },
-            { id: "37", code: "97928749859", items: "Soundcard Focusrite Solo", masuk: 4, keluar: 1, note: "Sesuai" },
-            { id: "38", code: "97928749860", items: "Earphone Sony MDR-EX15LP", masuk: 30, keluar: 30, note: "Habis" },
-            { id: "39", code: "97928749861", items: "Mousepad Gaming XL", masuk: 25, keluar: 10, note: "Sesuai" },
-            { id: "40", code: "97928749862", items: "Docking Station Laptop", masuk: 7, keluar: 7, note: "Habis" },
-            { id: "41", code: "97928749863", items: "Wifi Dongle Dual Band", masuk: 20, keluar: 8, note: "Sesuai" },
-            { id: "42", code: "97928749864", items: "Kabel Display Port 1.4", masuk: 15, keluar: 3, note: "Sesuai" },
-            { id: "43", code: "97928749865", items: "Thermal Pad 1.5mm", masuk: 50, keluar: 50, note: "Habis" },
-            { id: "44", code: "97928749866", items: "UPS Prolink 1200VA", masuk: 4, keluar: 1, note: "Sesuai" },
-            { id: "45", code: "97928749867", items: "Stylus Pen Universal", masuk: 12, keluar: 2, note: "Sesuai" },
-            { id: "46", code: "97928749868", items: "Ring Light 26cm", masuk: 10, keluar: 10, note: "Habis" },
-            { id: "47", code: "97928749869", items: "Tripod Takara ECO-196", masuk: 8, keluar: 0, note: "Stok Utuh" },
-            { id: "48", code: "97928749870", items: "Scanner Canon LiDE 300", masuk: 3, keluar: 1, note: "Sesuai" },
-            { id: "49", code: "97928749871", items: "Screwdriver Kit Xiaomi", masuk: 15, keluar: 5, note: "Sesuai" },
-            { id: "50", code: "97928749872", items: "Cleaner Kit Laptop", masuk: 40, keluar: 40, note: "Habis" }
-        ];
-        const transactionData = [
-            { id: "01", tanggal: "05-03-2026", code: "7989234799", pengawas: ["Andi Budiman", "Siti Aminah"], event: "Workshop Digital Marketing", barang: 2, qty: 45 },
-            { id: "02", tanggal: "06-03-2026", code: "7989234800", pengawas: ["Rian Hidayat", "Dewi Lestari"], event: "Seminar Cyber Security", barang: 5, qty: 12 },
-            { id: "03", tanggal: "06-03-2026", code: "7989234801", pengawas: ["Eko Prasetyo"], event: "Lomba Coding Nasional", barang: 10, qty: 100 },
-            { id: "04", tanggal: "07-03-2026", code: "7989234802", pengawas: ["Ferry Irawan", "Giska Putri"], event: "Pameran Komputer 2026", barang: 25, qty: 250 },
-            { id: "05", tanggal: "08-03-2026", code: "7989234803", pengawas: ["Indah Permata"], event: "Rapat Tahunan IT", barang: 1, qty: 10 },
-            { id: "06", tanggal: "09-03-2026", code: "7989234804", pengawas: ["Kevin Sanjaya", "Lani Rahma"], event: "Pelatihan Server Admin", barang: 4, qty: 8 },
-            { id: "07", tanggal: "10-03-2026", code: "7989234805", pengawas: ["Maman Suherman"], event: "Instalasi Jaringan Lab", barang: 15, qty: 60 },
-            { id: "08", tanggal: "11-03-2026", code: "7989234806", pengawas: ["Nina Zatulini", "Oky Setiana"], event: "Webinar UI/UX Design", barang: 2, qty: 5 },
-            { id: "09", tanggal: "12-03-2026", code: "7989234807", pengawas: ["Putra Perkasa"], event: "E-Sport Tournament", barang: 30, qty: 30 },
-            { id: "10", tanggal: "13-03-2026", code: "7989234808", pengawas: ["Rina Nose", "Sule Prikitiw"], event: "Gathering Komunitas Tech", barang: 8, qty: 40 },
-            { id: "11", tanggal: "14-03-2026", code: "7989234809", pengawas: ["Taufik Hidayat"], event: "Maintenance Ruang Data", barang: 12, qty: 24 },
-            { id: "12", tanggal: "15-03-2026", code: "7989234810", pengawas: ["Vina Panduwinata"], event: "Bakti Sosial IT", barang: 3, qty: 15 },
-            { id: "13", tanggal: "16-03-2026", code: "7989234811", pengawas: ["Wawan Wanisar"], event: "Audit Inventaris", barang: 50, qty: 50 },
-            { id: "14", tanggal: "17-03-2026", code: "7989234812", pengawas: ["Xenia Sari", "Yanto Basna"], event: "Demo Produk Baru", barang: 6, qty: 12 },
-            { id: "15", tanggal: "18-03-2026", code: "7989234813", pengawas: ["Zulkifli Hasan"], event: "Sertifikasi Kompetensi", barang: 1, qty: 20 },
-            { id: "16", tanggal: "19-03-2026", code: "7989234814", pengawas: ["Anisa Pohan", "Bambang P."], event: "Bootcamp Frontend", barang: 20, qty: 40 },
-            { id: "17", tanggal: "20-03-2026", code: "7989234815", pengawas: ["Cinta Laura"], event: "Workshop AI Science", barang: 4, qty: 16 },
-            { id: "18", tanggal: "21-03-2026", code: "7989234816", pengawas: ["Dedi Corbuzier"], event: "Podcast Teknologi Live", barang: 10, qty: 10 },
-            { id: "19", tanggal: "22-03-2026", code: "7989234817", pengawas: ["Fajar Alfian"], event: "Lelang Perangkat Bekas", barang: 100, qty: 100 },
-            { id: "20", tanggal: "23-03-2026", code: "7989234818", pengawas: ["Haji Bolot"], event: "Testing Aplikasi Baru", barang: 2, qty: 2 }
-        ];
-        const calendarData = [
-            { date: "01", masuk: 2, keluar: 3 },
-            { date: "03", masuk: 2, keluar: 0 },
-            { date: "08", masuk: 0, keluar: 3 },
-            { date: "25", masuk: 2, keluar: 0 },
-            { date: "29", masuk: 2, keluar: 3 },
-            { date: "31", masuk: 0, keluar: 3 },
-        ];
 
-        return [trxItemsData, transactionData, calendarData]
-    }
-    renderItemsTable() {
+    async renderItemsTable(data = null) {
+        const trxItems  = data || await window.DB.search("trxItems", {query : this.onMonth().toLocaleLowerCase(), fields : ["month"], filters : {year : this.onYear()}})
         const tableBody = document.querySelector("#items-table tbody");
-        
         tableBody.innerHTML = "";
-
-        this.getData()[0].forEach(item => {
+        // const dtc
+        // return console.log(trxItems)
+        trxItems.forEach(item => {
             const row = document.createElement("tr");
             row.dataset.code = item.code
-
-            const noteIcon = item.keluar === item.masuk 
-                ? '<i class="fas fa-check clr-green"></i>' 
-                : '<i class="fas fa-clock clr-purple"></i>';
+            row.dataset.type = (item.type === "IN") ? "masuk" : "keluar"
+            row.dataset.date = `${item.date.toString().padStart(2, '0')} ${item.month} ${item.year}`
+            row.className = "trx-tr"
 
             row.innerHTML = `
-                <td class="pointer"><span class="purple borad-5 w-100 h-100 green p-5 tr-front grid-center">${item.id}</span></td>
-                <td class="dis-none"><i class="fas fa-image pointer"></i></td>
+                <td class="pointer"><span class="borad-5 h-100 ${item.type == "IN" ? "green" : "blue"} p-5 tr-front grid-center">${item.date }</span></td>
                 <td>${item.code}</td>
-                <td>${item.items}</td>
-                <td>${item.masuk}</td>
-                <td>${item.keluar}</td>
-                <td>${noteIcon}</td>
+                <td>${item.name}</td>
+                <td>${item.in}</td>
+                <td>${item.out}</td>
             `;
 
             tableBody.appendChild(row);
             row.firstElementChild.onclick = () => {
                 const code = row.dataset.code
-                console.log(code)
                 if (this.trxItemDetailBox.dataset.code == code && !this.trxItemDetailBox.classList.contains("dis-none")) return
                 this.trxDetailBox.classList.add("dis-none")
                 this.trxItemDetailBox.classList.remove("dis-none")
-                this.renderItemsTrx(row)
+                this.renderTRXItems(code)
             }
         });
     }
-    async renderTrxTable() {
-        const trxHeader = await window.DB.getAll("trxHeader")
-        console.log(trxHeader)
-        const tableBody = document.querySelector("#trx-table tbody");
-        
+    async renderTRXItems(code) {
+        const year      = this.onYear()
+        const item      = (await window.DB.search("items", {query : code, fields : ["code"], filter: {year : year}}))[0]
+        const items     = await window.DB.search("trxItems", {query : code, fields : ["code"], filters : {month : this.range, year : year}})
+        const headsMap  = new Map()
 
-        // Pastikan tableBody ditemukan
+        let stockIn     = 0
+        let stockOut    = 0 
+
+        await Promise.all(items.map(async (item) => {
+            const results = await window.DB.search("trxHeader", {
+                query: item.trxCode,
+                fields: ["code"]
+            });
+            if (item.type == "IN") stockIn += parseInt(item.in)
+            else stockOut += parseInt(item.out)
+
+            const head = results[0];
+            if (head && !headsMap.has(head.code)) headsMap.set(head.code, { itemCount : item.type == "IN" ? item.in : item.out, head : head});
+        }));
+        const heads = Array.from(headsMap.values());
+
+        let html = `
+            <i class="fas fa-close clr-red fz-20 pointer" id="trx-item-detail-close"></i>
+            <span id="trx-items-detail-header" class="dis-none align-center mb-2">Periode : 01 </span>
+            
+            <div class="flex-start gap-10">
+                <i class="fas fa-image grid-center purple fz-20 borad-20 pointer" onclick="window.location.href ='${item.link}'"></i>
+                <div class="flex-beetwen">
+                    <span class="fz-18 bolder dis-block w-100">${item.name}</span>
+                    <div class="flex-strech flex-column">
+                        <span class="in-out clr-green bolder" data-type="in">${stockIn.toString().padStart(3, '0')}</span>
+                        <span class="align-center">-</span>
+                        <span class="in-out clr-blue bolder"  data-type="out">${stockOut.toString().padStart(3, '0')}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hr grey"></div>
+
+            <div id="trx-items-list-trx" class="flex-start items-start flex-column gap-3">
+        `
+
+        heads.forEach(head => html += `
+            <div class="trx-items-trx-group w-100 p-10">
+                <div class="flex-beetwen">
+                    <span>${head.head.staff}</span>
+                    <span class="${head.head.type == "IN" ? "clr-green" : "clr-blue"} bolder">${head.itemCount} Pcs</span>
+                </div>
+                <div class="flex-beetwen fz-14">
+                    <span>${head.head.code}</span>
+                    <span>${new Date(head.head.time).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) + " " + new Date(head.head.time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false })}</span>
+                </div>
+            </div>    
+        `)
+
+        html += `</div>`
+
+        document.querySelector("#trx-items-detail").innerHTML = html
+    }
+    async calculateDetailedSummary(param = null) {
+        const trxItems = param || await window.DB.search("trxItems", {query : this.onMonth(), fields : ["month"], filters : {year : this.onYear()}})
+        const init = {
+            in: { trx: 0, items: new Set(), qty: 0 },
+            out: { trx: 0, items: new Set(), qty: 0 }
+        };
+
+        const stats = trxItems.reduce((acc, item) => {
+            const type = item.type === "IN" ? "in" : "out";
+            const qty = +(item[type] || 0); // Ambil item.in jika IN, item.out jika OUT
+
+            acc[type].trx++;
+            acc[type].qty += qty;
+            if (item.code) acc[type].items.add(item.code);
+
+            return acc;
+        }, init);
+        document.querySelector("#render-counter").innerHTML = `
+            <h4 class="m-0 p-0">Periode <br> ${this.stringRange}</h4>
+            
+            <div>
+                <h4 class="m-0 p-0 clr-green uppercase">Barang Masuk</h4>
+                <span>${stats.in.trx} Transaksi - ${stats.in.items.size} Barang - ${stats.in.qty} Qty</span>
+            </div>
+            <div>
+                <h4 class="m-0 p-0 clr-blue uppercase align-right">Barang Keluar</h4>
+                <span>${stats.out.trx} Transaksi - ${stats.out.items.size} Barang - ${stats.out.qty} Qty</span>
+            </div>
+        `
+    }
+
+    async renderTrxTable(data = null) {
+        // 1. Ambil data jika null (Case-insensitive 'month' ditangani oleh DB.search)
+        const trxHeader = data || this.calendarData
+
+        const tableBody = document.querySelector("#trx-table tbody");
         if (!tableBody) return;
 
-        // Kosongkan baris yang ada di HTML sebelumnya
-        tableBody.innerHTML = "";
+        // Gunakan DocumentFragment untuk performa jika data > 100 baris
+        const fragment = document.createDocumentFragment();
+        tableBody.innerHTML = ""; 
 
-        trxHeader.forEach((item, i)=> {
-            if (item.month.toUpperCase() !== this.onMonth.toUpperCase()) return
-            // Buat elemen baris (tr)
+        trxHeader.forEach((item) => {
             const row = document.createElement("tr");
-            row.dataset.code = item.code
-            row.dataset.type = item.type
+            const isIN = item.type === "IN";
             
-            // Isi konten baris sesuai struktur HTML yang Anda minta
+            row.className = "trx-tr";
+            row.dataset.code = item.code;
+            
+            // Format tanggal lebih efisien
+            const dateStr = `${String(item.date).padStart(2, '0')} ${item.month} ${item.year}`;
+            row.dataset.date = dateStr
+            // Di dalam loop renderTrxTable:
+            const d = new Date(item.time);
+            const timeDisplay = `${dateFormatter.format(d)} ${timeFormatter.format(d)}`;
+            
             row.innerHTML = `
-                <td class="pointer"><span class="borad-5 w-100 h-100 ${item.type === "OUT" ? "blue" : "green"} p-5 tr-front grid-center">${(i + 1 <= 9) ? "0" + (i+1) : i+1}</span></td>
-                <td>${item.dateCreate}</td>
+                <td class="pointer">
+                    <span class="borad-5 w-100 h-100 ${isIN ? "green" : "blue"} p-5 tr-front grid-center">
+                        ${String(item.date).padStart(2, '0')}
+                    </span>
+                </td>
+                <td>${timeDisplay}</td>
                 <td>${item.code}</td>
                 <td>${item.staff}</td>
-                <td>${item.typeNote}</td>
                 <td>${item.itemsCount}</td>
                 <td>${item.stocksCount}</td>
-                <td>${item.stocksCount}</td>
+                <td>${item.typeNote}</td>
+                <td>${item.note || '-'}</td>
             `;
 
-            // Masukkan baris ke dalam tbody
-            tableBody.appendChild(row);
-            row.firstElementChild.onclick = () => {
-                const code = row.dataset.code
-                console.log(code)
-                const onCode = this.trxDetailBox.dataset.code
-                if (onCode == code && !this.trxDetailBox.classList.contains("dis-none")) return
-                this.trxDetailBox.classList.remove("dis-none")
-                this.trxItemDetailBox.classList.add("dis-none")
-                this.renderTRXDetail(row)
-            }
+            // Klik pada kolom pertama (Badge Tanggal)
+            row.cells[0].onclick = () => this.renderTRXDetail(item);
+            
+            fragment.appendChild(row);
         });
-    }
-    calendarSet() {
 
+        tableBody.appendChild(fragment);
+    }
+    async renderTRXDetail(head) {
+        const onCode = this.trxDetailBox.dataset.code
+        if (onCode == head.code && !this.trxDetailBox.classList.contains("dis-none")) return
+        
+        this.trxDetailBox.classList.remove("dis-none")
+        this.trxItemDetailBox.classList.add("dis-none")
+        
+        const items = await window.DB.search("trxItems", { query : head.code, fields : ["trxCode"]})
+        if (!head) return false
+        const type = head.type
+
+        let html = `
+            <i class="fas fa-close fz-20 pointer" id="trx-detail-close"></i>
+            <span id="trx-detail-header" class="dis-block align-center mb-2">Barang ${head.type === "IN" ? "Masuk" : "Keluar"} - ${head.typeNote}</span>
+            <div class="flex-beetwen items-end">
+                <div id="detail-pengawas" class="flex-start gap-20 w-100">
+                    <i class="fas fa-image grid-center ${type == "IN" ? "green" : "blue"} fz-20 borad-20 pointer"></i>
+                    <div class="flex-beetwen w-100 gap-20">
+                        <div class="flex-start items-start flex-column gap-5">
+                            <span class="fz-20">${head.staff}</span>
+                            <span class="fz-14">${head.itemsCount} Barang - ${head.stocksCount} Qty</span>
+                        </div>
+                        <div class="flex-start items-end flex-column gap-5">
+                            <span class="italic">${head.code}</span>
+                            <span class="fz-12">${new Date(head.time).toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hr grey"></div>
+            <div id="detail-items-list" class="flex-strech items-start flex-column gap-3">
+                
+        `
+
+        items.forEach(item => html += `
+            <div class="itms-group flex-beetwen w-100">
+                <span>${item.name}</span>
+                <span>${item[type.toLowerCase()]} Pcs</span>
+            </div>
+        `)
+
+        html += `</div>`
+
+        document.querySelector("#trx-detail").innerHTML = html
+        return true
+
+    }
+
+    async calendarSet() {
+        const year = this.onYear()
+        this.calendarData       = await window.DB.search("trxHeader", {query : this.onMonth(), fields : ["month"], filters : {year : year}})
         let prevButton  = document.querySelector("#calendar-previous")
         let nextButton  = document.querySelector("#calendar-next")
-
-        nextButton.onclick = (e) => {
+        nextButton.onclick = async (e) => {
             this.calendarDate.setMonth(this.calendarDate.getMonth() + 1)
+            const year = this.onYear()
+            this.calendarData       = await window.DB.search("trxHeader", {query : this.onMonth(), fields : ["month"], filters : {year : year}})
             this.renderCalendar()
         }
-        prevButton.onclick = (e) => {
+        prevButton.onclick = async (e) => {
             this.calendarDate.setMonth(this.calendarDate.getMonth() - 1)
+            const year = this.onYear()
+            this.calendarData   = await window.DB.search("trxHeader", {query : this.onMonth(), fields : ["month"], filters : {year : year}})
             this.renderCalendar()
         }
-
+        this.renderCalendar()
     }
-    renderCalendar() {
+
+    async renderCalendar() {
         const last      = new Date(this.calendarDate.getFullYear(), this.calendarDate.getMonth() + 1, 0).getDate(),
             month       = this.calendarDate.getMonth(),
-            monthName   = this.calendarDate.toLocaleDateString("id-ID", { month: "long"}).toUpperCase(),
             year        = this.calendarDate.getFullYear(),
             firstDay    = new Date(year, month, 1).getDay()
 
-        // return console.log(last)
-        this.onMonth = monthName
-        this.monthControl.textContent = monthName + " " + year
-    
+        this.monthControl.textContent = this.onMonth() + " " + this.onYear()
         const container = document.getElementById('calendar-date');
-        container.innerHTML = ((firstDay) => Array(firstDay).fill("<span></span>").join(""))(firstDay   )
+        container.innerHTML = ((firstDay) => Array(firstDay).fill("<span></span>").join(""))(firstDay)
 
         for (let i = 1; i <= last; i++) {
-            const dayStr = i.toString().padStart(2, '0');
-            const dayData = this.getData()[2].find(d => d.date === dayStr) || { date: dayStr, low: true, masuk: 0, keluar: 0 };
+            const dayStr    = i.toString().padStart(2, '0');
+            const dayObj    = { date: dayStr, low: true, masuk: 0, keluar: 0, status : false }
+            
+            const dayData = this.calendarData == [] ? dayObj : (() => {
+                this.calendarData.forEach(x => {
+                    if (x.date != dayStr) return
+                    dayObj.low = false
+                    dayObj.status = true
+                    if (x.type == "IN") dayObj.masuk ++
+                    if (x.type == "OUT") dayObj.keluar ++
+                })
+                return dayObj
+            })()
+            // continue
             const html = `
-                <div class="date-box ${dayData.low ? 'opacity' : ''}" data-date="${dayData.date + "-03-2026"}">
+                <div data-ctrl="${!dayData.status ? 0 : 1}" class="${!dayData.status ? 0 : "pointer "} date-box ${dayData.low ? 'opacity' : ''}" data-date="${dayData.date} ${this.onMonth()} ${this.onYear()}">
                     <div class="date-content grid-center">
-                        <div class="date-bars hidden gap-2 ${dayData.low ? '' : ''}">
+                        <div class="date-bars hidden gap-2 ${dayData.low ? 'opacity-10' : ''}">
                             ${dayData.masuk > 0 ? `<div class="data-bar h-100 grid-center bar-masuk green" data-text="${dayData.masuk}">${dayData.masuk}</div>` : "" }
                             ${dayData.keluar > 0 ? `<div class="data-bar h-100 grid-center bar-keluar blue" data-text="${dayData.keluar}">${dayData.keluar}</div>` : "" }
                         </div>
@@ -264,40 +341,169 @@ class trx {
             `;
             container.innerHTML += html;
         }
-        this.renderTrxTable()
-        CustomContextMenu()
-    }
-    renderTRXDetail(elm) {
+
+        this.range = [this.onMonth()]
+        this.stringRange = this.onMonth().toUpperCase() + " " + this.onYear()
+
         
+        this.calculateDetailedSummary()
+        this.renderItemsTable()
+        this.renderTrxTable()
+        // CustomContextMenu()
     }
-    renderItemsTrx(elm) {
+
+    setMoreRange () {
+        const startYear = 2026;
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth(); // 0-11
+
+        const rangeElm = document.querySelector("#maku-more-list")
+
+        rangeElm.innerHTML = "<span class='grey'>Bulanan</span>"
+
+        // Menentukan triwulan saat ini (1-4)
+        const currentTriwulan = Math.floor(currentMonth / 3) + 1;
+
+        for (let year = startYear; year <= currentYear; year++) {
+            // Jika tahun yang sedang di-loop adalah tahun sekarang, batasnya sampai triwulan saat ini.
+            // Jika tahun di masa lalu, batasnya sampai triwulan 4.
+            const limitTriwulan = (year === currentYear) ? currentTriwulan : 4;
+            for (let t = 1; t <= limitTriwulan; t++) rangeElm.innerHTML += `<span>Triwulan ${t} - ${year}</span>`;
+            rangeElm.innerHTML += `<span>${year}</span>`;
+        }
 
     }
-    getMasukForm() {
-        const sumber        = document.querySelector("#sumber-masuk"),
-            ketSumber       = document.querySelector("#keterangan-sumber-masuk"),
-            penerima        = document.querySelector("#penerima-masuk"),
-            tanggalMasuk    = document.querySelector("#tanggal-masuk"),
-            docs            = null,
-            itemgroups      = document.querySelectorAll("#items-form-masuk-list .form-items-group .masuk-input  ")
-        
-    }
-    play () {
-        // Month Control
+
+    async play () {
         const headSelect    = document.querySelector("#cal-head-select")
         const selectClose   = document.querySelector("#cal-select-close")
         
-        this.monthControl.addEventListener("click", () => headSelect.classList.remove("dis-none"))
+        // this.monthControl.addEventListener("click", () => headSelect.classList.remove("dis-none"))
         selectClose.addEventListener("click", () => headSelect.classList.add("dis-none"))
-
-        document.querySelector("#trx-detail-close").onclick = () => this.trxDetailBox.classList.add("dis-none")
-        document.querySelector("#trx-item-detail-close").onclick = () => this.trxItemDetailBox.classList.add("dis-none")
 
         this.calendarSet()
         this.makuChange()
         this.typeChange()
-        this.renderCalendar();
-        CustomContextMenu()
+
+        window.addEventListener("click", (e) => {
+            const box = e.target.closest(".date-box")
+            if (box) {
+                if (box.dataset.ctrl == 0) return
+                const boxDate = box.dataset.date
+                document.querySelectorAll(".trx-tr")?.forEach(tr => {
+                    console.log(tr.dataset.date)
+                    if (tr.dataset.date.toUpperCase() == box.dataset.date.toUpperCase()) return tr.classList.remove("dis-none")
+                    tr.classList.add("dis-none")
+                    console.log(tr.dataset.date, box.dataset.date)
+                })
+            }
+            const trxDetailClose = e.target.closest("#trx-detail-close")
+            if (trxDetailClose) this.trxDetailBox.classList.add("dis-none")
+            const itemDetailClose = e.target.closest("#trx-item-detail-close")
+            if (itemDetailClose) this.trxItemDetailBox.classList.add("dis-none")
+            
+        } )
+
+        this.makuMore.onchange = async (e) => {
+            const value = e.target.value
+            let headerMonth = []
+            let itemsMonth  = []
+            let itmsMonth   = []
+
+            const getNamaBulan = ((p) => {
+                const f = new Intl.DateTimeFormat('id', { month: 'long' });
+                const b = (i) => f.format(new Date(0, i));
+                
+                const input = p.toString().trim();
+                const lowP = input.toLowerCase();
+                const now = new Date();
+
+                // Helper: Mendapatkan daftar nama bulan di antara dua tanggal
+                const getBulanAntara = (dateStart, dateEnd) => {
+                    let start = new Date(dateStart.getFullYear(), dateStart.getMonth(), 1);
+                    let end = new Date(dateEnd.getFullYear(), dateEnd.getMonth(), 1);
+                    let list = [];
+                    while (start <= end) {
+                        list.push(b(start.getMonth()).toLowerCase());
+                        start.setMonth(start.getMonth() + 1);
+                    }
+                    return list;
+                };
+
+                // 1. KONDISI: RANGE TANGGAL (Contoh: "02 April 2026 - 30 November 2026")
+                if (input.includes('-') && !lowP.includes('triwulan')) {
+                    const dates = input.split('-').map(d => d.trim());
+                    // Mencoba parse tanggal manual (Asumsi format: DD Bulan YYYY)
+                    // Kita gunakan Date.parse atau pembuatan objek Date sederhana
+                    const d1 = new Date(dates[0]);
+                    const d2 = new Date(dates[1]);
+
+                    if (!isNaN(d1) && !isNaN(d2)) {
+                        return {
+                            bulan: getBulanAntara(d1, d2),
+                            year: d1.getFullYear(), // Mengambil tahun dari tanggal mulai
+                            periode: `${dates[0]} - ${dates[1]}`
+                        };
+                    }
+                }
+
+                // 2. KONDISI: "BULANAN"
+                if (lowP === 'bulanan') {
+                    this.calendarDate = new Date(new Date().setDate(10));
+                    this.range        = this.onMonth();
+                    const m = now.getMonth();
+                    const y = now.getFullYear();
+                    return {
+                        bulan: [b(m).toLowerCase()],
+                        year: y,
+                        periode: `${b(m)} ${y}`
+                    };
+                }
+
+                // 3. KONDISI: "TRIWULAN X - YYYY"
+                if (lowP.includes('triwulan')) {
+                    const parts = lowP.split(' '); 
+                    const tw = parseInt(parts[1]);
+                    const y = parseInt(parts[3]);
+                    if (tw >= 1 && tw <= 4 && y) {
+                        const bulanArray = [0, 1, 2].map(i => b((tw - 1) * 3 + i));
+                        return {
+                            bulan: bulanArray.map(m => m.toLowerCase()),
+                            year: y,
+                            periode: `${bulanArray[0]} - ${bulanArray[2]} ${y}`
+                        };
+                    }
+                }
+
+                // 4. KONDISI: HANYA TAHUN (Contoh: "2026")
+                const checkYear = parseInt(lowP);
+                if (!isNaN(checkYear) && lowP.length === 4) {
+                    return {
+                        bulan: Array.from({ length: 12 }, (_, i) => b(i).toLowerCase()),
+                        year: checkYear,
+                        periode: `Januari - Desember ${checkYear}`
+                    };
+                }
+
+                return { bulan: [], year: null, periode: "Format tidak dikenali" };
+            })(value);
+
+            this.range = getNamaBulan.bulan
+            this.stringRange = getNamaBulan.periode
+
+            console.log(getNamaBulan, value)
+
+            // if (value.toLowerCase() == "bulanan") return this.calendarSet()
+
+            headerMonth = await window.DB.search("trxHeader", {query : this.range, fields: ["month"], filters : {year : this.onYear()}})
+            itmsMonth   = await window.DB.search("trxItems", {query : this.range, fields: ["month"], filters : {year : this.onYear()}})
+            itemsMonth  = await window.DB.searchUnique("trxItems", {query : this.range, fields: ["month"], filters : {year : this.onYear()}})
+            
+            this.calculateDetailedSummary(itmsMonth)
+            this.renderTrxTable(headerMonth)
+            this.renderItemsTable(itemsMonth)
+        }
     }
 }
 

@@ -4,6 +4,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { formStart } from "./form";
 import { initGoogleLogin } from "./device";
 import TRANSACTION from "./transaksi";
+import INVENTORY from "./inventory";
 // Async Function
 
 export async function isReallyOnline() {
@@ -158,9 +159,31 @@ export function CustomSelect (selector = '.custom-select-container', callback = 
     // Klik di luar area select mana pun akan menutup semua dropdown
     document.addEventListener('click', () => closeAllSelects());
 }
-export function CustomMore (selector = ".more-box", callback = null) {
+export function CustomMore ({elms, callback} = {}) {
+    const selector = elms || ".more-box"
+    const hiden     = document.querySelector("#maku-more-input")
     const allMore = document.querySelectorAll(selector);
     if (allMore.length === 0) return;
+
+    const startYear = 2026;
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth(); // 0-11
+
+    const rangeElm = document.querySelector("#maku-more-list")
+
+    rangeElm.innerHTML = "<span class='grey'>Bulanan</span>"
+
+    // Menentukan triwulan saat ini (1-4)
+    const currentTriwulan = Math.floor(currentMonth / 3) + 1;
+
+    for (let year = startYear; year <= currentYear; year++) {
+        // Jika tahun yang sedang di-loop adalah tahun sekarang, batasnya sampai triwulan saat ini.
+        // Jika tahun di masa lalu, batasnya sampai triwulan 4.
+        const limitTriwulan = (year === currentYear) ? currentTriwulan : 4;
+        for (let t = 1; t <= limitTriwulan; t++) rangeElm.innerHTML += `<span>Triwulan ${t} - ${year}</span>`;
+        rangeElm.innerHTML += `<span>${year}</span>`;
+    }
 
     const closeAll = (exceptThisOne = null) => {
         allMore.forEach(more => {
@@ -199,10 +222,12 @@ export function CustomMore (selector = ".more-box", callback = null) {
                 // Close List
                 list.classList.add("dis-none");
 
+                hiden.value = span.textContent.trim()
+                hiden.dispatchEvent(new Event('change', { bubbles: true }));
+
+
                 // EXECUTE CALLBACK: Kirim value dan elemennya
-                if (typeof callback === "function") {
-                    callback(span.textContent.trim(), span, more);
-                }
+                if (typeof callback === "function") callback({value : span.textContent.trim(), elm : span, box : more});
             });
         });
     });
@@ -245,7 +270,6 @@ export function CustomContextMenu () {
 
     document.addEventListener("keydown", (e) => {if (e.key === "Escape") contextMenu.style.display = "none";});
 
-    const makuBox   = document.querySelector("#cal-maku")
     const antarBox  = document.querySelector("#antar-tanggal")
 
     const showStart = document.querySelector("#date-start-show")
@@ -256,7 +280,6 @@ export function CustomContextMenu () {
 
     document.querySelector("#date-start").onclick = (e) => {
         const date = e.target.closest(".context-menu").dataset.date
-        makuBox.classList.add("dis-none")
         antarBox.classList.remove("dis-none")
         showStart.textContent = date
         showStart.dataset.status = "on"
@@ -266,7 +289,6 @@ export function CustomContextMenu () {
     }
     document.querySelector("#date-end").onclick = (e) => {
         const date = e.target.closest(".context-menu").dataset.date
-        makuBox.classList.add("dis-none")
         antarBox.classList.remove("dis-none")
         showEnd.textContent = date
         showEnd.dataset.status = "on"
@@ -276,7 +298,6 @@ export function CustomContextMenu () {
     }
     document.querySelector("#date-reset").onclick = (e) => {
         e.target.closest(".context-menu").dataset.date = ""
-        makuBox.classList.remove("dis-none")
         antarBox.classList.add("dis-none")
         showStart.textContent = "- - -"
         showEnd.textContent = "- - -"
@@ -286,7 +307,7 @@ export function CustomContextMenu () {
         endBox.classList.remove("shake-constant", "blink")
     }
     
-    UI_log("Custom ContextMenu ✅")
+    // UI_log("Custom ContextMenu ✅")
 
 }
 export function navBar () {
@@ -505,7 +526,7 @@ export function UI_clearPopUp () {
     document.querySelectorAll(".pop-up").forEach(popup => popup.classList.add("dis-none"))
 }
 export async function UI_Login(text = "") {
-    // return UI_Main()
+    return UI_Main()
     const isOnline = await isReallyOnline()
     if (!isOnline.confirm) return UI_Offline()
     console.log("UI Login " + text)
@@ -530,9 +551,11 @@ export async function UI_Main () {
     UI_Play()
     UI_clearPopUp()
     await formStart()
+    await INVENTORY.play()
     await updateDashboard()
-    TRANSACTION.play()
+    await TRANSACTION.play()
     UI_ClearShimmer()
+    initTableSort()
 }
 export function UI_Offline(text = "OFFLINE") {
     document.querySelector("#pop-up").classList.remove("dis-none")
@@ -549,7 +572,7 @@ export function UI_Alert(text = "") {
     document.querySelector("#alert").classList.remove("dis-none")
     document.querySelector("#alert-text").textContent = text
 }
-export function UI_Notif (text = "", color = "green", timeout = 4000) {
+export function UI_Notif (text = "", color = "green", timeout = 5000) {
     const notifBox  = document.querySelector("#notif-box")
     const ntf       = document.createElement("div")
     ntf.className = "notif-box items-start gap-10 flex-end " + color
@@ -576,7 +599,18 @@ export function UI_Play () {
         if (e.target.classList.contains("notif-close")) e.target.closest(".notif-box").remove()
     })
 }
-
+export async function defaultFetchResponse(resp, {success,reject,failed, note} = {}) {
+    try {
+        if (!resp) (typeof failed === "function") ? await failed(resp) : UI_Notif("Koneksi terputus atau tidak ada respon dari server.", "red");
+        if (!resp.confirm) (typeof failed === "function") ? await failed(resp) : UI_Notif(note + " " + resp.error?.message || "Terjadi kesalahan pada sistem.", "red");
+        if (!resp.data?.confirm) (typeof reject === "function") ? await reject(resp) : UI_Notif(note + " " + resp.data?.msg || "Permintaan tidak dapat diproses.", "red");
+        if (resp.data.confirm && typeof success === "function") return await success(resp);
+        if (resp.data.reload) return setTimeout( () => window.location.reload(), 2000)
+    } catch (err) {
+        console.error("Error in defaultFetchResponse:", err);
+        UI_Notif("Terjadi kesalahan tak terduga.");
+    }
+}
 export async function updateDashboard () {
     
     const counter = await window.DB.getAll("counter")
@@ -605,4 +639,155 @@ export async function updateDashboard () {
         available   : available,
         unavailable : unavailable
     })
+}
+export function initTableSort() {
+    // Intl.Collator jauh lebih cepat dan akurat untuk sorting teks/angka dibanding localeCompare
+    const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+
+    document.querySelectorAll('th.sortable').forEach(header => {
+        // Mencegah penambahan event listener berulang kali jika fungsi dipanggil ulang
+        if (header.dataset.sortBound) return;
+        header.dataset.sortBound = "true"; 
+
+        header.onclick = () => {
+            const table = header.closest('table');
+            const tbody = table.tBodies[0];
+            
+            // Keamanan: Jika tabel tidak memiliki tbody, hentikan eksekusi
+            if (!tbody) return; 
+
+            const index = Array.from(header.parentElement.children).indexOf(header);
+            const type  = header.dataset.type || 'text'; // Default ke 'text' jika atribut kosong
+            const isAsc = header.classList.contains('sort-asc');
+
+            // 1. Reset state: Bersihkan SEMUA class dan icon di SEMUA header
+            table.querySelectorAll('th.sortable').forEach(th => {
+                th.classList.remove('sort-asc', 'sort-desc');
+                const span = th.querySelector('i');
+                if (span) span.textContent = ''; // Kosongkan icon di kolom lain
+            });
+
+            // 2. Tentukan arah sortir untuk kolom yang diklik
+            const direction = isAsc ? -1 : 1; // Jika sebelumnya ASC, ubah ke DESC (-1)
+            
+            // Tambahkan class yang benar
+            header.classList.add(isAsc ? 'sort-desc' : 'sort-asc');
+            
+            // Update icon panah secara aman
+            const activeSpan = header.querySelector('i');
+            if (activeSpan) {
+                activeSpan.textContent = isAsc ? ' ▼' : ' ▲';
+            }
+
+            // 3. Sortir baris dengan algoritma cerdas & aman (Null Safety)
+            const sortedRows = Array.from(tbody.rows).sort((a, b) => {
+                // Gunakan optional chaining (?.) untuk mencegah error jika cell hilang
+                let cellA = a.cells[index]?.textContent.trim() || "";
+                let cellB = b.cells[index]?.textContent.trim() || "";
+
+                // Optimasi: Jika nilainya sama persis, tidak perlu dihitung
+                if (cellA === cellB) return 0;
+
+                let comparison = 0;
+
+                switch (type) {
+                    case 'number':
+                        let numA = parseFloat(cellA.replace(/[^\d.-]/g, '')) || 0;
+                        let numB = parseFloat(cellB.replace(/[^\d.-]/g, '')) || 0;
+                        comparison = numA - numB;
+                        break;
+                        
+                    case 'date': // Untuk format YYYY-MM-DD standar Internasional
+                        let dateA = new Date(cellA).getTime() || 0;
+                        let dateB = new Date(cellB).getTime() || 0;
+                        comparison = dateA - dateB;
+                        break;
+
+                    case 'id-date': // 🌟 INI YANG BARU: Untuk format "04 Desember 2026 10.30"
+                        let idDateA = parseIndonesianDate(cellA);
+                        let idDateB = parseIndonesianDate(cellB);
+                        comparison = idDateA - idDateB;
+                        break;
+
+                    default: // 'text' (Menangani kombinasi huruf dan angka biasa secara cerdas)
+                        comparison = collator.compare(cellA, cellB);
+                        break;
+                }
+
+
+                return comparison * direction;
+            });
+
+            // 4. Update DOM secara efisien
+            const fragment = document.createDocumentFragment();
+            sortedRows.forEach(row => fragment.appendChild(row));
+            tbody.appendChild(fragment);
+        };
+    });
+}
+function parseIndonesianDate(dateStr) {
+    if (!dateStr) return 0;
+
+    // Kamus bulan bahasa Indonesia
+    const months = {
+        'januari': 0, 'februari': 1, 'maret': 2, 'april': 3, 'mei': 4, 'juni': 5,
+        'juli': 6, 'agustus': 7, 'september': 8, 'oktober': 9, 'november': 10, 'desember': 11
+    };
+
+    // Regex untuk mendeteksi pola: "04 Desember 2026 10.30" atau "10:30"
+    // Akan menangkap: [1]Tanggal, [2]Bulan, [3]Tahun, [4]Jam, [5]Menit
+    const parts = dateStr.toLowerCase().match(/(\d+)\s+([a-z]+)\s+(\d+)\s+(\d+)[.:](\d+)/);
+
+    if (parts) {
+        const [ , day, monthStr, year, hour, minute ] = parts;
+        const monthIndex = months[monthStr];
+        
+        if (monthIndex !== undefined) {
+            // Ubah menjadi format angka timestamp milidetik
+            return new Date(year, monthIndex, day, hour, minute).getTime();
+        }
+    }
+
+    // Fallback: Jika ternyata formatnya bahasa Inggris standar
+    return new Date(dateStr).getTime() || 0;
+}
+export function getLastDateOfMonth(monthYearStr) {
+    try {
+        const monthsMap = {
+            januari: 0, january: 0, februari: 1, february: 1, maret: 2, march: 2,
+            april: 3, mei: 4, may: 4, juni: 5, june: 5, juli: 6, july: 6,
+            agustus: 7, august: 7, september: 8, oktober: 9, october: 9,
+            november: 10, desember: 11, december: 11
+        };
+
+        // 1. Pecah string dan bersihkan spasi
+        const parts = monthYearStr.toLowerCase().trim().split(/\s+/);
+        if (parts.length < 2) throw new Error("Format harus 'Bulan Tahun'");
+
+        const [monthName, yearStr] = parts;
+        const year = parseInt(yearStr);
+        const monthIndex = monthsMap[monthName];
+
+        if (monthIndex === undefined || isNaN(year)) {
+            throw new Error("Nama bulan atau tahun tidak valid");
+        }
+
+        // 2. Trik Magic JS:
+        // Kita buat tanggal untuk bulan DEPAN (monthIndex + 1), tapi tanggalnya 0.
+        // JS akan menganggap itu hari terakhir bulan sebelumnya.
+        const lastDateObj = new Date(year, monthIndex + 1, 0);
+
+        // 3. Format Output
+        return {
+            tanggal: lastDateObj.getDate(), // Contoh: 30
+            hari: lastDateObj.toLocaleDateString('id-ID', { weekday: 'long' }), // Contoh: "Kamis"
+            fullDate: lastDateObj.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            })
+        };
+    } catch (err) {
+        return { error: err.message };
+    }
 }
