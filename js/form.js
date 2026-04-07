@@ -274,7 +274,7 @@ export async function formStart () {
             if (!data) return
             try {
                 console.log("")
-                console.log("[Transaksi] Mengirim ke server...")
+                console.log("[Add Transaksi] Mengirim ke server...")
                 const user = getDevice()
                 if (!user) return UI_Login()
                 UI_Loader("Mengirim")
@@ -305,62 +305,6 @@ export async function formStart () {
     
 }
 
-/**
- * Reset Form Barang Keluar
- */
-function resetFormMasuk() {
-    // 1. Clear State (Penting agar data lama tidak ikut terkirim lagi)
-    state.items.clear();
-    state.files = [];
-
-    // 2. Reset Input Pencarian & Tabel
-    const searchNama = document.getElementById('search-nama-keluar');
-    const searchKode = document.getElementById('search-kode-keluar');
-    if (searchNama) searchNama.value = '';
-    if (searchKode) searchKode.value = '';
-
-    // Tampilkan kembali semua baris tabel yang mungkin terfilter
-    const tableRows = document.querySelectorAll('#items-search-keluar-table tbody tr');
-    tableRows.forEach(row => row.style.display = '');
-
-    // 3. Reset Custom Select (Tujuan)
-    const selectTrigger = document.querySelector('#form-keluar-tujuan .select-trigger span');
-    const selectInput = document.querySelector('#form-keluar-tujuan .select-input');
-    if (selectTrigger) {
-        selectTrigger.textContent = 'Pilih Tujuan';
-        selectTrigger.classList.add('italic', 'clr-grey');
-    }
-    if (selectInput) selectInput.value = '';
-
-    // 4. Reset Input File & UI Statusnya
-    const fileInput = document.getElementById('input-file-keluar'); // Sesuaikan ID-mu
-    if (fileInput) fileInput.value = '';
-
-    // Reset Icon & Teks pada Tombol File
-    const statusIcon = document.querySelector('.icon i.fa-check, .icon i.fa-file');
-    if (statusIcon) {
-        statusIcon.className = 'fas fa-file clr-green';
-        const btnText = statusIcon.parentElement.parentElement;
-        // Kembalikan ke teks awal (asumsi strukturnya tetap)
-        if (btnText.lastChild.nodeType === Node.TEXT_NODE) {
-            btnText.lastChild.textContent = ' Pilih File';
-        }
-    }
-
-    // Sembunyikan ikon list & kosongkan list file
-    const listIconBtn = document.getElementById('masuk-file-list-icon');
-    const fileListDisplay = document.getElementById('file-list-display');
-    if (listIconBtn) listIconBtn.classList.add('dis-none');
-    if (fileListDisplay) {
-        fileListDisplay.innerHTML = '';
-        fileListDisplay.classList.add('dis-none');
-    }
-
-    // 5. Render Ulang Daftar Barang (Akan menampilkan pesan "Kosong")
-    render(); // Pastikan fungsi renderItems() dipanggil di dalam sini
-    
-    console.log("Form berhasil di-reset!");
-}
 // Helper sederhana untuk PDF
 function fileToBase64(file) {
     return new Promise((resolve) => {
