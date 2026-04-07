@@ -1,6 +1,6 @@
 
 import { getDevice } from "./device";
-import { UI_Alert, UI_Login, UI_Notif, defaultFetchResponse } from "./UI";
+import { UI_Alert, UI_Loader, UI_Login, UI_Notif, defaultFetchResponse } from "./UI";
 
 const jenisInput = document.querySelector("#form-jenis-input")
 const submitBtn  = document.querySelector("#form-submit-button")
@@ -186,6 +186,52 @@ export async function addItem() {
     })
 }
 
+/**
+ * Kompres Gambar menggunakan Canvas
+ * @param {File} file - File asli dari input
+ * @param {number} maxWidth - Lebar maksimal (default 1280px)
+ * @param {number} quality - Kualitas 0.0 sampai 1.0 (default 0.7)
+ */
+async function compressImage(file, maxWidth = 1280, quality = 0.7) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+
+                // Hitung Rasio jika gambar terlalu lebar
+                if (width > maxWidth) {
+                    height = (maxWidth / width) * height;
+                    width = maxWidth;
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // Export ke Base64 dengan format JPEG (lebih ringan dari PNG)
+                const dataUrl = canvas.toDataURL('image/jpeg', quality);
+                
+                // Konversi kembali ke Blob untuk konsistensi atau kirim Base64 langsung
+                resolve({
+                    base64: dataUrl,
+                    type: 'image/jpeg',
+                    name: file.name.replace(/\.[^/.]+$/, "") + ".jpg" // Ubah ekstensi ke .jpg
+                });
+            };
+            img.onerror = (err) => reject(err);
+        };
+        reader.onerror = (err) => reject(err);
+    });
+}
+
 export async function formStart () {
     const isOnline = await window.isReallyOnline()
     if (!isOnline.confirm) return UI_Notif("Offline", "red")
@@ -219,12 +265,109 @@ export async function formStart () {
     window.ITEMS    = await window.DB.getAll("items")
     window.STOCKS   = await window.DB.getAll("stocks")
 
-    document.querySelector("#form-submit-button").onclick = (e) => {
+    // resetFormKeluar()
+
+    document.querySelector("#form-submit-button").onclick = async (e) => {
         if (jenisInput.value == "masuk") {
             const data = FormMasuk.getData() || []
             console.log(data)
+            if (!data) return
+            try {
+                console.log("")
+                console.log("[Transaksi] Mengirim ke server...")
+                const user = getDevice()
+                if (!user) return UI_Login()
+                UI_Loader("Mengirim")
+                const resp = window.REQUEST.post({
+                    type    : "in",
+                    data    : data,
+                    ...user
+                })
+
+                await defaultFetchResponse(resp, {
+                    success : (param) => {
+                        UI_Alert(param.data.msg, "green")
+                        FormMasuk.reset()
+                    },
+                    reject  : (param) => UI_Alert(param.data.msg, "red"),
+                    failed  : (param) => UI_Alert((param.error?.message || "Terjadi kesalahan pada sistem."), "red"),
+                    note    : "[Add Trasaksi] "
+                })
+            } catch (e) {
+                console.log("[Add Transaksi] Gagal : " + e.message)
+                return {
+                    confirm : false,
+                    msg     : "[Add Transaksi] Gagal : " + e.message
+                }
+            }
         }
     }
+    
+}
+
+/**
+ * Reset Form Barang Keluar
+ */
+function resetFormMasuk() {
+    // 1. Clear State (Penting agar data lama tidak ikut terkirim lagi)
+    state.items.clear();
+    state.files = [];
+
+    // 2. Reset Input Pencarian & Tabel
+    const searchNama = document.getElementById('search-nama-keluar');
+    const searchKode = document.getElementById('search-kode-keluar');
+    if (searchNama) searchNama.value = '';
+    if (searchKode) searchKode.value = '';
+
+    // Tampilkan kembali semua baris tabel yang mungkin terfilter
+    const tableRows = document.querySelectorAll('#items-search-keluar-table tbody tr');
+    tableRows.forEach(row => row.style.display = '');
+
+    // 3. Reset Custom Select (Tujuan)
+    const selectTrigger = document.querySelector('#form-keluar-tujuan .select-trigger span');
+    const selectInput = document.querySelector('#form-keluar-tujuan .select-input');
+    if (selectTrigger) {
+        selectTrigger.textContent = 'Pilih Tujuan';
+        selectTrigger.classList.add('italic', 'clr-grey');
+    }
+    if (selectInput) selectInput.value = '';
+
+    // 4. Reset Input File & UI Statusnya
+    const fileInput = document.getElementById('input-file-keluar'); // Sesuaikan ID-mu
+    if (fileInput) fileInput.value = '';
+
+    // Reset Icon & Teks pada Tombol File
+    const statusIcon = document.querySelector('.icon i.fa-check, .icon i.fa-file');
+    if (statusIcon) {
+        statusIcon.className = 'fas fa-file clr-green';
+        const btnText = statusIcon.parentElement.parentElement;
+        // Kembalikan ke teks awal (asumsi strukturnya tetap)
+        if (btnText.lastChild.nodeType === Node.TEXT_NODE) {
+            btnText.lastChild.textContent = ' Pilih File';
+        }
+    }
+
+    // Sembunyikan ikon list & kosongkan list file
+    const listIconBtn = document.getElementById('masuk-file-list-icon');
+    const fileListDisplay = document.getElementById('file-list-display');
+    if (listIconBtn) listIconBtn.classList.add('dis-none');
+    if (fileListDisplay) {
+        fileListDisplay.innerHTML = '';
+        fileListDisplay.classList.add('dis-none');
+    }
+
+    // 5. Render Ulang Daftar Barang (Akan menampilkan pesan "Kosong")
+    render(); // Pastikan fungsi renderItems() dipanggil di dalam sini
+    
+    console.log("Form berhasil di-reset!");
+}
+// Helper sederhana untuk PDF
+function fileToBase64(file) {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+    });
 }
 
 const FormMasuk = (() => {
@@ -244,6 +387,28 @@ const FormMasuk = (() => {
         file    : el('file-input'),
         find    : el('masuk-search-input')
     };
+
+    async function prepareFilesForUpload() {
+        const preparedFiles = [];
+
+        for (const file of state.files) {
+            if (file.type.startsWith('image/')) {
+                // Kompres jika file adalah gambar
+                console.log(`Mengompres: ${file.name}`);
+                const compressed = await compressImage(file);
+                preparedFiles.push(compressed);
+            } else {
+                // Langsung jadikan Base64 jika PDF
+                const base64Data = await fileToBase64(file);
+                preparedFiles.push({
+                    base64: base64Data,
+                    type: file.type,
+                    name: file.name
+                });
+            }
+        }
+        return preparedFiles;
+    }
 
     // 3. Render UI Reactive
     const render = () => {
@@ -278,6 +443,67 @@ const FormMasuk = (() => {
             `
         }).join("")
         dom.search.innerHTML = html
+    }
+
+    // Helper untuk format size agar rapi (KB/MB)
+    const formatSize = (bytes) => {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    };
+
+    function renderFiles() {
+        const container = document.getElementById('file-list-display');
+
+        const statusIcon = document.querySelector('.masuk-icon i.fa-file, .masuk-icon i.fa-check');
+        const statusText = statusIcon.parentElement.nextSibling; // Mengambil text "Pilih File"
+        const listIconBtn = document.getElementById('masuk-file-list-icon');
+
+        const fileCount = state.files.length;
+        const totalSize = state.files.reduce((acc, f) => acc + f.size, 0);
+        if (fileCount > 0) {
+            // Ubah Ikon jadi Check
+            statusIcon.classList.replace('fa-file', 'fa-check');
+            
+            // Update Teks: "2 File (1.5 MB)"
+            // Catatan: Jika struktur HTML berbeda, pastikan ID/Class pembungkus teks tepat
+            statusIcon.parentElement.parentElement.lastChild.textContent = ` ${fileCount} File (${formatSize(totalSize)})`;
+            
+            // Tampilkan ikon list
+            listIconBtn.classList.remove('dis-none');
+        } else {
+            // Reset ke kondisi awal
+            statusIcon.classList.replace('fa-check', 'fa-file');
+            statusIcon.parentElement.parentElement.lastChild.textContent = ' Pilih File';
+            
+            // Sembunyikan ikon list & container list
+            listIconBtn.classList.add('dis-none');
+            container.classList.add('dis-none');
+        }
+
+        container.innerHTML = ''; // Reset tampilan
+        state.files.forEach((file, index) => {
+            // Logika penentuan icon berdasarkan tipe file
+            let iconClass = 'fa-file'; // Default icon
+            
+            if (file.type === 'application/pdf') iconClass = 'fa-file-pdf';
+            else if (file.type.startsWith('image/')) iconClass = 'fa-image';
+            
+            const fileSpan = document.createElement('span');
+            
+            // Styling menggunakan class utility yang kamu punya (asumsi dari snippet sebelumnya)
+            fileSpan.className = 'borad-5 p-5-10 flex-start gap-10';
+            fileSpan.innerHTML = `
+                <i class="fas ${iconClass} clr-green fz-16"></i>
+                <span class="clr-dark fz-12">${file.name}</span>
+                <i class="fas fa-times-circle clr-red pointer" onclick="removeFile(${index})"></i>
+            `;
+            
+            container.appendChild(fileSpan);
+        });
+        
     }
 
     return {
@@ -316,12 +542,31 @@ const FormMasuk = (() => {
                 }
             });
 
+            // Saat Hapus File
+            window.removeFile = (index) => {
+                state.files.splice(index, 1);
+                renderFiles(); // Update semua indikator
+            };
+
             // C. Handle File (Max 4 File, Max 10MB)
             dom.file.addEventListener('change', e => {
                 const newFiles = Array.from(e.target.files);
-                if (state.files.length + newFiles.length > 4) return alert("Maksimal 4 file!");
-                if ([...state.files, ...newFiles].reduce((acc, f) => acc + f.size, 0) > 10485760) return alert("Total file melebihi 10MB!");
+
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
+                const invalidFile = newFiles.find(f => !allowedTypes.includes(f.type));
+
+                if (invalidFile) {
+                    UI_Notif(`File "${invalidFile.name}" tidak diizinkan! Hanya boleh Gambar (JPG/PNG/WebP) atau PDF.`, "red");
+                    dom.file.value = ''; // Reset input
+                    return;
+                }
+
+                if (state.files.length + newFiles.length > 4) return UI_Notif("Maksimal 4 file!", "red");
+                if ([...state.files, ...newFiles].reduce((acc, f) => acc + f.size, 0) > 10485760) return UI_Notif("Total file melebihi 10MB!", "red");
                 state.files.push(...newFiles);
+                renderFiles()
+
+                dom.file.value = '';
             });
 
             dom.find.addEventListener("keyup", (e) => {
@@ -339,6 +584,11 @@ const FormMasuk = (() => {
 
                 renderSearch(src)
             })
+
+            document.getElementById('masuk-file-list-icon').addEventListener('click', function() {
+                const container = document.getElementById('file-list-display');
+                container.classList.toggle('dis-none');
+            });
 
             render(); // Initial render state kosong
         },
@@ -384,6 +634,47 @@ const FormMasuk = (() => {
                 items: Array.from(state.items.entries()).map(([kode, data]) => ({ kode, ...data })),
                 files: state.files
             };
+        },
+
+        // 6. Fungsi Reset Total
+        reset: () => {
+            // A. Reset State
+            state.items.clear();
+            state.files = [];
+
+            // B. Reset Semua Input di DOM
+            const inputs = [dom.sumber, dom.ket, dom.penerima, dom.tgl, dom.file, dom.find];
+            inputs.forEach(input => {
+                if (input) {
+                    input.value = '';
+                    input.classList.remove('br-red'); // Hapus class error jika ada
+                }
+            });
+
+            // C. Reset Tampilan Pencarian
+            renderSearch([]);
+
+            // D. Reset Tampilan List Barang
+            render();
+
+            // E. Reset Tampilan Status File & List Icon
+            const statusIcon = document.querySelector('.masuk-icon i.fa-check, .masuk-icon i.fa-file');
+            if (statusIcon) {
+                statusIcon.className = 'fas fa-file clr-green';
+                // Reset teks tombol "Pilih File"
+                statusIcon.parentElement.parentElement.lastChild.textContent = ' Pilih File';
+            }
+
+            // Sembunyikan List File Detail
+            const listIconBtn = document.getElementById('masuk-file-list-icon');
+            const container = document.getElementById('file-list-display');
+            if (listIconBtn) listIconBtn.classList.add('dis-none');
+            if (container) {
+                container.innerHTML = '';
+                container.classList.add('dis-none');
+            }
+
+            console.log("[Form Masuk] Berhasil di-reset.");
         }
     };
 })();

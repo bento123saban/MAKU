@@ -743,6 +743,17 @@ table#items-search td {
     overflow: auto;
 }
 
+#masuk-file-list-icon {
+    position: absolute;
+    top: 50%;
+    right: 7px;
+    transform: translateY(-50%);
+}
+#file-list-display {
+    position: absolute;
+    top: calc(100% + 3px);
+    left: 0;
+}
 
 #items-form-masuk-list {
     height: 340px;

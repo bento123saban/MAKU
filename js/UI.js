@@ -564,12 +564,14 @@ export function UI_Offline(text = "OFFLINE") {
     document.querySelector("#offline-text").textContent = text
     document.querySelector("#offline").classList.remove("dis-none")
 }
-export function UI_Alert(text = "") {
+export function UI_Alert(text = "", bg = "red") {
     console.log("UI Alert")
     UI_clearPopUp()
 
+
     document.querySelector("#pop-up").classList.remove("dis-none")
     document.querySelector("#alert").classList.remove("dis-none")
+    document.querySelector("#alert").dataset.bg = bg
     document.querySelector("#alert-text").textContent = text
 }
 export function UI_Notif (text = "", color = "green", timeout = 5000) {

@@ -627,14 +627,16 @@
                                         <input type="date" id="tanggal-masuk" class="form-input" placeholder="">
                                     </div>
                                     <!-- File Input -->
-                                    <div class="form-group w-100 br-green borad-10">
+                                    <div class="form-group w-100 br-green borad-10 relative">
                                         <label for="file-input" class="form-label">File (Doc/Image) <span class="fz-8">Max 4 File - 10 MB Total</span></label>
                                         <div class="upload-wrapper m-0 p-0 w-100">
-                                            <input type="file" id="file-input" class="hidden-input" multiple>
+                                            <input type="file" id="file-input" class="hidden-input" multiple accept="image/*,application/pdf">
                                             <label for="file-input" class="custom-button  flex-start gap-10 p-10 borad-10">
-                                                <span class="icon"><i class="fas fa-file clr-green"></i></span> Pilih File
+                                                <span class="masuk-icon"><i class="fas fa-file clr-green"></i></span> Pilih File
                                             </label>
+                                            <i id="masuk-file-list-icon" class="fas fa-list dis-none pointer clr-green"></i>
                                         </div>
+                                        <div id="file-list-display" class="dis-none flex-start flex-wrap gap-5 p-10 borad-10 white"></div>
                                     </div>
                                 </div>
                                 
@@ -1026,7 +1028,7 @@
 
     <div id="pop-up">
         <div class="pop-up dis-none" id="toast"></div>
-        <div class="pop-up red grid-center dis-none" id="alert">
+        <div class="pop-up grid-center dis-none" id="alert">
             <div class="grid-center clr-white">
                 <i class="fas fa-circle-exclamation fz-40 relative"></i><br>
                 <span id="alert-text"></span><br>
