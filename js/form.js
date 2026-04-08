@@ -269,8 +269,8 @@ export async function formStart () {
 
     document.querySelector("#form-submit-button").onclick = async (e) => {
         if (jenisInput.value == "masuk") {
-            const data = FormMasuk.getData() || []
-            console.log(data)
+            const data = FormMasuk.getData()
+            return console.log(data)
             if (!data) return
             try {
                 console.log("")
@@ -278,7 +278,7 @@ export async function formStart () {
                 const user = getDevice()
                 if (!user) return UI_Login()
                 UI_Loader("Mengirim")
-                const resp = window.REQUEST.post({
+                const resp = await window.REQUEST.post({
                     type    : "in",
                     data    : data,
                     ...user
@@ -505,8 +505,8 @@ const FormMasuk = (() => {
                     return;
                 }
 
-                if (state.files.length + newFiles.length > 4) return UI_Notif("Maksimal 4 file!", "red");
-                if ([...state.files, ...newFiles].reduce((acc, f) => acc + f.size, 0) > 10485760) return UI_Notif("Total file melebihi 10MB!", "red");
+                if (state.files.length + newFiles.length > 2) return UI_Notif("Maksimal 4 file!", "red");
+                if ([...state.files, ...newFiles].reduce((acc, f) => acc + f.size, 0) > 5242880) return UI_Notif("Total file melebihi 5MB!", "red");
                 state.files.push(...newFiles);
                 renderFiles()
 

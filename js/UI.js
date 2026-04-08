@@ -567,8 +567,6 @@ export function UI_Offline(text = "OFFLINE") {
 export function UI_Alert(text = "", bg = "red") {
     console.log("UI Alert")
     UI_clearPopUp()
-
-
     document.querySelector("#pop-up").classList.remove("dis-none")
     document.querySelector("#alert").classList.remove("dis-none")
     document.querySelector("#alert").dataset.bg = bg
