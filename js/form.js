@@ -269,8 +269,8 @@ export async function formStart () {
 
     document.querySelector("#form-submit-button").onclick = async (e) => {
         if (jenisInput.value == "masuk") {
-            const data = FormMasuk.getData()
-            return console.log(data)
+            const data = await FormMasuk.getData()
+            // return console.log(data)
             if (!data) return
             try {
                 console.log("")
@@ -538,7 +538,7 @@ const FormMasuk = (() => {
         },
 
         // 5. Validasi Tahan Banting & Ambil Payload
-        getData: () => {
+        getData: async () => {
             const errs = [];
             
             // Validasi Header (Otomatis toggle class 'br-red')
@@ -568,15 +568,16 @@ const FormMasuk = (() => {
             }
 
             // Kembalikan Object Bersih Siap Kirim
+            const fixFiles  = await prepareFilesForUpload()
             return {
                 header: { 
                     sumber: dom.sumber.value, 
                     keterangan: dom.ket.value, 
                     penerima: dom.penerima.value, 
-                    tanggal: dom.tgl.value 
+                    tanggal: new Date(dom.tgl.value)
                 },
                 items: Array.from(state.items.entries()).map(([kode, data]) => ({ kode, ...data })),
-                files: state.files
+                files: fixFiles
             };
         },
 
