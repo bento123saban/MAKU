@@ -122,9 +122,9 @@ class trx {
             <i class="fas fa-close clr-red fz-20 pointer" id="trx-item-detail-close"></i>
             <span id="trx-items-detail-header" class="dis-none align-center mb-2">Periode : 01 </span>
             
-            <div class="flex-start gap-10">
+            <div class="flex-start gap-10 w-100 ">
                 <i class="fas fa-image grid-center purple fz-20 borad-20 pointer" onclick="window.location.href ='${item.link}'"></i>
-                <div class="flex-beetwen">
+                <div class="flex-beetwen w-100">
                     <span class="fz-18 bolder dis-block w-100">${item.name}</span>
                     <div class="flex-strech flex-column">
                         <span class="in-out clr-green bolder" data-type="in">${stockIn.toString().padStart(3, '0')}</span>

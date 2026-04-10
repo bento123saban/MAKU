@@ -236,9 +236,10 @@ export async function formStart () {
     const isOnline = await window.isReallyOnline()
     if (!isOnline.confirm) return UI_Notif("Offline", "red")
         
-    // const updatetrx     = await updateTRX()
-    // const updateitems   = await updateItems()
-    // const updatestocks  = await updateStocks()
+    const updatetrx     = await updateTRX()
+    // return
+    const updateitems   = await updateItems()
+    const updatestocks  = await updateStocks()
 
     // console.log("")
     navFrom.classList.remove("dis-none")

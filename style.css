@@ -504,7 +504,7 @@ table#items-table, table#trx-table {
     position: absolute;
     top: 65px;
     left: 0;
-    width: 380px;
+    width: 400px;
     /* height: 540px; */
     backdrop-filter: blur(200px);
     border-radius: 15px;
@@ -568,7 +568,7 @@ th.sortable i {
 
 
  #inventory-list  {
-    height: 420px;
+    height: 380px;
     overflow-y: overlay;
     scrollbar-color: grey transparent; /* HEX dengan Alpha 00 (transparan total) */
     scrollbar-width: thin;
@@ -622,6 +622,7 @@ i.far.fa-circle::after {
 }
 #inventory-table {
     min-width: 1000px;
+    height: 400px !important;
 }
 table#inventory-table th span {
     padding: 5px 10px;

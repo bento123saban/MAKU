@@ -18,3 +18,14 @@ const o = {
     token : "Bendhard16 - 077e69a0-32e3-4b73-b9be-963f39e97d34",
     type : "in"
 }
+
+const test = {
+    files : [],
+    header : {
+        keterangan : "1",
+        penerima : "2",
+        sumber : "pengadaan",
+        tanggal : new Date()
+    },
+    items : [{kode: 'ITM-102', nama: 'Monitor 24"', qty: 1}]
+}

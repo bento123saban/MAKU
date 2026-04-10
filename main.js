@@ -1,6 +1,6 @@
 
 import indexedDB from "./js/indexedDB"
-window.DB = new indexedDB("MAKU", 2, {
+window.DB = new indexedDB("MAKU", 1, {
     items : {
         keyPath : "code",
         indexes : ["code", "name", "note", "type"]
@@ -11,10 +11,11 @@ window.DB = new indexedDB("MAKU", 2, {
     },
     trxHeader : {
         keyPath : "code",
-        indexes : ["user", "time", "type", "staff", "dateCreate", "itemsCount", "stocksCount"]
+        indexes : ["user", "time", "type", "staff", "itemsCount", "stocksCount"]
     },
     trxItems : {
-        keyPath : "code",
+        keyPath : "id",
+        autoIncrement : true,
         indexes : ["code", "trxCode"]
     },
     stocks : {
@@ -33,7 +34,7 @@ import { UI_Loader, UI_Login, isReallyOnline,setChart } from "./js/UI"
 window.isReallyOnline = isReallyOnline
 
 UI_Loader("Connecting...")
-document.addEventListener("DOMContentLoaded", () => UI_Login())
+document.addEventListener("DOMContentLoaded", () => setTimeout(() => UI_Login(), 1000))
 
 // https://gemini.google.com/share/ac68c54323e9
  

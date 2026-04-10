@@ -566,7 +566,10 @@ export default class IDBManager {
         return this._execute(storeName, "readwrite", (store) => {
             if (Array.isArray(data)) {
                 // Jika inputnya array, masukkan satu-persatu dalam satu transaksi
-                data.forEach(item => store.put(item));
+                data.forEach(item => {
+                    // console.log(item)
+                    store.put(item)
+                });
             } else {
                 // Jika inputnya objek tunggal
                 return store.put(data);

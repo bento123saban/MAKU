@@ -526,7 +526,7 @@ export function UI_clearPopUp () {
     document.querySelectorAll(".pop-up").forEach(popup => popup.classList.add("dis-none"))
 }
 export async function UI_Login(text = "") {
-    return UI_Main()
+    // return UI_Main()
     const isOnline = await isReallyOnline()
     if (!isOnline.confirm) return UI_Offline()
     console.log("UI Login " + text)
