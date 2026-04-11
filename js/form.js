@@ -1,6 +1,6 @@
 
 import { getDevice } from "./device";
-import { UI_Alert, UI_Loader, UI_Login, UI_Notif, defaultFetchResponse } from "./UI";
+import { UI_Alert, UI_ClearShimmer, UI_Loader, UI_Login, UI_Notif, UI_showShimmer, defaultFetchResponse } from "./UI";
 
 const jenisInput = document.querySelector("#form-jenis-input")
 const submitBtn  = document.querySelector("#form-submit-button")
@@ -22,22 +22,28 @@ export async function updateItems (loaderCallback = null) {
         })
         console.log("[Update Barang] Response : ", resp)
 
-        await defaultFetchResponse(resp, {
+        return await defaultFetchResponse(resp, {
             success : async (param) => {
-                const data      = resp.data.data
-                await window.DB.upsert("items", data.list)
-                await  window.DB.upsert("counter", {type : "items", count : data.count})
-                console.log("[Update Barang] Data barang sudah terupdate ")
+                try {
+                    const data      = resp.data.data
+                    await window.DB.upsert("items", data.list)
+                    await  window.DB.upsert("counter", {type : "items", count : data.count})
+                    console.log("[Update Barang] Data barang sudah terupdate ")
+                    UI_Notif("Data barang sudah terupdate", "green")
+                    return true
+                } catch (e) {
+                    console.log("[Update Barang] Gagal : " + e.message)
+                    UI_Notif("[Update Barang] Gagal : " + e.message)
+                    return false
+                }
+                
             },
             note : "[Update Barang ] "
         })
-        console.log("")
     } catch (e) {
         console.log("[Update Barang] Gagal : " + e.message)
-        return {
-            confirm : false,
-            msg     : "[Update Barang] Gagal : " + e.message
-        }
+        UI_Notif("[Update Barang] Gagal : " + e.message)
+        return false
     }
 }
 
@@ -54,7 +60,7 @@ export async function updateTRX (loaderCallback = null) {
         })
         console.log("[Update Transaksi] Response : ", resp)
 
-        await defaultFetchResponse(resp, {
+        return await defaultFetchResponse(resp, {
             success : async (param) => {
                 try {
                     const trxHeader = param.data.header
@@ -71,18 +77,20 @@ export async function updateTRX (loaderCallback = null) {
                         month   : trxItems.month
                     })
                     console.log("[Update Transaksi] Data transaksi sudah terupdate ")
-                } catch (e) {
-                    return UI_Notif(e.message)
+                    UI_Notif("Data transaksi sudah terupdate", "green")
+                    return true
+                } catch (e) {   
+                    console.log("[Update Transaksi] Gagal : " + e.message)
+                    UI_Notif("[Update Transaksi] Gagal : " + e.message)
+                    return false
                 }
             },
             note : "[Update Transaksi] "
         })
     } catch (e) {
-        console.log("[Update Transaksi] Gagal : " + e)
-        return {
-            confirm : false,
-            msg     : "[Update Transaksi] Gagal : " + e.message
-        }
+        console.log("[Update Transaksi] Gagal : " + e.message)
+        UI_Notif("[Update Transaksi] Gagal : " + e.message)
+        return false
     }
 }
 
@@ -99,26 +107,32 @@ export async function updateStocks (loaderCallback = null) {
         })
         console.log("[Update Stock] Response : ", resp)
 
-        await defaultFetchResponse(resp, {
+        return await defaultFetchResponse(resp, {
             success : async (param) => {
-                const data      = param.data.data
-                await window.DB.upsert("stocks", data.list)
-                await window.DB.upsert("counter", {
-                    type        : "stocks",
-                    unavailable : data.unavailable,
-                    available   : data.available,
-                    total       : data.total
-                })
-                console.log("[Update Stock] Data stock sudah terupdate ")
+                try {
+                    const data      = param.data.data
+                    await window.DB.upsert("stocks", data.list)
+                    await window.DB.upsert("counter", {
+                        type        : "stocks",
+                        unavailable : data.unavailable,
+                        available   : data.available,
+                        total       : data.total
+                    })
+                    console.log("[Update Stock] Data stock sudah terupdate ")
+                    UI_Notif("Data stok sudah terupdate", "green")
+                    return true
+                } catch (e) {
+                    console.log("[Update Transaksi] Gagal : " + e.message)
+                    UI_Notif("[Update Transaksi] Gagal : " + e.message)
+                    return false
+                }
             },
             note : "[Update Stock] "
         })
     } catch (e) {
-        console.log("[Update Stock] Gagal : " + e.message)
-        return {
-            confirm : false,
-            msg     : "[Update Stock] Gagal : " + e.message
-        }
+        console.log("[Update Transaksi] Gagal : " + e.message)
+        UI_Notif("[Update Transaksi] Gagal : " + e.message)
+        return false
     }
 }
 
@@ -232,16 +246,49 @@ async function compressImage(file, maxWidth = 1280, quality = 0.7) {
     });
 }
 
+function updates() {
+    const spin = document.querySelector("#trx-update");
+    spin.classList.add("spin");
+    UI_showShimmer();
+
+    let items = false;
+    let stocks = true; // Contoh jika defaultnya dianggap true
+    let trx = false;
+
+    const func = () => {
+        const isFinished = [items, stocks, trx].every(Boolean);
+        
+        if (isFinished) {
+            spin.classList.remove("spin");
+            UI_ClearShimmer();
+        }
+    };
+
+    // Tambahkan catch agar func() tetap dipanggil untuk cek state terakhir
+    updateItems()
+        .then(e => items = !!e)
+        .catch(() => items = false) 
+        .finally(() => func());
+
+    updateStocks()
+        .then(e => stocks = !!e)
+        .catch(() => stocks = false)
+        .finally(() => func());
+
+    updateTRX()
+        .then(e => trx = !!e)
+        .catch(() => trx = false)
+        .finally(() => func());
+}
+
 export async function formStart () {
     const isOnline = await window.isReallyOnline()
     if (!isOnline.confirm) return UI_Notif("Offline", "red")
         
-    const updatetrx     = await updateTRX()
-    // return
-    const updateitems   = await updateItems()
-    const updatestocks  = await updateStocks()
+    // const updatetrx     = await updateTRX()
+    // const updateitems   = await updateItems()
+    // const updatestocks  = await updateStocks()
 
-    // console.log("")
     navFrom.classList.remove("dis-none")
     document.querySelectorAll(".content-loader").forEach(load => load.classList.add("dis-none"))
     
@@ -266,7 +313,9 @@ export async function formStart () {
     window.ITEMS    = await window.DB.getAll("items")
     window.STOCKS   = await window.DB.getAll("stocks")
 
-    // resetFormKeluar()
+    const trxUpdate = document.querySelector("#trx-update")
+    trxUpdate.classList.remove("dis-none")
+    trxUpdate.onclick = (e) => (!e.target.classList.contains("spin")) ? updates() : false;
 
     document.querySelector("#form-submit-button").onclick = async (e) => {
         if (jenisInput.value == "masuk") {

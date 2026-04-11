@@ -509,9 +509,10 @@ export function generateUUID() {
 export function bufferToBase64(buffer) {
     return btoa(String.fromCharCode(...new Uint8Array(buffer)));
 }
+export function UI_showShimmer () {
+    return document.querySelectorAll(".content-loader").forEach(content => content.classList.remove("dis-none"))
+}
 export function UI_ClearShimmer (elm = null) {
-    console.log("")
-    console.log("[UI] Clear shimmer")
     if (!elm) return document.querySelectorAll(".content-loader").forEach(content => content.classList.add("dis-none"))
     elm.classList.add("dis-none")
     }
@@ -526,7 +527,7 @@ export function UI_clearPopUp () {
     document.querySelectorAll(".pop-up").forEach(popup => popup.classList.add("dis-none"))
 }
 export async function UI_Login(text = "") {
-    // return UI_Main()
+    return UI_Main()
     const isOnline = await isReallyOnline()
     if (!isOnline.confirm) return UI_Offline()
     console.log("UI Login " + text)
@@ -599,16 +600,17 @@ export function UI_Play () {
         if (e.target.classList.contains("notif-close")) e.target.closest(".notif-box").remove()
     })
 }
-export async function defaultFetchResponse(resp, {success,reject,failed, note} = {}) {
+export async function defaultFetchResponse(resp, {success, reject, failed, note} = {}) {
     try {
-        if (!resp) (typeof failed === "function") ? await failed(resp) : UI_Notif("Koneksi terputus atau tidak ada respon dari server.", "red");
-        if (!resp.confirm) (typeof failed === "function") ? await failed(resp) : UI_Notif(note + " " + resp.error?.message || "Terjadi kesalahan pada sistem.", "red");
-        if (!resp.data?.confirm) (typeof reject === "function") ? await reject(resp) : UI_Notif(note + " " + resp.data?.msg || "Permintaan tidak dapat diproses.", "red");
-        if (resp.data.confirm && typeof success === "function") return await success(resp);
+        if (!resp) return ((typeof failed === "function") ? await failed(resp) : UI_Notif("Koneksi terputus atau tidak ada respon dari server.", "red"), false);
+        if (!resp.confirm) return ((typeof failed === "function") ? await failed(resp) : UI_Notif(note + " " + resp.error?.message || "Terjadi kesalahan pada sistem.", "red"), false)
+        if (!resp.data?.confirm) return ((typeof reject === "function") ? await reject(resp) : UI_Notif(note + " " + resp.data?.msg || "Permintaan tidak dapat diproses.", "red"), false);
+        if (resp.data.confirm && typeof success === "function") return (typeof success === "function") ? await success(resp) : true
         if (resp.data.reload) return setTimeout( () => window.location.reload(), 2000)
     } catch (err) {
         console.error("Error in defaultFetchResponse:", err);
-        UI_Notif("Terjadi kesalahan tak terduga.");
+        UI_Notif("Terjadi kesalahan tak terduga.", "red");
+        return false
     }
 }
 export async function updateDashboard () {
