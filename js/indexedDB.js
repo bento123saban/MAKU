@@ -688,95 +688,139 @@ export default class IDBManager {
      * * @param {string} storeName - Nama object store
      * @param {Object} options - { query, filters, fields, filterStrategy, direction }
      */
-    async searchUnique(storeName, { 
-        query = "", 
-        filters = {}, 
-        fields = [], 
-        filterStrategy = "AND", 
-        direction = "next" 
-    } = {}) {
+    async searchUnique(storeName, targetKey = "code", options = {}) {
+        if (typeof targetKey === 'object' && targetKey !== null) {
+            options = targetKey;
+            targetKey = "code";
+        }
+
+        const { 
+            query = "", 
+            filters = {}, 
+            fields = [], 
+            dateRange = { field: "date", start: "", end: "" },
+            filterStrategy = "AND", 
+            direction = "next",
+            isUnique = true 
+        } = options;
         
-        // 1. Normalisasi Array Query & hapus null/undefined/string kosong
-        const qArr = [].concat(query)
-            .filter(q => q != null && q !== "")
-            .map(q => String(q).toLowerCase().trim());
-            
-        // 2. Bersihkan filter dari properti kosong sejak awal
+        const qArr = [].concat(query).filter(q => q != null && q !== "").map(q => String(q).toLowerCase().trim());
         const fEntries = Object.entries(filters).filter(([_, v]) => v != null);
-        
         const isAND = String(filterStrategy).toUpperCase() === "AND";
         const map = new Map();
+        const rawResults = [];
 
         return new Promise((resolve, reject) => {
             try {
                 this._execute(storeName, "readonly", (store) => {
-                    let source = store;
-                    let range = null;
+                    let request = store.openCursor(null, direction);
 
-                    // 3. Optimasi Indexing (Hanya eksekusi jika mode AND & value primitive)
                     if (isAND) {
                         const idx = fEntries.find(([k, v]) => !Array.isArray(v) && store.indexNames.contains(k));
-                        if (idx) { 
-                            source = store.index(idx[0]); 
-                            range = IDBKeyRange.only(idx[1]); 
-                        }
+                        if (idx) request = store.index(idx[0]).openCursor(IDBKeyRange.only(idx[1]), direction);
                     }
 
-                    const request = source.openCursor(range, direction);
-
                     request.onsuccess = ({ target: { result: cursor } }) => {
-                        // Return hasil sebagai Array menggunakan Spread Operator
-                        if (!cursor) return resolve([...map.values()]);
+                        if (!cursor) return resolve(isUnique ? [...map.values()] : rawResults);
 
                         const item = cursor.value;
-                        
-                        // Safety net: Skip jika record korup / tidak ada kode barang
-                        if (!item || !item.code) return cursor.continue();
+                        if (!item || item[targetKey] == null) return cursor.continue();
 
-                        // 4. LOGIKA FILTER DINAMIS (Anti "Bug 2027" & Kebal Case-Sensitive)
+                        // --- 1. FILTERING ---
+                        let passDate = true;
+                        if (dateRange.start || dateRange.end) {
+                            const itemDate = item[dateRange.field || "date"];
+                            const start = dateRange.start || "0000-00-00";
+                            const end = dateRange.end || "9999-99-99";
+                            passDate = itemDate >= start && itemDate <= end;
+                        }
+
                         const passFilter = !fEntries.length || fEntries[isAND ? 'every' : 'some'](([k, v]) => {
-                            const itemVal = item[k];
-                            if (itemVal == null) return false;
-
-                            if (Array.isArray(v)) {
-                                return v.some(allowed => {
-                                    if (typeof itemVal === 'string' && typeof allowed === 'string') {
-                                        return itemVal.toLowerCase() === allowed.toLowerCase();
-                                    }
-                                    return itemVal == allowed;
-                                });
-                            }
-
-                            if (typeof itemVal === 'string' && typeof v === 'string') {
-                                return itemVal.toLowerCase() === v.toLowerCase();
-                            }
-
-                            return itemVal == v;
+                            const val = item[k];
+                            if (val == null) return false;
+                            if (Array.isArray(v)) return v.some(allowed => String(val).toLowerCase() == String(allowed).toLowerCase());
+                            return String(val).toLowerCase() == String(v).toLowerCase();
                         });
 
-                        // 5. LOGIKA TEXT QUERY (.indexOf untuk pencarian string tercepat)
                         const passQuery = !qArr.length || qArr.some(q => 
-                            fields.some(f => {
-                                const fieldVal = item[f];
-                                return fieldVal != null && String(fieldVal).toLowerCase().indexOf(q) !== -1;
-                            })
+                            fields.some(f => item[f] != null && String(item[f]).toLowerCase().indexOf(q) !== -1)
                         );
 
-                        // 6. MAP-REDUCE AGREGASI (O(1) Lookup)
-                        if (passFilter && passQuery) {
-                            const curr = map.get(item.code) || { ...item, in: 0, out: 0, trxCount: 0 };
+                        // --- 2. PROCESSING ---
+                        if (passDate && passFilter && passQuery) {
+                            const rawType = String(item.type || "").toUpperCase();
+                            const day = String(item.date || "").padStart(2, '0');
+                            const dateStr = `${day} ${item.month || ""} ${item.year || ""}`.trim();
                             
-                            // Unary Plus (+) untuk konversi ke Number paling ringan & efisien
-                            curr.in += +(item.in || 0);
-                            curr.out += +(item.out || 0);
-                            curr.trxCount += 1;
-                            
-                            map.set(item.code, curr);
+                            // Ambil nilai qty asli dari data lo
+                            const valIn = Number(item.in || 0);
+                            const valOut = Number(item.out || 0);
+
+                            if (!isUnique) {
+                                const rawItem = { ...item, date: dateStr };
+                                delete rawItem.month; delete rawItem.year;
+                                rawResults.push(rawItem);
+                            } else {
+                                // GROUPING HANYA BERDASARKAN KODE (ITM-109)
+                                const groupKey = item[targetKey];
+                                
+                                if (!map.has(groupKey)) {
+                                    const firstItem = { ...item, in: valIn, out: valOut, date: dateStr, trxCount: 1 };
+                                    
+                                    // Reset type karena sekarang ini adalah baris gabungan (Rekap)
+                                    firstItem.type = "RECAP"; 
+                                    
+                                    delete firstItem.month; delete firstItem.year; delete firstItem.qty;
+                                    
+                                    // Tetap sertakan type di dalam rincian trxCode
+                                    firstItem.trxCode = item.trxCode ? [{ 
+                                        code: item.trxCode, 
+                                        in: valIn, 
+                                        out: valOut, 
+                                        type: rawType 
+                                    }] : [];
+                                    
+                                    map.set(groupKey, firstItem);
+                                } else {
+                                    const curr = map.get(groupKey);
+                                    
+                                    // Tambahkan total IN dan OUT secara akumulatif
+                                    curr.in += valIn;
+                                    curr.out += valOut;
+
+                                    // Tambahkan rincian ke array trxCode
+                                    if (item.trxCode) {
+                                        curr.trxCode.push({ 
+                                            code: item.trxCode, 
+                                            in: valIn, 
+                                            out: valOut, 
+                                            type: rawType 
+                                        });
+                                    }
+
+                                    // Gabungkan tanggal jika belum ada
+                                    if (dateStr && !curr.date.includes(dateStr)) {
+                                        curr.date = curr.date ? `${curr.date}, ${dateStr}` : dateStr;
+                                    }
+
+                                    // Auto-Sum Field Angka Lainnya (selain in, out, dll)
+                                    for (const key in item) {
+                                        const val = item[key];
+                                        if (
+                                            key !== targetKey && key !== "date" && key !== "month" && 
+                                            key !== "year" && key !== "type" && key !== "trxCode" && 
+                                            key !== "qty" && key !== "in" && key !== "out" && key !== "id" && key !== "stamp" &&
+                                            val !== "" && val !== null && typeof val !== 'boolean' && !isNaN(val)
+                                        ) {
+                                            curr[key] = (+(curr[key] || 0)) + (+val);
+                                        }
+                                    }
+                                    curr.trxCount += 1;
+                                }
+                            }
                         }
-                        
                         cursor.continue();
                     };
-                    
                     request.onerror = () => reject(request.error);
                 }).catch(reject);
             } catch (err) {
@@ -837,9 +881,7 @@ export default class IDBManager {
             }).catch(reject);
         });
     }
-
     
-
     /**
      * METHOD: getPaged (Pagination)
      * Membagi data menjadi halaman-halaman. 

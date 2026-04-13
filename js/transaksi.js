@@ -1,4 +1,4 @@
-import { CustomContextMenu, getLastDateOfMonth } from "./UI"
+import { updates } from "./form";
 
 const dateFormatter = new Intl.DateTimeFormat('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
 const timeFormatter = new Intl.DateTimeFormat('id-ID', { hour: '2-digit', minute: '2-digit' });
@@ -48,6 +48,7 @@ class trx {
             })
         })
     }
+    
     typeChange () {
         const trxList   = document.querySelector("#cal-trx-list")
         const itemList  = document.querySelector("#cal-items-list")
@@ -66,22 +67,22 @@ class trx {
     }
 
     async renderItemsTable(data = null) {
-        const trxItems  = data || await window.DB.search("trxItems", {query : this.onMonth().toLocaleLowerCase(), fields : ["month"], filters : {year : this.onYear()}})
+        const trxItems  = await window.DB.searchUnique("trxItems", {query : this.range, fields : ["month"], filters : {year : this.onYear()}})
         const tableBody = document.querySelector("#items-table tbody");
         tableBody.innerHTML = "";
-        // const dtc
-        // return console.log(trxItems)
-        trxItems.forEach(item => {
+        trxItems.forEach((item, i)=> {
+            console.log(item)
             const row = document.createElement("tr");
             row.dataset.code = item.code
             row.dataset.type = (item.type === "IN") ? "masuk" : "keluar"
-            row.dataset.date = `${item.date.toString().padStart(2, '0')} ${item.month} ${item.year}`
+            row.dataset.date = item.date
             row.className = "trx-tr"
-
+            console.log(item)
             row.innerHTML = `
-                <td class="pointer"><span class="borad-5 h-100 ${item.type == "IN" ? "green" : "blue"} p-5 tr-front grid-center">${item.date }</span></td>
+                <td class="pointer"><span class="borad-5 h-100 purple p-5 tr-front grid-center">${(i + 1).toString().padStart(2, '0')}</span></td>
                 <td>${item.code}</td>
                 <td>${item.name}</td>
+                <td>${item.trxCount}</td>
                 <td>${item.in}</td>
                 <td>${item.out}</td>
             `;
@@ -96,6 +97,7 @@ class trx {
             }
         });
     }
+
     async renderTRXItems(code) {
         const year      = this.onYear()
         const item      = (await window.DB.search("items", {query : code, fields : ["code"], filter: {year : year}}))[0]
@@ -156,6 +158,7 @@ class trx {
 
         document.querySelector("#trx-items-detail").innerHTML = html
     }
+
     async calculateDetailedSummary(param = null) {
         const trxItems = param || await window.DB.search("trxItems", {query : this.onMonth(), fields : ["month"], filters : {year : this.onYear()}})
         const init = {
@@ -235,6 +238,7 @@ class trx {
 
         tableBody.appendChild(fragment);
     }
+
     async renderTRXDetail(head) {
         const onCode = this.trxDetailBox.dataset.code
         if (onCode == head.code && !this.trxDetailBox.classList.contains("dis-none")) return
@@ -293,14 +297,25 @@ class trx {
             const year = this.onYear()
             this.calendarData       = await window.DB.search("trxHeader", {query : this.onMonth(), fields : ["month"], filters : {year : year}})
             this.renderCalendar()
+            this.makuValue.value = ""
+            this.makuValue.dispatchEvent(new Event('change', { bubbles: true }));
+            this.makuValue.value = "bulanan"
+            this.makuValue.dispatchEvent(new Event('change', { bubbles: true }));
         }
         prevButton.onclick = async (e) => {
             this.calendarDate.setMonth(this.calendarDate.getMonth() - 1)
             const year = this.onYear()
             this.calendarData   = await window.DB.search("trxHeader", {query : this.onMonth(), fields : ["month"], filters : {year : year}})
             this.renderCalendar()
+            this.makuValue.value = ""
+            this.makuValue.dispatchEvent(new Event('change', { bubbles: true }));
+            this.makuValue.value = "bulanan"
+            this.makuValue.dispatchEvent(new Event('change', { bubbles: true }));
         }
         this.renderCalendar()
+        this.calculateDetailedSummary()
+        this.renderItemsTable()
+        this.renderTrxTable()
     }
 
     async renderCalendar() {
@@ -346,9 +361,9 @@ class trx {
         this.stringRange = this.onMonth().toUpperCase() + " " + this.onYear()
 
         
-        this.calculateDetailedSummary()
-        this.renderItemsTable()
-        this.renderTrxTable()
+        // this.calculateDetailedSummary()
+        // this.renderItemsTable()
+        // this.renderTrxTable()
         // CustomContextMenu()
     }
 
@@ -375,6 +390,12 @@ class trx {
 
     }
 
+    trxRender() {
+        this.renderItemsTable()
+        this.renderTrxTable()
+        this.calendarSet()
+    }
+
     async play () {
         const headSelect    = document.querySelector("#cal-head-select")
         const selectClose   = document.querySelector("#cal-select-close")
@@ -385,6 +406,7 @@ class trx {
         this.calendarSet()
         this.makuChange()
         this.typeChange()
+
 
         window.addEventListener("click", (e) => {
             const box = e.target.closest(".date-box")
@@ -402,8 +424,11 @@ class trx {
             if (trxDetailClose) this.trxDetailBox.classList.add("dis-none")
             const itemDetailClose = e.target.closest("#trx-item-detail-close")
             if (itemDetailClose) this.trxItemDetailBox.classList.add("dis-none")
-            
-        } )
+            if (e.target.classList.contains("trx-update")) {
+                const btn = e.target
+                btn.onclick = (e) => (!e.target.classList.contains("spin")) ? updates(() => this.trxRender()    ) : false
+            }
+        })
 
         this.makuMore.onchange = async (e) => {
             const value = e.target.value
@@ -417,7 +442,7 @@ class trx {
                 
                 const input = p.toString().trim();
                 const lowP = input.toLowerCase();
-                const now = new Date();
+                const now = new Date(this.calendarDate);
 
                 // Helper: Mendapatkan daftar nama bulan di antara dua tanggal
                 const getBulanAntara = (dateStart, dateEnd) => {
@@ -450,7 +475,7 @@ class trx {
 
                 // 2. KONDISI: "BULANAN"
                 if (lowP === 'bulanan') {
-                    this.calendarDate = new Date(new Date().setDate(10));
+                    // this.calendarDate = new Date(new Date(this.calendarDate).setDate(10));
                     this.range        = this.onMonth();
                     const m = now.getMonth();
                     const y = now.getFullYear();
@@ -492,14 +517,9 @@ class trx {
             this.range = getNamaBulan.bulan
             this.stringRange = getNamaBulan.periode
 
-            console.log(getNamaBulan, value)
-
-            // if (value.toLowerCase() == "bulanan") return this.calendarSet()
-
             headerMonth = await window.DB.search("trxHeader", {query : this.range, fields: ["month"], filters : {year : this.onYear()}})
             itmsMonth   = await window.DB.search("trxItems", {query : this.range, fields: ["month"], filters : {year : this.onYear()}})
             itemsMonth  = await window.DB.searchUnique("trxItems", {query : this.range, fields: ["month"], filters : {year : this.onYear()}})
-            
             this.calculateDetailedSummary(itmsMonth)
             this.renderTrxTable(headerMonth)
             this.renderItemsTable(itemsMonth)

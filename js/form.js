@@ -246,7 +246,7 @@ async function compressImage(file, maxWidth = 1280, quality = 0.7) {
     });
 }
 
-function updates() {
+export function updates(callback = "") {
     const spin = document.querySelector("#trx-update");
     spin.classList.add("spin");
     UI_showShimmer();
@@ -259,6 +259,7 @@ function updates() {
         const isFinished = [items, stocks, trx].every(Boolean);
         
         if (isFinished) {
+            if (typeof callback == "function") callback()
             spin.classList.remove("spin");
             UI_ClearShimmer();
         }
@@ -285,9 +286,9 @@ export async function formStart () {
     const isOnline = await window.isReallyOnline()
     if (!isOnline.confirm) return UI_Notif("Offline", "red")
         
-    // const updatetrx     = await updateTRX()
-    // const updateitems   = await updateItems()
-    // const updatestocks  = await updateStocks()
+    const updatetrx     = await updateTRX()
+    const updateitems   = await updateItems()
+    const updatestocks  = await updateStocks()
 
     navFrom.classList.remove("dis-none")
     document.querySelectorAll(".content-loader").forEach(load => load.classList.add("dis-none"))
@@ -312,10 +313,6 @@ export async function formStart () {
 
     window.ITEMS    = await window.DB.getAll("items")
     window.STOCKS   = await window.DB.getAll("stocks")
-
-    const trxUpdate = document.querySelector("#trx-update")
-    trxUpdate.classList.remove("dis-none")
-    trxUpdate.onclick = (e) => (!e.target.classList.contains("spin")) ? updates() : false;
 
     document.querySelector("#form-submit-button").onclick = async (e) => {
         if (jenisInput.value == "masuk") {

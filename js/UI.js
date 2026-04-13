@@ -635,6 +635,7 @@ export async function updateDashboard () {
     document.querySelector("#items-boxes").textContent  = itemsCount
     document.querySelector("#qty-boxes").textContent    = total
 
+    // return
     setChart({
         lineMasuk   : lineMasuk,
         lineKeluar  : lineKeluar,
