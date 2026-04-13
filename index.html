@@ -45,7 +45,7 @@
                 <div class="nav-group" data-nav="inventory"><i class="fas fa-boxes"></i> Inventory</div>
                 <hr class="br-white">
                 <br>
-                <div class="nav-group dis-none" data-nav="add" id="tambah-button"><i class="fas fa-add"></i> Tambah</div>
+                <div class="nav-group" data-nav="add" id="tambah-button"><i class="fas fa-add"></i> Tambah</div>
                 <hr  class="br-white">
                 <br>
                 <div class="nav-group"><i class="fa-solid fa-arrow-right-from-bracket"></i> Keluar</div>
@@ -687,99 +687,13 @@
                                 
                             </div>
 
-                            <!-- <div id="form-keluar" data-form="keluar" class="forms w-100 h-100 w-100 dis-none">
-
-                                <div class="flex-start gap-10">
-                                    <div class="form-group w-100">
-                                        <label class="form-label">Tujuan</label>
-                                        <div id="form-keluar-tujuan" class="select-custom borad-10 fz-14 grid-center w-100">
-                                            <div class="custom-select-container w-100" data-default="...">
-                                                <div class="select-trigger w-100 p-10 borad-10 br-green">
-                                                    <span class="clr-grey italic">Pilih tujuan :</span>
-                                                    <i class="arrow fas fa-chevron-right fz-16 clr-green"></i>
-                                                </div>
-                                                <div class="select-options w-100">
-                                                    <div class="option" data-value="proyek">Penggunaan Proyek</div>
-                                                    <div class="option" data-value="antar_cabang">Antar Cabang</div>
-                                                    <div class="option" data-value="rusak_afkir">Barang Rusak/Afkir</div>
-                                                    <div class="option" data-value="retur_vendor">Retur ke Vendor</div>
-                                                    <div class="option" data-value="lainnya">Lain-lain</div>
-                                                </div>
-                                                <input type="hidden" name="type" class="select-input w-100" id="keluar-tujuan-value" value="">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group w-100">
-                                        <label class="form-label">Keterangan Keluar</label>
-                                        <input type="text" class="form-input" placeholder="Contoh: Perbaikan AC Ruang Lab" id="keterangan-keluar">
-                                    </div>
-
-                                    <div class="form-group w-100">
-                                        <label class="form-label">Nama Pengambil</label>
-                                        <input type="text" class="form-input" placeholder="Nama personil yang mengambil" id="penerima-keluar">
-                                    </div>
-
-                                    <div class="form-group w-100">
-                                        <label class="form-label">Tanggal Keluar</label>
-                                        <input type="date" id="tanggal-keluar" class="form-input">
-                                    </div>
-
-                                    <div class="form-group w-100 br-green borad-10 relative">
-                                        <label for="file-input-keluar" class="form-label">File Pendukung <span class="fz-8">Max 4 File - 10 MB Total</span></label>
-                                        <div class="upload-wrapper m-0 p-0 w-100">
-                                            <input type="file" id="file-input-keluar" class="hidden-input" multiple accept="image/*,application/pdf">
-                                            <label for="file-input-keluar" class="custom-button flex-start gap-10 p-10 borad-10">
-                                                <span class="keluar-icon"><i class="fas fa-file clr-green"></i></span> Pilih File
-                                            </label>
-                                            <i id="keluar-file-list-icon" class="fas fa-list dis-none pointer clr-green"></i>
-                                        </div>
-                                        <div id="file-list-display-keluar" class="dis-none flex-start flex-wrap gap-5 p-10 borad-10 white"></div>
-                                    </div>
-                                </div>
-
-                                <hr class="dis-block m-20"> <br>
-
-                                <div class="w-100 flex-strech gap-20">
-                                    <div class="w-100">
-                                        <div class="flex-beetwen gap-20">
-                                            <div class="form-group w-100">
-                                                <label class="form-label">Cari Barang (Stok Tersedia)</label>
-                                                <input type="text" id="keluar-search-input" class="form-input" placeholder="Ketik nama atau kode barang...">
-                                            </div>
-                                            <i class="fas fa-arrows-rotate clr-green pointer items-update-button"></i>
-                                        </div>
-                                        <br>
-                                        <div id="form-items-search-keluar" class="table-container">
-                                            <table class="w-100">
-                                                <thead>
-                                                    <tr class="fz-12 clr-grey">
-                                                        <th width="40">Add</th>
-                                                        <th>Kode</th>
-                                                        <th>Nama Barang</th>
-                                                        <th width="60">Stok</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="keluar-items-search">
-                                                    </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-
-                                    <span class="grid-center">|</span>
-
-                                    <div class="w-100">
-                                        <label class="form-label">Daftar Barang Keluar</label>
-                                        <div class="w-100 flex-start items-start flex-column gap-10" id="items-form-keluar-list">
-                                            </div>
-                                    </div>
-                                </div>
-                            </div> -->
-
+                            
                             <!-- Form keluar -->
                             <div id="form-keluar" data-form="keluar" class="forms w-100 h-100 w-100 dis-none">
 
                                 <div class="flex-start gap-10">
+                                    
+                                    <!-- Tujuan -->
                                     <div class="form-group w-100">
                                         <label class="form-label">Tujuan</label>
                                         <div id="form-keluar-tujuan" class="select-custom borad-10 fz-14 grid-center w-100">
@@ -800,29 +714,33 @@
                                         </div>
                                     </div>
 
+                                    <!-- Keterangan -->
                                     <div class="form-group w-100">
                                         <label class="form-label">Keterangan Keluar</label>
-                                        <input type="text" class="form-input" placeholder="Contoh: Perbaikan AC Ruang Lab" id="keterangan-keluar">
+                                        <input type="text" class="form-input" placeholder="" id="keterangan-keluar">
                                     </div>
 
+                                    <!-- Pengambil -->
                                     <div class="form-group w-100">
                                         <label class="form-label">Nama Pengambil</label>
-                                        <input type="text" class="form-input" placeholder="Nama personil yang mengambil" id="penerima-keluar">
+                                        <input type="text" class="form-input" placeholder="" id="penerima-keluar">
                                     </div>
 
+                                    <!-- Tanggal -->
                                     <div class="form-group w-100">
                                         <label class="form-label">Tanggal Keluar</label>
                                         <input type="date" id="tanggal-keluar" class="form-input">
                                     </div>
 
-                                    <div class="form-group w-100 br-green borad-10 relative">
-                                        <label for="file-input-keluar" class="form-label">File Pendukung <span class="fz-8">Max 4 File - 10 MB Total</span></label>
+                                    <!-- File -->
+                                    <div class="form-group w-100 br-blue borad-10 relative">
+                                        <label for="file-input-keluar" class="form-label">File <span class="fz-8">Max 2 File - 5 MB Total</span></label>
                                         <div class="upload-wrapper m-0 p-0 w-100">
                                             <input type="file" id="file-input-keluar" class="hidden-input" multiple accept="image/*,application/pdf">
                                             <label for="file-input-keluar" class="custom-button flex-start gap-10 p-10 borad-10">
-                                                <span class="keluar-icon"><i class="fas fa-file clr-green"></i></span> Pilih File
+                                                <span class="keluar-icon"><i class="fas fa-file clr-blue"></i></span> Pilih File
                                             </label>
-                                            <i id="keluar-file-list-icon" class="fas fa-list dis-none pointer clr-green"></i>
+                                            <i id="keluar-file-list-icon" class="fas fa-list dis-none pointer clr-blue"></i>
                                         </div>
                                         <div id="file-list-display-keluar" class="dis-none flex-start flex-wrap gap-5 p-10 borad-10 white"></div>
                                     </div>
@@ -837,7 +755,7 @@
                                                 <label class="form-label">Cari Barang (Stok Tersedia)</label>
                                                 <input type="text" id="keluar-search-input" class="form-input" placeholder="Ketik nama atau kode barang...">
                                             </div>
-                                            <i class="fas fa-arrows-rotate clr-green pointer items-update-button"></i>
+                                            <i class="fas fa-arrows-rotate clr-blue pointer items-update-button"></i>
                                         </div>
                                         <br>
                                         <div id="form-items-search-keluar" class="table-container">
@@ -851,7 +769,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody id="keluar-items-search">
-                                                    </tbody>
+                                                </tbody>
                                             </table>
                                         </div>
                                     </div>
@@ -873,20 +791,23 @@
                                     <!-- Foto Barang -->
                                     <div id="tambah-foto">
                                         <!-- Foto Preview -->
-                                        <div id="tambah-img-box" class="relative borad-20 grid-center">
+                                        <div id="tambah-img-box" class="relative borad-20 grid-center hidden">
                                             <img src="" alt="" class="dis-none" id="preview-img">
-                                            <i class="fas fa-image fz-60"></i>
+                                            <i class="fas fa-image fz-60" id="add-img-icon"></i>
                                         </div>
                                         <br><br>
+
                                         <!-- Foto Input -->
-                                        <div class="form-group w-100 br-orange borad-10">
-                                            <label for="item-file-add" class="form-label">Foto Barang <span class="fz-8">Max 5 MB</span></label>
+                                        <div class="form-group w-100 br-orange borad-10 relative">
+                                            <label for="file-input-tambah" class="form-label">File <span class="fz-8"></span></label>
                                             <div class="upload-wrapper m-0 p-0 w-100">
-                                                <input type="file" id="item-file-add"  data-label="link" class="hidden-input" accept="image/*">
-                                                <label for="file-input" class="custom-button flex-start gap-10 p-10 borad-10" id="file-name-text">
-                                                    <span class="icon"><i class="fas fa-file clr-orange"></i></span> Pilih File
+                                                <input type="file" id="file-input-add" class="hidden-input" accept="image/*">
+                                                <label for="file-input-add" class="custom-button flex-start gap-10 p-10 borad-10">
+                                                    <span class="tambah-icon"><i class="fas fa-file clr-orange"></i></span> Pilih File
                                                 </label>
+                                                <i id="add-file-list-icon" class="fas fa-list dis-none pointer clr-orange"></i>
                                             </div>
+                                            <div id="file-list-display-tambah" class="dis-none flex-start flex-wrap gap-5 p-10 borad-10 white"></div>
                                         </div>
                                     </div>
 
@@ -908,19 +829,21 @@
 
                                         <!-- Tipe Barang -->
                                         <div class="form-group w-100">
-                                            <label class="form-label">Selector Barang</label>
-                                            <div class="select-custom borad-10 fz-14 grid-center w-100" id="items-selector-add">
-                                                <div class="custom-select-container w-100" data-default="Pilih Sumber...">
+                                            <label class="form-label">Selector</label>
+                                            <div id="form-tambah-selector" class="select-custom borad-10 fz-14 grid-center w-100">
+                                                <div class="custom-select-container w-100" data-default="...">
                                                     <div class="select-trigger w-100 p-10 borad-10 br-orange">
-                                                        <span class="clr-grey italic">Pilih Selector :</span>
+                                                        <span class="clr-grey italic">Pilih tujuan :</span>
                                                         <i class="arrow fas fa-chevron-right fz-16 clr-orange"></i>
                                                     </div>
                                                     <div class="select-options w-100">
-                                                        <div class="option" data-value="Select 01">Select 01</div>
-                                                        <div class="option" data-value="Select 02">Select 02</div>
-                                                        <div class="option" data-value="Select 03">Select 03</div>
+                                                        <div class="option" data-value="proyek">Penggunaan Proyek</div>
+                                                        <div class="option" data-value="antar_cabang">Antar Cabang</div>
+                                                        <div class="option" data-value="rusak_afkir">Barang Rusak/Afkir</div>
+                                                        <div class="option" data-value="retur_vendor">Retur ke Vendor</div>
+                                                        <div class="option" data-value="lainnya">Lain-lain</div>
                                                     </div>
-                                                    <input type="hidden" name="sumber" class="select-input" id="item-type-add"  data-label="type">
+                                                    <input type="hidden" name="type" class="select-input w-100" id="tambah-item-value" value="">
                                                 </div>
                                             </div>
                                         </div>

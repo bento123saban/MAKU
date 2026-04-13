@@ -744,15 +744,20 @@ table#items-search td {
     overflow: auto;
 }
 
-#masuk-file-list-icon {
+#masuk-file-list-icon, #keluar-file-list-icon, #add-file-list-icon {
     position: absolute;
     top: 50%;
     right: 7px;
     transform: translateY(-50%);
 }
-#file-list-display {
+#file-list-display, #file-list-display-keluar {
     position: absolute;
     top: calc(100% + 3px);
+    left: 0;
+}
+ #file-list-display-tambah {
+    position: absolute;
+    bottom: calc(100% + 3px);
     left: 0;
 }
 
@@ -795,6 +800,15 @@ table#items-search td {
     aspect-ratio: 1;
     background-color: rgba(105, 105, 105, .1);
 }
+#tambah-img-box img {
+    object-position: center;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+
+
 
 
 

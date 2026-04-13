@@ -303,12 +303,12 @@ export async function formStart () {
         await updateItems()
         await updateStocks()
         btn.classList.remove("spin")
-        UI_Notif("Update Berhasil", "green")
+        // UI_Notif("Update Berhasil", "green")
     })
 
     FormMasuk.init()
     FormKeluar.init()
-    // FormTambah.init()
+    FormTambah.init()
     // FormEdit.init() 
 
     window.ITEMS    = await window.DB.getAll("items")
@@ -316,12 +316,14 @@ export async function formStart () {
 
     document.querySelector("#form-submit-button").onclick = async (e) => {
         if (jenisInput.value == "masuk") {
+            if (e.target.dataset.on == "submitOn") return
             const data = await FormMasuk.getData()
             // return console.log(data)
             if (!data) return
             try {
+                e.target.dataset.on = "submitOn"
                 console.log("")
-                console.log("[Add Transaksi] Mengirim ke server...")
+                console.log("[Transaksi Masuk] Mengirim ke server...")
                 const user = getDevice()
                 if (!user) return UI_Login()
                 UI_Loader("Mengirim")
@@ -338,14 +340,93 @@ export async function formStart () {
                     },
                     reject  : (param) => UI_Alert(param.data.msg, "red"),
                     failed  : (param) => UI_Alert((param.error?.message || "Terjadi kesalahan pada sistem."), "red"),
-                    note    : "[Add Trasaksi] "
+                    note    : "[Trasaksi Masuk] "
                 })
             } catch (e) {
-                console.log("[Add Transaksi] Gagal : " + e.message)
+                console.log("[Transaksi Masuk] Gagal : " + e.message)
                 return {
                     confirm : false,
-                    msg     : "[Add Transaksi] Gagal : " + e.message
+                    msg     : "[Transaksi Masuk] Gagal : " + e.message
                 }
+            }
+            finally {
+                e.target.dataset.on = ""
+            }
+        }
+        else if (jenisInput.value == "keluar") {
+            if (e.target.dataset.on == "submitOn") return
+            const data = await FormKeluar.getData()
+            // console.log(data)
+            if (!data) return
+            try {
+                e.target.dataset.on = "submitOn"
+                console.log("")
+                console.log("[Transaksi Keluar] Mengirim ke server...")
+                const user = getDevice()
+                if (!user) return UI_Login()
+                UI_Loader("Mengirim")
+                const resp = await window.REQUEST.post({
+                    type    : "out",
+                    data    : data,
+                    ...user
+                })
+                await defaultFetchResponse(resp, {
+                    success : (param) => {
+                        UI_Alert(param.data.msg, "green")
+                        FormKeluar.reset()
+                    },
+                    reject  : (param) => UI_Alert(param.data.msg, "red"),
+                    failed  : (param) => UI_Alert((param.error?.message || "Terjadi kesalahan pada sistem."), "red"),
+                    note    : "[Trasaksi Keluar] "
+                })
+            } catch (e) {
+                console.log("[Transaksi Keluar] Gagal : " + e.message)
+                return {
+                    confirm : false,
+                    msg     : "[Transaksi Keluar] Gagal : " + e.message
+                }
+            }
+            
+            finally {
+                e.target.dataset.on = ""
+            }
+        }
+        else if (jenisInput.value == "tambah") {
+            if (e.target.dataset.on == "submitOn") return
+            const data = await FormTambah.getData()
+            // console.log(data)
+            if (!data) return
+            try {
+                e.target.dataset.on = "submitOn"
+                console.log("")
+                console.log("[Tambah Item] Mengirim ke server...")
+                const user = getDevice()
+                if (!user) return UI_Login()
+                UI_Loader("Mengirim")
+                const resp = await window.REQUEST.post({
+                    type    : "addItem",
+                    data    : data,
+                    ...user
+                })
+                await defaultFetchResponse(resp, {
+                    success : (param) => {
+                        UI_Alert(param.data.msg, "green")
+                        FormKeluar.reset()
+                    },
+                    reject  : (param) => UI_Alert(param.data.msg, "red"),
+                    failed  : (param) => UI_Alert((param.error?.message || "Terjadi kesalahan pada sistem."), "red"),
+                    note    : "[Tambah Item] "
+                })
+            } catch (e) {
+                console.log("[Tambah Item] Gagal : " + e.message)
+                return {
+                    confirm : false,
+                    msg     : "[Tambah Item] Gagal : " + e.message
+                }
+            }
+            
+            finally {
+                e.target.dataset.on = ""
             }
         }
     }
@@ -360,6 +441,7 @@ function fileToBase64(file) {
         reader.onload = () => resolve(reader.result);
     });
 }
+
 
 const FormMasuk = (() => {
     // 1. State Management Terpusat
@@ -489,7 +571,7 @@ const FormMasuk = (() => {
             fileSpan.innerHTML = `
                 <i class="fas ${iconClass} clr-green fz-16"></i>
                 <span class="clr-dark fz-12">${file.name}</span>
-                <i class="fas fa-times-circle clr-red pointer" onclick="removeFile(${index})"></i>
+                <i class="fas fa-times-circle clr-red pointer" onclick="removeFileIn(${index})"></i>
             `;
             
             container.appendChild(fileSpan);
@@ -534,7 +616,7 @@ const FormMasuk = (() => {
             });
 
             // Saat Hapus File
-            window.removeFile = (index) => {
+            window.removeFileIn = (index) => {
                 state.files.splice(index, 1);
                 renderFiles(); // Update semua indikator
             };
@@ -552,7 +634,7 @@ const FormMasuk = (() => {
                     return;
                 }
 
-                if (state.files.length + newFiles.length > 2) return UI_Notif("Maksimal 4 file!", "red");
+                if (state.files.length + newFiles.length > 2) return UI_Notif("Maksimal 2 file!", "red");
                 if ([...state.files, ...newFiles].reduce((acc, f) => acc + f.size, 0) > 5242880) return UI_Notif("Total file melebihi 5MB!", "red");
                 state.files.push(...newFiles);
                 renderFiles()
@@ -618,9 +700,9 @@ const FormMasuk = (() => {
             const fixFiles  = await prepareFilesForUpload()
             return {
                 header: { 
-                    sumber: dom.sumber.value, 
+                    event: dom.sumber.value, 
                     keterangan: dom.ket.value, 
-                    penerima: dom.penerima.value, 
+                    staff: dom.penerima.value, 
                     tanggal: new Date(dom.tgl.value)
                 },
                 items: Array.from(state.items.entries()).map(([kode, data]) => ({ kode, ...data })),
@@ -670,10 +752,6 @@ const FormMasuk = (() => {
         }
     };
 })();
-
-// Eksekusi saat DOM Ready
-// document.addEventListener('DOMContentLoaded', FormMasuk.init);
-
 
 const FormKeluar = (() => {
     // 1. State Management
@@ -776,9 +854,9 @@ const FormKeluar = (() => {
             const fileSpan = document.createElement('span');
             fileSpan.className = 'borad-5 p-5-10 flex-start gap-10';
             fileSpan.innerHTML = `
-                <i class="fas ${iconClass} clr-green fz-16"></i>
+                <i class="fas ${iconClass} clr-blue fz-16"></i>
                 <span class="clr-dark fz-12">${file.name}</span>
-                <i class="fas fa-times-circle clr-red pointer" onclick="FormKeluar.removeFile(${index})"></i>
+                <i class="fas fa-times-circle clr-red pointer" onclick="removeFileOut(${index})"></i>
             `;
             container.appendChild(fileSpan);
         });
@@ -836,19 +914,35 @@ const FormKeluar = (() => {
                 const val = e.target.value.toUpperCase();
                 if (!val) return renderSearch([]);
 
-                const src = window.ITEMS.filter(item => {
+                const src = window.STOCKS.filter(item => {
                     const matches = item.code.toUpperCase().includes(val) || item.name.toUpperCase().includes(val);
                     return matches && item.stock > 0; // Hanya tampilkan yang ada stoknya
                 });
                 renderSearch(src);
             });
 
+            // Saat Hapus File
+            window.removeFileOut = (index) => {
+                state.files.splice(index, 1);
+                renderFiles(); // Update semua indikator
+            };
             // D. File Handling
             dom.file.addEventListener('change', e => {
                 const newFiles = Array.from(e.target.files);
-                if (state.files.length + newFiles.length > 4) return UI_Notif("Maksimal 4 file!", "red");
+
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
+                const invalidFile = newFiles.find(f => !allowedTypes.includes(f.type));
+
+                if (invalidFile) {
+                    UI_Notif(`File "${invalidFile.name}" tidak diizinkan! Hanya boleh Gambar (JPG/PNG/WebP) atau PDF.`, "red");
+                    dom.file.value = ''; // Reset input
+                    return;
+                }
+
+                if (state.files.length + newFiles.length > 2) return UI_Notif("Maksimal 2 file!", "red");
+                if ([...state.files, ...newFiles].reduce((acc, f) => acc + f.size, 0) > 5242880) return UI_Notif("Total file melebihi 5MB!", "red");
                 state.files.push(...newFiles);
-                renderFiles();
+                renderFiles()
                 dom.file.value = '';
             });
 
@@ -888,9 +982,9 @@ const FormKeluar = (() => {
 
             return {
                 header: {
-                    tujuan: dom.tujuan.value,
+                    event: dom.tujuan.value,
                     keterangan: dom.ket.value,
-                    penerima: dom.penerima.value,
+                    staff: dom.penerima.value,
                     tanggal: dom.tgl.value
                 },
                 items: Array.from(state.items.entries()).map(([kode, d]) => ({ kode, ...d })),
@@ -909,184 +1003,188 @@ const FormKeluar = (() => {
     };
 })();
 
-
 const FormTambah = (() => {
-    // 1. State & Helper
-    const state = { file: null };
-    const q = (sel, ctx = document) => ctx.querySelector(sel);
-    const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
+    // 1. State Management (Identik dengan gaya FormKeluar)
+    const state = { files: [] };
 
-    // Helper: UI Rendering untuk Preview Gambar
-    const updatePreview = (src) => {
-        const img = q('#preview-img');
-        const icon = q('#tambah-img-box i');
-        if (src) {
-            img.src = src;
-            img.classList.remove('dis-none');
-            if (icon) icon.style.display = 'none';
-        } else {
-            img.src = '';
-            img.classList.add('dis-none');
-            if (icon) icon.style.display = 'block';
-        }
+    // 2. DOM Selector Cache
+    const el = (id) => document.getElementById(id);
+    const dom = {
+        container : el('form-tambah'),
+        preview   : el('preview-img'),
+        imgBox    : el('tambah-img-box'),
+        fileInput : el('file-input-add'),
+        fileList  : el('file-list-display-tambah'),
+        listIcon  : el('add-file-list-icon'),
+        
+        // Input Fields
+        code      : el('item-code-add'),
+        name      : el('item-name-add'),
+        type      : el('tambah-item-value'), // Hidden input dari selector
+        note      : el('item-note-add')
     };
+
+    // Helper: File Handling (Format Size & Base64)
+    const formatSize = (bytes) => {
+        if (bytes === 0) return '0 Bytes';
+        const sizes = ['Bytes', 'KB', 'MB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(1024));
+        return parseFloat((bytes / Math.pow(1024, i)).toFixed(2)) + ' ' + sizes[i];
+    };
+
+    async function prepareFilesForUpload() {
+        const preparedFiles = [];
+        for (const file of state.files) {
+            // Gunakan utilitas yang sama dengan FormKeluar (compressImage/fileToBase64)
+            if (file.type.startsWith('image/')) {
+                const compressed = await compressImage(file);
+                preparedFiles.push(compressed);
+            } else {
+                const base64Data = await fileToBase64(file);
+                preparedFiles.push({
+                    base64: base64Data,
+                    type: file.type,
+                    name: file.name
+                });
+            }
+        }
+        return preparedFiles;
+    }
+
+    // Handle Main Preview (File pertama jika gambar)
+        
+    
+
+    function renderFiles() {
+        const container = el('file-list-display-keluar');
+        const statusIcon = document.querySelector('.tambah-icon i.fa-file, .tambah-icon i.fa-check');
+        const listIconBtn = el('add-file-list-icon');
+        const iconDefault = el("add-img-icon")
+
+        const fileCount = state.files.length;
+        const totalSize = state.files.reduce((acc, f) => acc + f.size, 0);
+
+        if (fileCount > 0) {
+            statusIcon.classList.replace('fa-file', 'fa-check');
+            statusIcon.parentElement.parentElement.lastChild.textContent = ` ${fileCount} File (${formatSize(totalSize)})`;
+            listIconBtn.classList.remove('dis-none');
+        } else {
+            statusIcon.classList.replace('fa-check', 'fa-file');
+            statusIcon.parentElement.parentElement.lastChild.textContent = ' Pilih File';
+            listIconBtn.classList.add('dis-none');
+            container.classList.add('dis-none');
+        }
+
+        if (fileCount > 0 && state.files[0].type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                dom.preview.src = e.target.result;
+                dom.preview.classList.remove('dis-none');
+                iconDefault.classList.add('dis-none');
+            };
+            reader.readAsDataURL(state.files[0]);
+        } else {
+            dom.preview.src = '';
+            dom.preview.classList.add('dis-none');
+            if (iconDefault) iconDefault.classList.remove('dis-none');
+        }
+
+        container.innerHTML = '';
+        state.files.forEach((file, index) => {
+            let iconClass = file.type === 'application/pdf' ? 'fa-file-pdf' : 'fa-image';
+            const fileSpan = document.createElement('span');
+            fileSpan.className = 'borad-5 p-5-10 flex-start gap-10';
+            fileSpan.innerHTML = `
+                <i class="fas ${iconClass} clr-orange fz-16"></i>
+                <span class="clr-dark fz-12">${file.name}</span>
+                <i class="fas fa-times-circle clr-red pointer" onclick="removeFileOut(${index})"></i>
+            `;
+            container.appendChild(fileSpan);
+        });
+    }
 
     return {
         init: () => {
-            const container = q('#form-tambah');
-            if (!container) return console.warn('Form Tambah tidak ditemukan di DOM');
+            // A. File Input Handling
+            dom.fileInput.addEventListener('change', e => {
+                const newFiles = Array.from(e.target.files);
 
-            // 2. Event Delegation (Super Ringkas & Cepat)
-            container.addEventListener('click', (e) => {
-                const t = e.target;
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
+                const invalidFile = newFiles.find(f => !allowedTypes.includes(f.type));
 
-                // Handle: Toggle Custom Select
-                if (t.closest('.select-trigger')) {
-                    const optionsBox = q('.select-options', container);
-                    const arrow = q('.arrow', container);
-                    
-                    optionsBox.classList.toggle('dis-none');
-                    if (arrow) arrow.classList.toggle('rotate-90');
+                if (invalidFile) {
+                    UI_Notif(`File "${invalidFile.name}" tidak diizinkan! Hanya boleh Gambar (JPG/PNG/WebP) atau PDF.`, "red");
+                    dom.file.value = ''; // Reset input
+                    return;
                 }
 
-                // Handle: Pilih Opsi Custom Select
-                if (t.classList.contains('option')) {
-                    const val = t.dataset.value;
-                    const text = t.innerText;
+                if (state.files.length + newFiles.length > 1) return UI_Notif("Maksimal 1 file!", "red");
+                if ([...state.files, ...newFiles].reduce((acc, f) => acc + f.size, 0) > 5242880) return UI_Notif("Total file melebihi 5MB!", "red");
+                state.files.push(...newFiles);
+                renderFiles()
 
-                    // Set value ke hidden input & ubah UI
-                    q('#item-type-add', container).value = val;
-                    const triggerText = q('.select-trigger span', container);
-                    triggerText.innerText = text;
-                    triggerText.classList.remove('clr-grey', 'italic');
-                    
-                    // Tutup dropdown
-                    q('.select-options', container).classList.add('dis-none');
-                    const arrow = q('.arrow', container);
-                    if (arrow) arrow.classList.remove('rotate-90');
-                }
+                dom.fileInput.value = '';
+            })
+
+            // B. Toggle List Display
+            dom.listIcon.addEventListener('click', () => {
+                dom.fileList.classList.toggle('dis-none');
             });
 
-            // Handle: Klik di luar untuk menutup dropdown
-            document.addEventListener('click', (e) => {
-                const selectContainer = q('.custom-select-container', container);
-                if (selectContainer && !selectContainer.contains(e.target)) {
-                    q('.select-options', container)?.classList.add('dis-none');
-                    q('.arrow', container)?.classList.remove('rotate-90');
-                }
-            });
+            // Saat Hapus File
+            window.removeFileAdd = (index) => {
+                state.files.splice(index, 1);
+                renderFiles(); // Update semua indikator
+            };
 
-            // 3. Handle File Input (Strict Validation)
-            q('#item-file-add', container).addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                const labelText = q('#file-name-text', container); // Jika kamu pakai perbaikan HTML sebelumnya
-
-                // Reset jika batal pilih
-                if (!file) {
-                    state.file = null;
-                    if (labelText) labelText.innerText = "Pilih File";
-                    return updatePreview(null);
-                }
-
-                // Validasi Tipe MIME (Hanya Gambar)
-                if (!file.type.startsWith('image/')) {
-                    e.target.value = ''; // Reset input
-                    return alert('🚫 File ditolak: Hanya format gambar yang diperbolehkan!');
-                }
-
-                // Validasi Ukuran (Max 5MB)
-                if (file.size > MAX_SIZE) {
-                    e.target.value = ''; // Reset input
-                    return alert('⚠️ Ukuran gambar terlalu besar! (Maksimal 5MB)');
-                }
-
-                // Sukses: Simpan ke state & Render
-                state.file = file;
-                if (labelText) labelText.innerText = file.name.length > 15 ? file.name.substring(0, 15) + '...' : file.name;
-                
-                const reader = new FileReader();
-                reader.onload = (ev) => updatePreview(ev.target.result);
-                reader.readAsDataURL(file);
-            });
+            console.log("FormTambah Module Initialized 🚀");
         },
 
-        // 4. Payload Output & Strict Final Validation
-        getData: () => {
-            const container = q('#form-tambah');
-            if (!container) return null;
+        getData: async () => {
+            const errs = [];
+            
+            // Validasi Field
+            if (!dom.code.value.trim()) errs.push("Kode Barang wajib diisi!");
+            if (!dom.name.value.trim()) errs.push("Nama Barang wajib diisi!");
+            if (!dom.type.value) errs.push("Tujuan/Tipe wajib dipilih!");
+            
+            // Highlight error
+            [dom.code, dom.name].forEach(el => el.classList.toggle('br-red', !el.value.trim()));
 
-            // Map input field wajib
-            const req = [
-                { id: '#item-code-add', name: 'Kode Barang' },
-                { id: '#item-name-add', name: 'Nama Barang' },
-                { id: '#item-type-add', name: 'Kategori/Sumber (Selector)' }
-            ];
-
-            // Kumpulkan error jika ada field wajib yang kosong
-            const errs = req.reduce((acc, r) => {
-                const val = q(r.id, container)?.value.trim();
-                return !val ? [...acc, `${r.name} wajib diisi!`] : acc;
-            }, []);
-
-            // Validasi File Terpisah
-            if (!state.file) {
-                errs.push("Foto Barang wajib diunggah!");
-            }
-
-            // Jika ada error, hentikan & notifikasi
             if (errs.length) {
-                alert("⚠️ GAGAL SUBMIT:\n- " + errs.join("\n- "));
+                UI_Notif("⚠️ LENGKAPI DATA:\n- " + errs.join("\n- "), "red");
                 return null;
             }
 
-            // Return Clean Data Object (Bisa dilempar ke FormData dengan mudah)
             return {
-                kode: q('#item-code-add', container).value.trim(),
-                nama: q('#item-name-add', container).value.trim(),
-                sumber: q('#item-type-add', container).value.trim(),
-                keterangan: q('#item-note-add', container)?.value.trim() || "",
-                file: state.file
+                header: {
+                    kode: dom.code.value.trim(),
+                    nama: dom.name.value.trim(),
+                    tipe: dom.type.value,
+                    keterangan: dom.note.value.trim(),
+                    timestamp: new Date().toISOString()
+                },
+                files: await prepareFilesForUpload()
             };
         },
 
-        // 5. Fungsi Reset Form (Sangat berguna setelah sukses submit)
         reset: () => {
-            const container = q('#form-tambah');
-            if (!container) return;
-
-            // Clear Inputs
-            q('#item-code-add', container).value = '';
-            q('#item-name-add', container).value = '';
-            q('#item-note-add', container).value = '';
-            q('#item-type-add', container).value = '';
-            q('#item-file-add', container).value = '';
-
-            // Reset Selector UI
-            const triggerText = q('.select-trigger span', container);
-            if (triggerText) {
-                triggerText.innerText = 'Pilih Selector :';
-                triggerText.classList.add('clr-grey', 'italic');
+            state.files = [];
+            [dom.code, dom.name, dom.type, dom.note].forEach(i => i && (i.value = ''));
+            
+            // Reset Custom Selector UI
+            const trigger = dom.container.querySelector('.select-trigger span');
+            if (trigger) {
+                trigger.innerText = "Pilih tujuan :";
+                trigger.classList.add('clr-grey', 'italic');
             }
 
-            // Reset File Label
-            const labelText = q('#file-name-text', container);
-            if (labelText) labelText.innerText = "Pilih File";
-
-            // Clear State & Preview
-            state.file = null;
-            updatePreview(null);
+            renderFiles();
         }
     };
 })();
 
-// Cara Inisialisasi:
-// document.addEventListener('DOMContentLoaded', () => { FormTambah.init(); });
-
-// Cara Mengambil Data (Misal dipanggil dari tombol simpan):
-// const dataToSubmit = FormTambah.getData();
-// if (dataToSubmit) { console.log(dataToSubmit); /* Lanjut Fetch / AJAX */ }
-
-
+// Initialize
 const FormEdit = (() => {
     // 1. State & Helper
     const state = { file: null, originalFileUrl: null }; // Simpan URL gambar asli jika tidak diubah
