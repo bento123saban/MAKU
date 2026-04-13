@@ -43,7 +43,7 @@ class trx {
             fronts.forEach(front => {
                 console.log(value)
                 if (value == "semua") front.classList.remove("dis-none")
-                else if (value == front.dataset.type) front.classList.remove("dis-none")
+                else if (front.dataset.type.toUpperCase().indexOf(value.toUpperCase()) >= 0) front.classList.remove("dis-none")
                 else front.classList.add("dis-none")
             })
         })
@@ -71,13 +71,11 @@ class trx {
         const tableBody = document.querySelector("#items-table tbody");
         tableBody.innerHTML = "";
         trxItems.forEach((item, i)=> {
-            console.log(item)
             const row = document.createElement("tr");
             row.dataset.code = item.code
-            row.dataset.type = (item.type === "IN") ? "masuk" : "keluar"
+            row.dataset.type = item.type == "RECAP" ? "masuk keluar" : (item.type == "IN") ? "masuk" : "keluar";
             row.dataset.date = item.date
             row.className = "trx-tr"
-            console.log(item)
             row.innerHTML = `
                 <td class="pointer"><span class="borad-5 h-100 purple p-5 tr-front grid-center">${(i + 1).toString().padStart(2, '0')}</span></td>
                 <td>${item.code}</td>
@@ -207,17 +205,17 @@ class trx {
             
             row.className = "trx-tr";
             row.dataset.code = item.code;
+            row.dataset.type = item.type == "IN" ? "masuk" : "keluar"
             
-            // Format tanggal lebih efisien
+
             const dateStr = `${String(item.date).padStart(2, '0')} ${item.month} ${item.year}`;
             row.dataset.date = dateStr
-            // Di dalam loop renderTrxTable:
             const d = new Date(item.time);
             const timeDisplay = `${dateFormatter.format(d)} ${timeFormatter.format(d)}`;
             
             row.innerHTML = `
                 <td class="pointer">
-                    <span class="borad-5 w-100 h-100 ${isIN ? "green" : "blue"} p-5 tr-front grid-center">
+                    <span data-type="${item.type}" class="borad-5 w-100 h-100 ${isIN ? "green" : "blue"} p-5 tr-front grid-center">
                         ${String(item.date).padStart(2, '0')}
                     </span>
                 </td>

@@ -286,9 +286,9 @@ export async function formStart () {
     const isOnline = await window.isReallyOnline()
     if (!isOnline.confirm) return UI_Notif("Offline", "red")
         
-    const updatetrx     = await updateTRX()
-    const updateitems   = await updateItems()
-    const updatestocks  = await updateStocks()
+    // const updatetrx     = await updateTRX()
+    // const updateitems   = await updateItems()
+    // const updatestocks  = await updateStocks()
 
     navFrom.classList.remove("dis-none")
     document.querySelectorAll(".content-loader").forEach(load => load.classList.add("dis-none"))
@@ -307,7 +307,7 @@ export async function formStart () {
     })
 
     FormMasuk.init()
-    // FormKeluar.init()
+    FormKeluar.init()
     // FormTambah.init()
     // FormEdit.init() 
 
@@ -676,121 +676,235 @@ const FormMasuk = (() => {
 
 
 const FormKeluar = (() => {
+    // 1. State Management
     const state = { items: new Map(), files: [] };
-    const q = (sel) => document.querySelector(sel); // Helper selektor ringkas
 
-    const render = () => {
-        q('#items-keluar-list').innerHTML = `<p class="fz-14 bolder clr-blue w-100"><i class="fas fa-shopping-cart"></i> Daftar Barang Keluar</p>` + 
-            (state.items.size ? [...state.items].map(([k, v]) => `
-            <div class="form-items-group flex-beetwen w-100 gap-10 p-10 borad-10 bg-light-blue" data-kode="${k}">
-                <i class="fas fa-trash p-7 borad-5 red pointer fz-14 btn-del"></i>
-                <div class="form-items-left flex-start items-start flex-column w-100">
-                    <span class="fz-10 clr-grey">${k} | Stok: <b>${v.stok}</b></span>
-                    <span class="fz-16 bolder">${v.nama}</span>
-                </div>
-                <div class="form-icons-group p-5 borad-5">
-                    <span class="fz-12">Qty: </span>
-                    <input type="number" min="1" max="${v.stok}" value="${v.qty}" class="keluar-qty border-none w-60 bg-transparent" style="outline:none;">
-                </div>
-            </div>`).join('') : '<div class="p-20 clr-grey grid-center w-100">Belum ada barang dipilih</div>');
+    // 2. DOM Selector Cache
+    const el = (id) => document.getElementById(id);
+    const dom = {
+        list    : el('items-form-keluar-list'),
+        search  : el('keluar-items-search'), // Body table hasil pencarian
+        tujuan  : el('keluar-tujuan-value'), // Hidden input atau select
+        ket     : el('keterangan-keluar'),
+        penerima: el('penerima-keluar'), // Nama pengambil
+        tgl     : el('tanggal-keluar'),
+        file    : el('file-input-keluar'),
+        find    : el('keluar-search-input')
     };
+
+    // Helper: File to Base64 (Asumsi sama dengan FormMasuk)
+    async function prepareFilesForUpload() {
+        const preparedFiles = [];
+        for (const file of state.files) {
+            if (file.type.startsWith('image/')) {
+                const compressed = await compressImage(file);
+                preparedFiles.push(compressed);
+            } else {
+                const base64Data = await fileToBase64(file);
+                preparedFiles.push({
+                    base64: base64Data,
+                    type: file.type,
+                    name: file.name
+                });
+            }
+        }
+        return preparedFiles;
+    }
+
+    // 3. Render UI Items
+    const render = () => {
+        dom.list.innerHTML = state.items.size ? '' : '<div class="p-20 clr-grey grid-center">Belum ada barang dipilih</div>';
+        state.items.forEach((val, kode) => {
+            dom.list.insertAdjacentHTML('beforeend', `
+                <div class="form-items-group flex-beetwen w-100 gap-10" data-kode="${kode}">
+                    <i class="fas fa-trash p-7 borad-5 red pointer fz-14 btn-del"></i> |
+                    <div class="form-items-left flex-start items-start flex-column w-100">
+                        <span class="fz-10 clr-grey">${kode} | Sisa Stok: <b>${val.stok}</b></span>
+                        <span class="fz-18">${val.nama}</span>
+                    </div>
+                    <div class="flex-beetwen gap-10">
+                        <div class="form-icons-group p-5 borad-5">
+                            <span>Jumlah : </span>
+                            <input type="number" min="1" max="${val.stok}" value="${val.qty}" class="keluar-qty">
+                        </div>
+                    </div>
+                </div>`);
+        });
+    };
+
+    // 4. Render Search Results
+    const renderSearch = (list) => {
+        dom.search.innerHTML = list.map(item => `
+            <tr>
+                <td><i class="fas fa-plus-circle clr-green pointer" data-stok="${item.stock}"></i></td>
+                <td>${item.code}</td>
+                <td>${item.name}</td>
+                <td><span class="badge ${item.stock > 0 ? 'bg-blue' : 'bg-red'}">${item.stock}</span></td>
+            </tr>
+        `).join("");
+    };
+
+    const formatSize = (bytes) => {
+        if (bytes === 0) return '0 Bytes';
+        const sizes = ['Bytes', 'KB', 'MB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(1024));
+        return parseFloat((bytes / Math.pow(1024, i)).toFixed(2)) + ' ' + sizes[i];
+    };
+
+    function renderFiles() {
+        const container = el('file-list-display-keluar');
+        const statusIcon = document.querySelector('.keluar-icon i.fa-file, .keluar-icon i.fa-check');
+        const listIconBtn = el('keluar-file-list-icon');
+
+        const fileCount = state.files.length;
+        const totalSize = state.files.reduce((acc, f) => acc + f.size, 0);
+
+        if (fileCount > 0) {
+            statusIcon.classList.replace('fa-file', 'fa-check');
+            statusIcon.parentElement.parentElement.lastChild.textContent = ` ${fileCount} File (${formatSize(totalSize)})`;
+            listIconBtn.classList.remove('dis-none');
+        } else {
+            statusIcon.classList.replace('fa-check', 'fa-file');
+            statusIcon.parentElement.parentElement.lastChild.textContent = ' Pilih File';
+            listIconBtn.classList.add('dis-none');
+            container.classList.add('dis-none');
+        }
+
+        container.innerHTML = '';
+        state.files.forEach((file, index) => {
+            let iconClass = file.type === 'application/pdf' ? 'fa-file-pdf' : 'fa-image';
+            const fileSpan = document.createElement('span');
+            fileSpan.className = 'borad-5 p-5-10 flex-start gap-10';
+            fileSpan.innerHTML = `
+                <i class="fas ${iconClass} clr-green fz-16"></i>
+                <span class="clr-dark fz-12">${file.name}</span>
+                <i class="fas fa-times-circle clr-red pointer" onclick="FormKeluar.removeFile(${index})"></i>
+            `;
+            container.appendChild(fileSpan);
+        });
+    }
 
     return {
         init: () => {
-            const container = q('#form-keluar');
-            if (!container) return; // Prevent error jika form tidak ada
+            // A. Tambah Barang (Cek Stok Sebelum Add)
+            dom.search.addEventListener('click', e => {
+                const btn = e.target.closest('.fa-plus-circle');
+                if (!btn) return;
 
-            // 1. Event Delegation Super Ringkas untuk Click & Input
-            container.addEventListener('click', async e => {
-                const t = e.target;
+                const cells = btn.closest('tr').cells;
+                const [kode, nama] = [cells[1].innerText, cells[2].innerText];
+                const stokTersedia = parseInt(btn.dataset.stok);
 
-                // Handle Select Tujuan
-                if (t.closest('.select-trigger')) q('.select-options').classList.toggle('show');
-                if (t.classList.contains('option')) {
-                    q('#keluar-tujuan-value').value = t.dataset.value;
-                    q('.select-trigger span').innerText = t.innerText;
-                    q('.select-options').classList.remove('show');
-                }
+                if (stokTersedia <= 0) return UI_Notif(`Stok "${nama}" habis!`, "red");
 
-                // Handle Tambah Barang (+ Async Cek Stok)
-                if (t.closest('.fa-plus-circle')) {
-                    const tr = t.closest('tr');
-                    const [k, n] = [tr.cells[1].innerText, tr.cells[2].innerText];
-                    
-                    const stocks = await window.DB.getAll("stocks");
-                    const dbStock = parseInt(stocks.find(s => s.kode === k || s.id === k)?.stok || 0);
-                    
-                    if (dbStock < 1) return alert(`🚫 Stok "${n}" Kosong!`);
-                    const newQty = (state.items.get(k)?.qty || 0) + 1;
-                    if (newQty > dbStock) return alert(`⚠️ Stok tidak cukup! (Sisa: ${dbStock})`);
-                    
-                    state.items.set(k, { nama: n, qty: newQty, stok: dbStock });
-                    render();
-                }
+                const currentQty = state.items.get(kode)?.qty || 0;
+                if (currentQty + 1 > stokTersedia) return UI_Notif("Melebihi stok yang tersedia!", "red");
 
-                // Handle Hapus Item List
-                if (t.classList.contains('btn-del')) {
-                    state.items.delete(t.closest('[data-kode]').dataset.kode);
+                state.items.set(kode, { 
+                    nama, 
+                    stok: stokTersedia, 
+                    qty: currentQty + 1 
+                });
+                render();
+            });
+
+            // B. Hapus & Update Qty (Delegation)
+            dom.list.addEventListener('click', e => {
+                if (e.target.classList.contains('btn-del')) {
+                    state.items.delete(e.target.closest('[data-kode]').dataset.kode);
                     render();
                 }
             });
 
-            // 2. Handle Input Real-time (Anti-Nakal Qty)
-            container.addEventListener('input', e => {
+            dom.list.addEventListener('input', e => {
                 if (e.target.classList.contains('keluar-qty')) {
-                    const k = e.target.closest('[data-kode]').dataset.kode;
-                    const item = state.items.get(k);
-                    let val = parseInt(e.target.value) || 1; // Default 1 jika dikosongkan
+                    const kode = e.target.closest('[data-kode]').dataset.kode;
+                    const item = state.items.get(kode);
+                    let val = parseInt(e.target.value) || 0;
 
                     if (val > item.stok) {
-                        alert(`❌ Maksimal stok: ${item.stok}`);
-                        e.target.value = val = item.stok; // Paksa reset ke max stock
+                        UI_Notif(`Stok hanya tersedia ${item.stok}`, "red");
+                        val = item.stok;
+                        e.target.value = val;
                     }
                     item.qty = val;
                 }
             });
 
-            // 3. Handle File (Max 4 File, Max 10MB Total)
-            q('#file-input-keluar').addEventListener('change', e => {
-                const newF = [...e.target.files];
-                if (state.files.length + newF.length > 4) return alert("Maksimal 4 file!");
-                if ([...state.files, ...newF].reduce((acc, f) => acc + f.size, 0) > 10485760) return alert("Total file maksimal 10MB!");
-                state.files.push(...newF);
+            // C. Pencarian Barang (Filter Stok > 0)
+            dom.find.addEventListener("keyup", e => {
+                const val = e.target.value.toUpperCase();
+                if (!val) return renderSearch([]);
+
+                const src = window.ITEMS.filter(item => {
+                    const matches = item.code.toUpperCase().includes(val) || item.name.toUpperCase().includes(val);
+                    return matches && item.stock > 0; // Hanya tampilkan yang ada stoknya
+                });
+                renderSearch(src);
             });
 
-            render(); // Initial Render
+            // D. File Handling
+            dom.file.addEventListener('change', e => {
+                const newFiles = Array.from(e.target.files);
+                if (state.files.length + newFiles.length > 4) return UI_Notif("Maksimal 4 file!", "red");
+                state.files.push(...newFiles);
+                renderFiles();
+                dom.file.value = '';
+            });
+
+            el('keluar-file-list-icon').addEventListener('click', () => {
+                el('file-list-display-keluar').classList.toggle('dis-none');
+            });
+
+            render();
         },
 
-        // Payload Output & Strict Final Validation
-        getData: () => {
-            // Map input field wajib
-            const req = [
-                { id: '#keluar-tujuan-value', name: 'Tujuan' },
-                { id: 'input[placeholder*="Contoh:"]', name: 'Keterangan' },
-                { id: 'input[placeholder*="Nama personil"]', name: 'Pengambil' },
-                { id: 'input[type="date"]', name: 'Tanggal' }
-            ];
+        removeFile: (index) => {
+            state.files.splice(index, 1);
+            renderFiles();
+        },
 
-            // Filter input kosong
-            const errs = req.reduce((acc, r) => (!q(r.id)?.value ? [...acc, `${r.name} wajib diisi!`] : acc), []);
+        getData: async () => {
+            const errs = [];
+            // Validasi Header
+            [{ val: dom.tujuan.value, ref: dom.tujuan, msg: "Tujuan" },
+             { val: dom.penerima.value, ref: dom.penerima, msg: "Penerima/Pengambil" },
+             { val: dom.tgl.value, ref: dom.tgl, msg: "Tanggal" }
+            ].forEach(({ val, ref, msg }) => {
+                ref.classList.toggle('br-red', !val);
+                if (!val) errs.push(`${msg} wajib diisi!`);
+            });
+
+            if (!state.items.size) errs.push("Daftar barang keluar masih kosong!");
             
-            // Validasi Items & Double Check Stock Bypass
-            if (!state.items.size) errs.push("Daftar barang keluar kosong!");
-            state.items.forEach((v, k) => {
-                if (v.qty < 1 || v.qty > v.stok) errs.push(`Jumlah barang "${v.nama}" (Qty: ${v.qty}) tidak valid / melebihi stok!`);
+            state.items.forEach((val, kode) => {
+                if (val.qty <= 0) errs.push(`Jumlah barang "${val.nama}" tidak valid!`);
             });
 
             if (errs.length) {
-                alert("⚠️ GAGAL SUBMIT:\n- " + errs.join("\n- "));
+                UI_Notif("⚠️ PERBAIKI DATA:\n- " + errs.join("\n- "), "red");
                 return null;
             }
 
-            // Return Clean Data
             return {
-                header: req.reduce((acc, r) => ({ ...acc, [r.name.toLowerCase()]: q(r.id).value }), {}),
-                items: [...state.items].map(([kode, data]) => ({ kode, nama: data.nama, qty: data.qty })),
-                files: state.files
+                header: {
+                    tujuan: dom.tujuan.value,
+                    keterangan: dom.ket.value,
+                    penerima: dom.penerima.value,
+                    tanggal: dom.tgl.value
+                },
+                items: Array.from(state.items.entries()).map(([kode, d]) => ({ kode, ...d })),
+                files: await prepareFilesForUpload()
             };
+        },
+
+        reset: () => {
+            state.items.clear();
+            state.files = [];
+            [dom.ket, dom.penerima, dom.tgl, dom.file, dom.find].forEach(i => i && (i.value = ''));
+            renderSearch([]);
+            render();
+            renderFiles();
         }
     };
 })();

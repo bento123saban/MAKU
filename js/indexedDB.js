@@ -767,9 +767,6 @@ export default class IDBManager {
                                 if (!map.has(groupKey)) {
                                     const firstItem = { ...item, in: valIn, out: valOut, date: dateStr, trxCount: 1 };
                                     
-                                    // Reset type karena sekarang ini adalah baris gabungan (Rekap)
-                                    firstItem.type = "RECAP"; 
-                                    
                                     delete firstItem.month; delete firstItem.year; delete firstItem.qty;
                                     
                                     // Tetap sertakan type di dalam rincian trxCode
@@ -783,6 +780,13 @@ export default class IDBManager {
                                     map.set(groupKey, firstItem);
                                 } else {
                                     const curr = map.get(groupKey);
+                                    
+                                    // --- LOGIKA BARU UNTUK TYPE ---
+                                    // Kalau type saat ini bukan RECAP, dan type data yang baru masuk (rawType) berbeda 
+                                    // dengan type saat ini (misal: curr.type "IN", rawType "OUT"), maka ubah jadi RECAP.
+                                    if (curr.type !== "RECAP" && curr.type !== rawType) {
+                                        curr.type = "RECAP";
+                                    }
                                     
                                     // Tambahkan total IN dan OUT secara akumulatif
                                     curr.in += valIn;
