@@ -809,8 +809,13 @@ table#items-search td {
 
 
 
-
-
+#add-reset {
+    display: grid;
+    place-items: center;
+    height: 42px;
+    border: 2px solid transparent;
+    aspect-ratio: 1;
+}
 
 #layer {
     position: fixed;

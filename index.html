@@ -816,9 +816,10 @@
                                     <div class="w-100 flex-strech flex-column gap-30 h-100 items-start pt-3">
                                         
                                         <!-- Kode Barang -->
-                                        <div class="form-group w-100">
+                                        <div class="form-group w-100 gap-10">
                                             <label class="form-label">Kode Barang</label>
                                             <input id="item-code-add" data-label="code" type="text" name="kode_barang" class="form-input" placeholder="Contoh: BRG-001">
+                                            <i class="fas fa-arrow-rotate-left borad-10 clr-orange br-orange" id="add-reset"></i>
                                         </div>
                                         
                                         <!-- Nama Barang -->
@@ -833,17 +834,34 @@
                                             <div id="form-tambah-selector" class="select-custom borad-10 fz-14 grid-center w-100">
                                                 <div class="custom-select-container w-100" data-default="...">
                                                     <div class="select-trigger w-100 p-10 borad-10 br-orange">
-                                                        <span class="clr-grey italic">Pilih tujuan :</span>
+                                                        <span class="clr-grey italic">Tipe Barang :</span>
                                                         <i class="arrow fas fa-chevron-right fz-16 clr-orange"></i>
                                                     </div>
                                                     <div class="select-options w-100">
-                                                        <div class="option" data-value="proyek">Penggunaan Proyek</div>
-                                                        <div class="option" data-value="antar_cabang">Antar Cabang</div>
-                                                        <div class="option" data-value="rusak_afkir">Barang Rusak/Afkir</div>
-                                                        <div class="option" data-value="retur_vendor">Retur ke Vendor</div>
-                                                        <div class="option" data-value="lainnya">Lain-lain</div>
+                                                        <div class="option" data-value="01">Tipe 01</div>
+                                                        <div class="option" data-value="02">Tipe 02</div>
+                                                        <div class="option" data-value="03">Tipe 03</div>
+                                                        <div class="option" data-value="04">Tipe 04</div>
                                                     </div>
                                                     <input type="hidden" name="type" class="select-input w-100" id="tambah-item-value" value="">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- status Barang -->
+                                        <div class="form-group w-100">
+                                            <label class="form-label">Selector</label>
+                                            <div id="form-tambah-status" class="select-custom borad-10 fz-14 grid-center w-100">
+                                                <div class="custom-select-container w-100" data-default="">
+                                                    <div class="select-trigger w-100 p-10 borad-10 br-orange">
+                                                        <span class="clr-grey italic">Status Barang :</span>
+                                                        <i class="arrow fas fa-chevron-right fz-16 clr-orange"></i>
+                                                    </div>
+                                                    <div class="select-options w-100">
+                                                        <div class="option" data-value="aktif">Aktif</div>
+                                                        <div class="option" data-value="nonaktif">Non-Aktif</div>
+                                                    </div>
+                                                    <input type="hidden" name="type" class="select-input w-100" id="tambah-status-value" value="">
                                                 </div>
                                             </div>
                                         </div>
@@ -851,7 +869,7 @@
                                         <!-- Note Barang -->
                                         <div class="form-group w-100">
                                             <label class="form-label">Keterangan</label>
-                                            <textarea id="item-note-add" name="pengambil" data-label="note" class="form-textarea" placeholder="Keterangan" rows="8"></textarea>
+                                            <textarea id="item-note-add" name="pengambil" data-label="note" class="form-textarea" placeholder="Keterangan" rows="4 "></textarea>
                                         </div>
                                         
                                     </div>

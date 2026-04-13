@@ -1021,7 +1021,8 @@ const FormTambah = (() => {
         code      : el('item-code-add'),
         name      : el('item-name-add'),
         type      : el('tambah-item-value'), // Hidden input dari selector
-        note      : el('item-note-add')
+        note      : el('item-note-add'),
+        status    : el("tambah-status-value")
     };
 
     // Helper: File Handling (Format Size & Base64)
@@ -1103,6 +1104,64 @@ const FormTambah = (() => {
         });
     }
 
+    /**
+     * UNIVERSAL FETCH & PREVIEW
+     * Mengambil file dari Google Drive URL dan menampilkannya di Preview Box.
+     * * @param {string} driveUrl - URL sharing Google Drive
+     * @param {string} previewImgId - ID elemen <img> untuk preview
+     * @param {string} iconId - ID elemen ikon placeholder (opsional)
+     */
+    async function fetchAndPreviewDriveFile(driveUrl, previewImgId, iconId = null) {
+        const previewImg = document.getElementById(previewImgId);
+        const iconPlaceholder = iconId ? document.getElementById(iconId) : null;
+
+        if (!previewImg) return console.error("❌ Elemen preview img tidak ditemukan.");
+
+        // 1. Validasi & Ekstrak ID File Drive
+        const fileIdMatch = driveUrl.match(/[-\w]{25,}/);
+        if (!fileIdMatch) {
+            UI_Notif("⚠️ URL Google Drive tidak valid!", "red");
+            return;
+        }
+        const fileId = fileIdMatch[0];
+
+        // 2. Buat Direct View Link (No CORS issue untuk <img> tag)
+        const directViewUrl = `https://drive.google.com/uc?export=view&id=${fileId}`;
+
+        // 3. UI Feedback: Tampilkan Loading (Opsional, pakai icon spin)
+        if (iconPlaceholder) {
+            iconPlaceholder.className = "fas fa-spinner fa-spin fz-60 clr-orange"; // Ubah jadi loading
+            iconPlaceholder.style.display = 'block';
+        }
+        previewImg.classList.add('dis-none');
+
+        // 4. Proses Preview (Gunakan tag <img> langsung)
+        return new Promise((resolve, reject) => {
+            // Set src ke directViewUrl
+            previewImg.src = directViewUrl;
+
+            // Listener jika gambar sukses dimuat
+            previewImg.onload = () => {
+                previewImg.classList.remove('dis-none');
+                if (iconPlaceholder) iconPlaceholder.style.display = 'none';
+                // Kembalikan directViewUrl jika sukses (buat disimpan ke state)
+                resolve(directViewUrl); 
+            };
+
+            // Listener jika gambar gagal dimuat (CORS, 404, file bukan gambar, dll)
+            previewImg.onerror = () => {
+                previewImg.classList.add('dis-none');
+                if (iconPlaceholder) {
+                    // Kembalikan ke ikon default
+                    iconPlaceholder.className = "fas fa-image fz-60 clr-orange"; 
+                    iconPlaceholder.style.display = 'block';
+                }
+                UI_Notif("❌ Gagal memuat gambar Drive. Pastikan file publik & berupa gambar.", "red");
+                reject(new Error("Gagal memuat gambar dari Drive."));
+            };
+        });
+    }
+
     return {
         init: () => {
             // A. File Input Handling
@@ -1137,6 +1196,16 @@ const FormTambah = (() => {
                 renderFiles(); // Update semua indikator
             };
 
+            dom.code.addEventListener("keyup", () => {
+                const value = dom.kode.value.trim().toUpperCase()
+                const find = window.ITEMS.find(data => data.code.toUpperCase() == value)
+                if (find) {
+                    fetchAndPreviewDriveFile(find.link, "preview-img")
+                    dom.name.value = find.name
+                    dom.note.value = find.note
+                }
+            })
+
             console.log("FormTambah Module Initialized 🚀");
         },
 
@@ -1146,7 +1215,8 @@ const FormTambah = (() => {
             // Validasi Field
             if (!dom.code.value.trim()) errs.push("Kode Barang wajib diisi!");
             if (!dom.name.value.trim()) errs.push("Nama Barang wajib diisi!");
-            if (!dom.type.value) errs.push("Tujuan/Tipe wajib dipilih!");
+            if (!dom.type.value) errs.push("Tipe wajib dipilih!");
+            if (!dom.status.value) errs.push("Status wajib dipilih!");
             
             // Highlight error
             [dom.code, dom.name].forEach(el => el.classList.toggle('br-red', !el.value.trim()));
@@ -1162,7 +1232,8 @@ const FormTambah = (() => {
                     nama: dom.name.value.trim(),
                     tipe: dom.type.value,
                     keterangan: dom.note.value.trim(),
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
+                    status: dom.status.value.trim()
                 },
                 files: await prepareFilesForUpload()
             };
