@@ -483,29 +483,30 @@
                         
                         <!-- Boxes -->
                         <div id="inven-boxes" class="p-0 m-0 hidden">
+                            
+                            <div class="boxes p-15 borad-20 orange">
+                                <i class="fas fa-boxes"></i>
+                                <h1 class="align-center p-0 m-0" id="inv-items-total"></h1>
+                                <span class="p-0 m-0"> Total</span>
+                                <span class="fz-12"></span>
+                            </div>
                             <div class="boxes p-15 borad-20 green" id="inven-ready-button" data-status="off">
                                 <i class="fas fa-thumbs-up"></i>
-                                <h1 class="align-center p-0 m-0">4</h1>
+                                <h1 class="align-center p-0 m-0" id="inven-available"></h1>
                                 <span class="p-0 m-0"> Ready</span>
-                                <span class="fz-12">12%</span>
-                            </div>
-                            <div class="boxes p-15 borad-20 orange dis-none">
-                                <i class="fas fa-tools"></i>
-                                <h1 class="align-center p-0 m-0">40</h1>
-                                <span class="p-0 m-0"> Maintenance</span>
-                                <span class="fz-12">12%</span>
+                                <span class="fz-12" id="avail-percent"></span>
                             </div>
                             <div class="boxes p-15 borad-20 grey" id="inven-habis-button" data-status="off">
                                 <i class="far fa-circle relative"></i>
-                                <h1 class="align-center p-0 m-0">400</h1>
+                                <h1 class="align-center p-0 m-0" id="inven-unavailable"></h1>
                                 <span class="p-0 m-0"> Habis</span>
-                                <span class="fz-12">12%</span>
+                                <span class="fz-12" id="unavail-percent"></span>
                             </div>
-                            <div class="boxes p-15 borad-20 br-none dark-pink dis-none">
-                                <i class="fas fa-close"></i>
-                                <h1 class="align-center p-0 m-0">400</h1>
-                                <span class="p-0 m-0"> Rusak</span>
-                                <span class="fz-12">12%</span>
+                            <div class="boxes p-15 borad-20 br-none purple">
+                                <i class="fas fa-database"></i>
+                                <h1 class="align-center p-0 m-0" id="inven-qty"></h1>
+                                <span class="p-0 m-0"> Qty</span>
+                                <span class="fz-12 dis-block flex-end gap-10 dis-none"><span class="blue p-5 borad-5"></span><span class="green p-5 borad-5"></span></span>
                             </div>
                         </div>
                         <br>
@@ -554,7 +555,7 @@
 
                     <!-- Add Form -->
                     <div id="add" class="content w-100 dis-none">
-                        <div class="content-loade dis-none" id="add-shimer">jfhwejfhwhf
+                        <div class="content-loader dis-none" id="add-shimer">
                             <div class="shimer shimer-circle"></div>
                             <div class="shimer shimer-75"></div>
                             <div class="shimer shimer-50"></div>
@@ -576,8 +577,8 @@
                                     <div class="select-options w-100">
                                         <div class="option green" data-value="masuk" data-clr="green"><i class="fas fa-arrow-right-to-bracket"></i>&nbsp; Barang Masuk</div>
                                         <div class="option blue" data-value="keluar" data-clr="blue"><i class="fas fa-arrow-right-from-bracket"></i>&nbsp; Barang Keluar</div>
-                                        <div class="option orange" data-value="tambah" data-clr="orange"><i class="fas fa-boxes"></i>&nbsp; Tambah Barang</div>
-                                        <div class="option purple" data-value="edit" data-clr="purple"><i class="fas fa-edit"></i>&nbsp; Edit Barang</div>
+                                        <div class="option orange" data-value="tambah" data-clr="orange"><i class="fas fa-boxes"></i>&nbsp; Tambah/Edit Barang</div>
+                                        <!-- <div class="option purple" data-value="edit" data-clr="purple"><i class="fas fa-edit"></i>&nbsp; Edit Barang</div> -->
                                         <!-- <div class="option orange" data-value="keluar" data-clr="orange"><i class="fas fa-search"></i>&nbsp; Stok Opname</div> -->
                                         <!-- <div class="option dark-pink" data-value="keluar" data-clr="dark-pink"><i class="fas fa-arrows-rotate"></i>&nbsp; Revisi</div> -->
                                     </div>
@@ -687,7 +688,6 @@
                                 
                             </div>
 
-                            
                             <!-- Form keluar -->
                             <div id="form-keluar" data-form="keluar" class="forms w-100 h-100 w-100 dis-none">
 
@@ -785,7 +785,7 @@
                             </div>
 
                             <!-- form barang -->
-                            <div id="form-tambah" data-form="tambah" class="forms w-100 h-100 dis-none">    
+                            <div id="form-tambah" data-form="tambah" class="forms w-100 h-100 dis-none">
                                 <div class="flex-strech gap-10">
 
                                     <!-- Foto Barang -->
@@ -793,7 +793,7 @@
                                         <!-- Foto Preview -->
                                         <div id="tambah-img-box" class="relative borad-20 grid-center hidden">
                                             <img src="" alt="" class="dis-none" id="preview-img">
-                                            <i class="fas fa-image fz-60" id="add-img-icon"></i>
+                                            <i class="fas fa-image fz-60 dis-none" id="add-img-icon"></i>
                                         </div>
                                         <br><br>
 
@@ -819,7 +819,7 @@
                                         <div class="form-group w-100 gap-10">
                                             <label class="form-label">Kode Barang</label>
                                             <input id="item-code-add" data-label="code" type="text" name="kode_barang" class="form-input" placeholder="Contoh: BRG-001">
-                                            <i class="fas fa-arrow-rotate-left borad-10 clr-orange br-orange" id="add-reset"></i>
+                                            <i class="fas fa-arrow-rotate-left borad-10 clr-orange br-orange dis-none" id="add-reset"></i>
                                         </div>
                                         
                                         <!-- Nama Barang -->
@@ -838,10 +838,10 @@
                                                         <i class="arrow fas fa-chevron-right fz-16 clr-orange"></i>
                                                     </div>
                                                     <div class="select-options w-100">
-                                                        <div class="option" data-value="01">Tipe 01</div>
-                                                        <div class="option" data-value="02">Tipe 02</div>
-                                                        <div class="option" data-value="03">Tipe 03</div>
-                                                        <div class="option" data-value="04">Tipe 04</div>
+                                                        <div class="option" data-value="Tipe 01">Tipe 01</div>
+                                                        <div class="option" data-value="Tipe 02">Tipe 02</div>
+                                                        <div class="option" data-value="TIpe 03">Tipe 03</div>
+                                                        <div class="option" data-value="Tipe 04">Tipe 04</div>
                                                     </div>
                                                     <input type="hidden" name="type" class="select-input w-100" id="tambah-item-value" value="">
                                                 </div>
@@ -858,8 +858,8 @@
                                                         <i class="arrow fas fa-chevron-right fz-16 clr-orange"></i>
                                                     </div>
                                                     <div class="select-options w-100">
-                                                        <div class="option" data-value="aktif">Aktif</div>
-                                                        <div class="option" data-value="nonaktif">Non-Aktif</div>
+                                                        <div class="option" data-value="Aktif">Aktif</div>
+                                                        <div class="option" data-value="Non-A   ktif">Non-Aktif</div>
                                                     </div>
                                                     <input type="hidden" name="type" class="select-input w-100" id="tambah-status-value" value="">
                                                 </div>
@@ -875,179 +875,11 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- form edit barang -->
-                            <div id="form-edit" data-form="edit" class="forms w-100 h-100 w-100 dis-none">
-                                <!-- keluar main inputs -->
-                                <div class="flex-strech gap-10">
-
-                                    <div id="edit-foto">
-                                        <div id="edit-img-box" class="relative borad-20 grid-center">
-                                            <img src="" alt="" class="dis-none">
-                                            <i class="fas fa-image fz-60"></i>
-                                        </div>
-                                        <br><br>
-                                        <!-- File Input -->
-                                        <div class="form-group w-100 br-purple borad-10">
-                                            <label for="file-input" class="form-label">Foto Barang <span class="fz-8">Max 5 MB</span></label>
-                                            <div class="upload-wrapper m-0 p-0 w-100">
-                                                <input type="file" id="file-input" class="hidden-input" multiple>
-                                                <label for="file-input" class="custom-button  flex-start gap-10 p-10 borad-10">
-                                                    <span class="icon"><i class="fas fa-file clr-purple"></i></span> Pilih File
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="grid-center">|</span>
-
-                                    <div class="w-100 flex-strech flex-column gap-30 h-100 items-start pt-3">
-                                        
-                                        <!-- kode -->
-                                        <div class="form-group w-100">
-                                            <label class="form-label">Kode Barang</label>
-                                            <input type="text" class="form-input" placeholder="Masukan Kode">
-                                        </div>
-                                        
-                                        <!-- Sumber -->
-                                        <div class="form-group w-100">
-                                            <label class="form-label">Select</label>
-                                            <div class=" select-custom borad-10 fz-14 grid-center w-100" id="" data-bg="">
-                                                <div class="custom-select-container w-100" data-default="...">
-                                                    <div class="select-trigger w-100 p-10 borad-10 br-purple">
-                                                        <span class="clr-grey italic" data-class="">Select Something :</span>
-                                                        <i class="arrow fas fa-chevron-right fz-16 clr-purple"></i>
-                                                    </div>
-                                                    <div class="select-options w-100">
-                                                        <div class="option" data-value="pengadaan" data-clr="">Select 01 <!-- <span class="italic">(Permanen)</span> --></div>
-                                                        <!-- <div class="option" data-value="tarikan_lapangan" data-clr="">Penggunaan <span class="italic">(Return)</span></div> -->
-                                                        <div class="option" data-value="selesai_Select 02" data-clr="">Select 02</div>
-                                                        <!-- <div class="option" data-value="selesai_pakai" data-clr="">Dipinjamkan</div> -->
-                                                        <div class="option" data-value="hibah_pemeberian" data-clr="">Select 03 <!-- <span class="italic">(Gift)</span> --></div>
-                                                        <!-- <div class="option" data-value="hibah_pemeberian" data-clr="">Jual</div> -->
-                                                    </div>
-                                                    <input type="hidden" name="type" class="select-input w-100" id="maku-value" value="">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Vendor -->
-                                        <div class="form-group w-100">
-                                            <label class="form-label">Nama Barang</label>
-                                            <input type="text" class="form-input" placeholder="Masukan Kode">
-                                        </div>
-                                        <!-- Penerima -->
-                                        <div class="form-group w-100">
-                                            <label class="form-label">Pengambil</label>
-                                            <input type="text" class="form-input" placeholder="Penerima Barang Masuk">
-                                        </div>
-                                        <!-- Tanggal Masuk -->
-                                        <div class="form-group w-100">
-                                            <label class="form-label">Tanggal Diambil</label>
-                                            <input type="date" class="form-input" placeholder="Masukan Keterangan tekait Sumber Barang">
-                                        </div>
-                                        
-                                    </div>
-                                    
-
-                                    
-                                </div>
-                                
-                                
-
-                            </div>
-
-                            <!-- form edit new -->
-                            <div id="form-edit" data-form="edit" class="forms w-100 h-100 dis-none">
-                                <div class="flex-strech gap-10">
-
-                                    <div id="edit-foto">
-                                        <div id="edit-img-box" class="relative borad-20 grid-center" style="width: 200px; height: 200px; border: 2px dashed #ddd; overflow: hidden;">
-                                            <img src="" alt="Preview" class="dis-none" id="edit-preview-img" style="width: 100%; height: 100%; object-fit: cover;">
-                                            <i class="fas fa-image fz-60 clr-purple" id="edit-icon-img"></i>
-                                        </div>
-                                        <br>
-                                        <div class="form-group w-100 br-purple borad-10">
-                                            <label for="edit-file-input" class="form-label">Update Foto <span class="fz-8">Max 5 MB</span></label>
-                                            <div class="upload-wrapper m-0 p-0 w-100">
-                                                <input type="file" id="edit-file-input" name="foto_barang" class="hidden-input" accept="image/*" style="display: none;">
-                                                <label for="edit-file-input" class="custom-button flex-start gap-10 p-10 borad-10" style="cursor: pointer; border: 1px solid purple;">
-                                                    <span class="icon"><i class="fas fa-file clr-purple"></i></span> 
-                                                    <span id="edit-file-name-text">Pilih File Baru</span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <span class="grid-center" style="padding: 0 20px; color: #ddd;">|</span>
-
-                                    <div class="w-100 flex-strech flex-column gap-20 h-100 items-start pt-3">
-                                        
-                                        <div class="form-group w-100">
-                                            <label for="edit-kode" class="form-label">Kode Barang</label>
-                                            <input type="text" id="edit-kode" name="kode_barang" class="form-input" placeholder="Contoh: BRG-001">
-                                        </div>
-
-                                        <div class="form-group w-100">
-                                            <label for="edit-nama" class="form-label">Nama Barang</label>
-                                            <input type="text" id="edit-nama" name="nama_barang" class="form-input" placeholder="Masukan Nama Barang">
-                                        </div>
-                                        
-                                        <div class="form-group w-100">
-                                            <label class="form-label">Sumber Barang</label>
-                                            <div class="select-custom borad-10 fz-14 w-100">
-                                                <div class="custom-select-container w-100">
-                                                    <div class="select-trigger w-100 p-10 borad-10 br-purple flex-between" style="cursor: pointer; border: 1px solid purple; display: flex; justify-content: space-between;">
-                                                        <span class="clr-grey italic" id="edit-sumber-text">Pilih Sumber :</span>
-                                                        <i class="arrow fas fa-chevron-right fz-16 clr-purple" style="transition: 0.3s;"></i>
-                                                    </div>
-                                                    <div class="select-options dis-none w-100 borad-10" style="border: 1px solid #ddd; background: white; margin-top: 5px; position: absolute; z-index: 10;">
-                                                        <div class="option p-10" data-value="pengadaan" style="cursor: pointer;">Pengadaan</div>
-                                                        <div class="option p-10" data-value="hibah" style="cursor: pointer;">Hibah / Pemberian</div>
-                                                        <div class="option p-10" data-value="lainnya" style="cursor: pointer;">Lainnya</div>
-                                                    </div>
-                                                    <input type="hidden" name="sumber" id="edit-sumber-value">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group w-100">
-                                            <label class="form-label">Status Barang</label>
-                                            <div class="select-custom borad-10 fz-14 w-100">
-                                                <div class="custom-select-container w-100">
-                                                    <div class="select-trigger w-100 p-10 borad-10 br-purple flex-between" style="cursor: pointer; border: 1px solid purple; display: flex; justify-content: space-between;">
-                                                        <span class="clr-grey italic" id="edit-status-text">Pilih Status :</span>
-                                                        <i class="arrow fas fa-chevron-right fz-16 clr-purple" style="transition: 0.3s;"></i>
-                                                    </div>
-                                                    <div class="select-options dis-none w-100 borad-10" style="border: 1px solid #ddd; background: white; margin-top: 5px; position: absolute; z-index: 10;">
-                                                        <div class="option p-10" data-value="aktif" style="cursor: pointer;">✅ Aktif</div>
-                                                        <div class="option p-10" data-value="non_aktif" style="cursor: pointer;">❌ Non-Aktif</div>
-                                                    </div>
-                                                    <input type="hidden" name="status" id="edit-status-value">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group w-100">
-                                            <label for="edit-pengambil" class="form-label">Pengambil / Vendor</label>
-                                            <input type="text" id="edit-pengambil" name="pengambil" class="form-input" placeholder="Nama Penerima / Vendor">
-                                        </div>
-
-                                        <div class="form-group w-100">
-                                            <label for="edit-tanggal" class="form-label">Tanggal Masuk / Diambil</label>
-                                            <input type="date" id="edit-tanggal" name="tanggal" class="form-input">
-                                        </div>
-                                        
-                                        <div class="flex-end w-100 gap-10 mt-10">
-                                            <button type="button" class="btn-save p-10 borad-10 bg-purple clr-white pointer" onclick="submitEditData()">Simpan Perubahan</button>
-                                        </div>
-                                        
-                                    </div>
-                                </div>
-                            </div>
-
                         </div>
                         
                     </div>
+
+
                 </div>
             </main>
 

@@ -396,7 +396,7 @@ export async function setChart (data) {
                 },
                 title: {
                     display:  true,
-                    text: 'Barang Masuk dan Keluar - 2026',
+                    text: 'Transaksi Barang Masuk dan Keluar - ' + new Date().getFullYear(),
                     font : {size: 20},
                     family: "barlow, san-serif"
                 },
@@ -445,7 +445,7 @@ export async function setChart (data) {
                 },
                 title: {
                     display: true,
-                    text: 'Kondisi Barang',
+                    text: 'Ketersediaan Barang',
                     font : {size: 20}
                 },
                 datalabels: {
@@ -631,9 +631,25 @@ export async function updateDashboard () {
     const items         = counter.find(data => data.type === "items")
     const itemsCount    = items.count
 
+    const tot = unavailable + available
+
+    const availPercent  = ((available/tot)*100).toFixed(2)
+    const unAvailPercent  = ((unavailable/tot)*100).toFixed(2)
+
+    console.log(unavailable, total, unavailable/total)
+
     document.querySelector("#trx-boxes").textContent    = hedaerCount
+    document.querySelector("#inv-items-total").textContent  = itemsCount
     document.querySelector("#items-boxes").textContent  = itemsCount
+    document.querySelector("#inven-qty").textContent    = total
     document.querySelector("#qty-boxes").textContent    = total
+    document.querySelector("#inven-unavailable").textContent = unavailable
+    document.querySelector("#inven-available").textContent = available
+
+    document.querySelector("#unavail-percent").textContent = unAvailPercent + "%"
+    document.querySelector("#avail-percent").textContent = availPercent + "%"
+
+    
 
     // return
     setChart({

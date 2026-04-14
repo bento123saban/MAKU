@@ -173,7 +173,7 @@ nav {
 .boxes {
     width: 100%;
     display: grid;
-    grid-template-columns: auto auto 2fr 30px;
+    grid-template-columns: auto auto 2fr 60px;
     align-items: flex-start;
     gap: 10px;
 }

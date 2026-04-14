@@ -1,6 +1,6 @@
 
 import indexedDB from "./js/indexedDB"
-window.DB = new indexedDB("MAKU", 1, {
+window.DB = new indexedDB("MAKU", 2, {
     items : {
         keyPath : "code",
         indexes : ["code", "name", "note", "type"]

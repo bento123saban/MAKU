@@ -41,7 +41,7 @@ class trx {
                 else bar.classList.add("dis-none")
             })
             fronts.forEach(front => {
-                console.log(value)
+                // console.log(value)
                 if (value == "semua") front.classList.remove("dis-none")
                 else if (front.dataset.type.toUpperCase().indexOf(value.toUpperCase()) >= 0) front.classList.remove("dis-none")
                 else front.classList.add("dis-none")
@@ -295,20 +295,20 @@ class trx {
             const year = this.onYear()
             this.calendarData       = await window.DB.search("trxHeader", {query : this.onMonth(), fields : ["month"], filters : {year : year}})
             this.renderCalendar()
-            this.makuValue.value = ""
+            document.querySelector("#maku-button .option[data-value='semua']").click()
             this.makuValue.dispatchEvent(new Event('change', { bubbles: true }));
-            this.makuValue.value = "bulanan"
-            this.makuValue.dispatchEvent(new Event('change', { bubbles: true }));
+            this.makuMore.value = "bulanan"
+            this.makuMore.dispatchEvent(new Event('change', { bubbles: true }));
         }
         prevButton.onclick = async (e) => {
             this.calendarDate.setMonth(this.calendarDate.getMonth() - 1)
             const year = this.onYear()
             this.calendarData   = await window.DB.search("trxHeader", {query : this.onMonth(), fields : ["month"], filters : {year : year}})
             this.renderCalendar()
-            this.makuValue.value = ""
+            document.querySelector("#maku-button .option[data-value='semua']").click()
             this.makuValue.dispatchEvent(new Event('change', { bubbles: true }));
-            this.makuValue.value = "bulanan"
-            this.makuValue.dispatchEvent(new Event('change', { bubbles: true }));
+            this.makuMore.value = "bulanan"
+            this.makuMore.dispatchEvent(new Event('change', { bubbles: true }));
         }
         this.renderCalendar()
         this.calculateDetailedSummary()

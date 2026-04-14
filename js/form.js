@@ -26,6 +26,7 @@ export async function updateItems (loaderCallback = null) {
             success : async (param) => {
                 try {
                     const data      = resp.data.data
+                    await window.DB.clear("items")
                     await window.DB.upsert("items", data.list)
                     await  window.DB.upsert("counter", {type : "items", count : data.count})
                     console.log("[Update Barang] Data barang sudah terupdate ")
@@ -65,12 +66,14 @@ export async function updateTRX (loaderCallback = null) {
                 try {
                     const trxHeader = param.data.header
                     const trxItems  = param.data.items
+                    await window.DB.clear("trxHeader")
                     await window.DB.upsert("trxHeader", trxHeader.list)
                     await window.DB.upsert("counter", {
                         type    : "trxHeader",
                         count   : trxHeader.count,
                         month   : trxHeader.month
                     })
+                    await window.DB.clear("trxItems")
                     await window.DB.upsert("trxItems", trxItems.list)
                     await window.DB.upsert("counter", {
                         type    : "trxItems",
@@ -111,6 +114,7 @@ export async function updateStocks (loaderCallback = null) {
             success : async (param) => {
                 try {
                     const data      = param.data.data
+                    await window.DB.clear("stocks")
                     await window.DB.upsert("stocks", data.list)
                     await window.DB.upsert("counter", {
                         type        : "stocks",
@@ -309,7 +313,6 @@ export async function formStart () {
     FormMasuk.init()
     FormKeluar.init()
     FormTambah.init()
-    // FormEdit.init() 
 
     window.ITEMS    = await window.DB.getAll("items")
     window.STOCKS   = await window.DB.getAll("stocks")
@@ -408,10 +411,35 @@ export async function formStart () {
                     data    : data,
                     ...user
                 })
+                console.log(resp)
                 await defaultFetchResponse(resp, {
-                    success : (param) => {
+                    success : async (param) => {
+                        UI_Loader("Update Data")
+
+                        const items = resp.data.items
+                        const stocks = resp.data.stocks
+
+                        // return console.table([resp, items, stocks])
+
+                        await window.DB.clear("items")
+                        await window.DB.upsert("items", items.list)
+                        await  window.DB.upsert("counter", {type : "items", count : items.count})
+                        console.log("[Update Barang] Data barang sudah terupdate ")
+                        UI_Notif("Data barang sudah terupdate", "green")
+
+                        await window.DB.clear("stocks")
+                        await window.DB.upsert("stocks", stocks.list)
+                        await window.DB.upsert("counter", {
+                            type        : "stocks",
+                            unavailable : stocks.unavailable,
+                            available   : stocks.available,
+                            total       : stocks.total
+                        })
+                        console.log("[Update Stock] Data stock sudah terupdate ")
+                        UI_Notif("Data stok sudah terupdate", "green")
+
                         UI_Alert(param.data.msg, "green")
-                        FormKeluar.reset()
+                        FormTambah.reset()
                     },
                     reject  : (param) => UI_Alert(param.data.msg, "red"),
                     failed  : (param) => UI_Alert((param.error?.message || "Terjadi kesalahan pada sistem."), "red"),
@@ -1053,11 +1081,8 @@ const FormTambah = (() => {
     }
 
     // Handle Main Preview (File pertama jika gambar)
-        
-    
-
     function renderFiles() {
-        const container = el('file-list-display-keluar');
+        const container = el('file-list-display-tambah');
         const statusIcon = document.querySelector('.tambah-icon i.fa-file, .tambah-icon i.fa-check');
         const listIconBtn = el('add-file-list-icon');
         const iconDefault = el("add-img-icon")
@@ -1098,7 +1123,7 @@ const FormTambah = (() => {
             fileSpan.innerHTML = `
                 <i class="fas ${iconClass} clr-orange fz-16"></i>
                 <span class="clr-dark fz-12">${file.name}</span>
-                <i class="fas fa-times-circle clr-red pointer" onclick="removeFileOut(${index})"></i>
+                <i class="fas fa-times-circle clr-red pointer" onclick="removeFileAdd(${index})"></i>
             `;
             container.appendChild(fileSpan);
         });
@@ -1111,55 +1136,39 @@ const FormTambah = (() => {
      * @param {string} previewImgId - ID elemen <img> untuk preview
      * @param {string} iconId - ID elemen ikon placeholder (opsional)
      */
+    
     async function fetchAndPreviewDriveFile(driveUrl, previewImgId, iconId = null) {
         const previewImg = document.getElementById(previewImgId);
         const iconPlaceholder = iconId ? document.getElementById(iconId) : null;
+        const parent = previewImg?.parentElement;
 
-        if (!previewImg) return console.error("❌ Elemen preview img tidak ditemukan.");
+        if (!parent) return;
 
-        // 1. Validasi & Ekstrak ID File Drive
-        const fileIdMatch = driveUrl.match(/[-\w]{25,}/);
-        if (!fileIdMatch) {
-            UI_Notif("⚠️ URL Google Drive tidak valid!", "red");
-            return;
-        }
-        const fileId = fileIdMatch[0];
+        // 1. Sembunyikan image preview (biar nggak ada kotak pecah karena CORS)
+        if (previewImg) previewImg.classList.add('dis-none');
 
-        // 2. Buat Direct View Link (No CORS issue untuk <img> tag)
-        const directViewUrl = `https://drive.google.com/uc?export=view&id=${fileId}`;
-
-        // 3. UI Feedback: Tampilkan Loading (Opsional, pakai icon spin)
+        // 2. Setup Icon agar bisa diklik langsung ke URL asli
         if (iconPlaceholder) {
-            iconPlaceholder.className = "fas fa-spinner fa-spin fz-60 clr-orange"; // Ubah jadi loading
+            iconPlaceholder.className = "fas fa-image fz-60 clr-orange pointer";
             iconPlaceholder.style.display = 'block';
+            iconPlaceholder.onclick = () => window.open(driveUrl, '_blank');
         }
-        previewImg.classList.add('dis-none');
 
-        // 4. Proses Preview (Gunakan tag <img> langsung)
-        return new Promise((resolve, reject) => {
-            // Set src ke directViewUrl
-            previewImg.src = directViewUrl;
+        // 3. Tambahkan teks "Lihat Gambar" di bawahnya
+        let linkText = parent.querySelector('.btn-lihat-gambar');
+        if (!linkText) {
+            linkText = document.createElement('a');
+            linkText.className = 'btn-lihat-gambar clr-orange pointer block fz-12 mt-5';
+            linkText.style.textDecoration = 'underline';
+            linkText.target = '_blank';
+            parent.appendChild(linkText);
+        }
 
-            // Listener jika gambar sukses dimuat
-            previewImg.onload = () => {
-                previewImg.classList.remove('dis-none');
-                if (iconPlaceholder) iconPlaceholder.style.display = 'none';
-                // Kembalikan directViewUrl jika sukses (buat disimpan ke state)
-                resolve(directViewUrl); 
-            };
-
-            // Listener jika gambar gagal dimuat (CORS, 404, file bukan gambar, dll)
-            previewImg.onerror = () => {
-                previewImg.classList.add('dis-none');
-                if (iconPlaceholder) {
-                    // Kembalikan ke ikon default
-                    iconPlaceholder.className = "fas fa-image fz-60 clr-orange"; 
-                    iconPlaceholder.style.display = 'block';
-                }
-                UI_Notif("❌ Gagal memuat gambar Drive. Pastikan file publik & berupa gambar.", "red");
-                reject(new Error("Gagal memuat gambar dari Drive."));
-            };
-        });
+        // Pakai URL asli dari user (https://drive.google.com/file/d/...)
+        linkText.href = driveUrl;
+        linkText.textContent = "Lihat Gambar";
+        
+        return Promise.resolve(driveUrl);
     }
 
     return {
@@ -1197,12 +1206,15 @@ const FormTambah = (() => {
             };
 
             dom.code.addEventListener("keyup", () => {
-                const value = dom.kode.value.trim().toUpperCase()
+                const value = dom.code.value.trim().toUpperCase()
                 const find = window.ITEMS.find(data => data.code.toUpperCase() == value)
                 if (find) {
+                    console.log(find)
                     fetchAndPreviewDriveFile(find.link, "preview-img")
                     dom.name.value = find.name
                     dom.note.value = find.note
+                    dom.container.querySelector(`.option[data-value='${find.type}']`).click()
+                    dom.container.querySelector(`.option[data-value='${find.status}']`).click()
                 }
             })
 
@@ -1256,212 +1268,212 @@ const FormTambah = (() => {
 })();
 
 // Initialize
-const FormEdit = (() => {
-    // 1. State & Helper
-    const state = { file: null, originalFileUrl: null }; // Simpan URL gambar asli jika tidak diubah
-    const q = (sel, ctx = document) => ctx.querySelector(sel);
-    const qa = (sel, ctx = document) => ctx.querySelectorAll(sel);
-    const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
+// const FormEdit = (() => {
+//     // 1. State & Helper
+//     const state = { file: null, originalFileUrl: null }; // Simpan URL gambar asli jika tidak diubah
+//     const q = (sel, ctx = document) => ctx.querySelector(sel);
+//     const qa = (sel, ctx = document) => ctx.querySelectorAll(sel);
+//     const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
 
-    // Helper: UI Rendering untuk Preview Gambar
-    const updatePreview = (src) => {
-        const img = q('#edit-preview-img');
-        const icon = q('#edit-icon-img');
-        if (src) {
-            img.src = src;
-            img.classList.remove('dis-none');
-            if (icon) icon.style.display = 'none';
-        } else {
-            img.src = '';
-            img.classList.add('dis-none');
-            if (icon) icon.style.display = 'block';
-        }
-    };
+//     // Helper: UI Rendering untuk Preview Gambar
+//     const updatePreview = (src) => {
+//         const img = q('#edit-preview-img');
+//         const icon = q('#edit-icon-img');
+//         if (src) {
+//             img.src = src;
+//             img.classList.remove('dis-none');
+//             if (icon) icon.style.display = 'none';
+//         } else {
+//             img.src = '';
+//             img.classList.add('dis-none');
+//             if (icon) icon.style.display = 'block';
+//         }
+//     };
 
-    return {
-        init: () => {
-            const container = q('#form-edit');
-            if (!container) return console.warn('Form Edit tidak ditemukan di DOM');
+//     return {
+//         init: () => {
+//             const container = q('#form-edit');
+//             if (!container) return console.warn('Form Edit tidak ditemukan di DOM');
 
             
 
-            // 3. Handle File Input (Strict Validation)
-            q('#edit-file-input', container).addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                const labelText = q('#edit-file-name-text', container);
+//             // 3. Handle File Input (Strict Validation)
+//             q('#edit-file-input', container).addEventListener('change', (e) => {
+//                 const file = e.target.files[0];
+//                 const labelText = q('#edit-file-name-text', container);
 
-                // Reset jika batal pilih (kembali ke gambar asli jika ada)
-                if (!file) {
-                    state.file = null;
-                    if (labelText) labelText.innerText = "Pilih File Baru";
-                    return updatePreview(state.originalFileUrl);
-                }
+//                 // Reset jika batal pilih (kembali ke gambar asli jika ada)
+//                 if (!file) {
+//                     state.file = null;
+//                     if (labelText) labelText.innerText = "Pilih File Baru";
+//                     return updatePreview(state.originalFileUrl);
+//                 }
 
-                // Validasi Tipe MIME (Hanya Gambar)
-                if (!file.type.startsWith('image/')) {
-                    e.target.value = ''; 
-                    return alert('🚫 File ditolak: Hanya format gambar!');
-                }
+//                 // Validasi Tipe MIME (Hanya Gambar)
+//                 if (!file.type.startsWith('image/')) {
+//                     e.target.value = ''; 
+//                     return alert('🚫 File ditolak: Hanya format gambar!');
+//                 }
 
-                // Validasi Ukuran (Max 5MB)
-                if (file.size > MAX_SIZE) {
-                    e.target.value = '';
-                    return alert('⚠️ Ukuran gambar terlalu besar! (Maksimal 5MB)');
-                }
+//                 // Validasi Ukuran (Max 5MB)
+//                 if (file.size > MAX_SIZE) {
+//                     e.target.value = '';
+//                     return alert('⚠️ Ukuran gambar terlalu besar! (Maksimal 5MB)');
+//                 }
 
-                // Sukses: Simpan state & Render Preview File Baru
-                state.file = file;
-                if (labelText) labelText.innerText = file.name.length > 15 ? file.name.substring(0, 15) + '...' : file.name;
+//                 // Sukses: Simpan state & Render Preview File Baru
+//                 state.file = file;
+//                 if (labelText) labelText.innerText = file.name.length > 15 ? file.name.substring(0, 15) + '...' : file.name;
                 
-                const reader = new FileReader();
-                reader.onload = (ev) => updatePreview(ev.target.result);
-                reader.readAsDataURL(file);
-            });
+//                 const reader = new FileReader();
+//                 reader.onload = (ev) => updatePreview(ev.target.result);
+//                 reader.readAsDataURL(file);
+//             });
 
-            // Tambahkan ini di dalam FormEdit.init() atau setelahnya
-            const handleSearchKode = async (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault(); // Mencegah form submit tidak sengaja
-                    const kodeCari = e.target.value.trim();
+//             // Tambahkan ini di dalam FormEdit.init() atau setelahnya
+//             const handleSearchKode = async (e) => {
+//                 if (e.key === 'Enter') {
+//                     e.preventDefault(); // Mencegah form submit tidak sengaja
+//                     const kodeCari = e.target.value.trim();
 
-                    if (!kodeCari) return alert("Silahkan masukkan Kode Barang terlebih dahulu.");
+//                     if (!kodeCari) return alert("Silahkan masukkan Kode Barang terlebih dahulu.");
 
-                    try {
-                        // Ambil semua data dari database
-                        const allItems = await window.DB.getAll("items");
+//                     try {
+//                         // Ambil semua data dari database
+//                         const allItems = await window.DB.getAll("items");
                         
-                        // Cari item yang kodenya cocok
-                        const itemFound = allItems.find(item => item.kode === kodeCari);
+//                         // Cari item yang kodenya cocok
+//                         const itemFound = allItems.find(item => item.kode === kodeCari);
 
-                        if (itemFound) {
-                            // Gunakan fungsi setInitialData untuk mengisi semua field
-                            // Pastikan struktur itemFound sesuai (kode, nama, sumber, status, dll)
-                            FormEdit.setInitialData({
-                                kode: itemFound.kode,
-                                nama: itemFound.nama,
-                                sumber: itemFound.sumber,
-                                status: itemFound.status,
-                                pengambil: itemFound.pengambil || "",
-                                tanggal: itemFound.tanggal || "",
-                                fotoUrl: itemFound.foto_url // Link Google Drive dari database
-                            });
+//                         if (itemFound) {
+//                             // Gunakan fungsi setInitialData untuk mengisi semua field
+//                             // Pastikan struktur itemFound sesuai (kode, nama, sumber, status, dll)
+//                             FormEdit.setInitialData({
+//                                 kode: itemFound.kode,
+//                                 nama: itemFound.nama,
+//                                 sumber: itemFound.sumber,
+//                                 status: itemFound.status,
+//                                 pengambil: itemFound.pengambil || "",
+//                                 tanggal: itemFound.tanggal || "",
+//                                 fotoUrl: itemFound.foto_url // Link Google Drive dari database
+//                             });
                             
-                            console.log("Data ditemukan dan dimuat.");
-                        } else {
-                            alert(`🚫 Kode "${kodeCari}" tidak ditemukan di database.`);
-                            FormEdit.reset(); // Opsional: bersihkan form jika tidak ketemu
-                        }
-                    } catch (err) {
-                        console.error("Gagal mengambil data:", err);
-                        alert("Terjadi kesalahan saat mengakses database.");
-                    }
-                }
-            };
+//                             console.log("Data ditemukan dan dimuat.");
+//                         } else {
+//                             alert(`🚫 Kode "${kodeCari}" tidak ditemukan di database.`);
+//                             FormEdit.reset(); // Opsional: bersihkan form jika tidak ketemu
+//                         }
+//                     } catch (err) {
+//                         console.error("Gagal mengambil data:", err);
+//                         alert("Terjadi kesalahan saat mengakses database.");
+//                     }
+//                 }
+//             };
 
-            // Hubungkan ke elemen input kode di HTML
-            document.querySelector('#edit-kode').addEventListener('keypress', handleSearchKode);
-        },
+//             // Hubungkan ke elemen input kode di HTML
+//             document.querySelector('#edit-kode').addEventListener('keypress', handleSearchKode);
+//         },
 
-        // Fitur Tambahan Khusus Edit: Memasukkan data awal sebelum diedit
-        setInitialData: (data) => {
-            const container = q('#form-edit');
-            if (!container) return;
+//         // Fitur Tambahan Khusus Edit: Memasukkan data awal sebelum diedit
+//         setInitialData: (data) => {
+//             const container = q('#form-edit');
+//             if (!container) return;
 
-            // Isi field teks
-            q('#edit-kode', container).value = data.kode || '';
-            q('#edit-nama', container).value = data.nama || '';
-            q('#edit-pengambil', container).value = data.pengambil || '';
-            q('#edit-tanggal', container).value = data.tanggal || '';
+//             // Isi field teks
+//             q('#edit-kode', container).value = data.kode || '';
+//             q('#edit-nama', container).value = data.nama || '';
+//             q('#edit-pengambil', container).value = data.pengambil || '';
+//             q('#edit-tanggal', container).value = data.tanggal || '';
 
-            // Set Dropdown Sumber
-            if (data.sumber) {
-                q('#edit-sumber-value', container).value = data.sumber;
-                const text = q(`.option[data-value="${data.sumber}"]`, container)?.innerText || data.sumber;
-                const trigger = q('#edit-sumber-text', container);
-                trigger.innerText = text;
-                trigger.classList.remove('clr-grey', 'italic');
-            }
+//             // Set Dropdown Sumber
+//             if (data.sumber) {
+//                 q('#edit-sumber-value', container).value = data.sumber;
+//                 const text = q(`.option[data-value="${data.sumber}"]`, container)?.innerText || data.sumber;
+//                 const trigger = q('#edit-sumber-text', container);
+//                 trigger.innerText = text;
+//                 trigger.classList.remove('clr-grey', 'italic');
+//             }
 
-            // Set Dropdown Status
-            if (data.status) {
-                q('#edit-status-value', container).value = data.status;
-                const text = q(`.option[data-value="${data.status}"]`, container)?.innerText || data.status;
-                const trigger = q('#edit-status-text', container);
-                trigger.innerText = text;
-                trigger.classList.remove('clr-grey', 'italic');
-            }
+//             // Set Dropdown Status
+//             if (data.status) {
+//                 q('#edit-status-value', container).value = data.status;
+//                 const text = q(`.option[data-value="${data.status}"]`, container)?.innerText || data.status;
+//                 const trigger = q('#edit-status-text', container);
+//                 trigger.innerText = text;
+//                 trigger.classList.remove('clr-grey', 'italic');
+//             }
 
-            if (data.fotoUrl) {
-                let driveUrl = data.fotoUrl;
+//             if (data.fotoUrl) {
+//                 let driveUrl = data.fotoUrl;
 
-                // Trik konversi link Drive agar bisa jadi Source Image
-                // Mengubah '/file/d/ID/view' menjadi '/thumbnail?id=ID&sz=w500'
-                if (driveUrl.includes('drive.google.com')) {
-                    const fileId = driveUrl.match(/[-\w]{25,}/);
-                    if (fileId) {
-                        driveUrl = `https://lh3.googleusercontent.com/d/${fileId}=s500`;
-                    }
-                }
+//                 // Trik konversi link Drive agar bisa jadi Source Image
+//                 // Mengubah '/file/d/ID/view' menjadi '/thumbnail?id=ID&sz=w500'
+//                 if (driveUrl.includes('drive.google.com')) {
+//                     const fileId = driveUrl.match(/[-\w]{25,}/);
+//                     if (fileId) {
+//                         driveUrl = `https://lh3.googleusercontent.com/d/${fileId}=s500`;
+//                     }
+//                 }
 
-                state.originalFileUrl = driveUrl;
-                updatePreview(driveUrl);
-            }
-        },
+//                 state.originalFileUrl = driveUrl;
+//                 updatePreview(driveUrl);
+//             }
+//         },
 
-        // 4. Payload Output & Final Validation
-        getData: () => {
-            const container = q('#form-edit');
-            if (!container) return null;
+//         // 4. Payload Output & Final Validation
+//         getData: () => {
+//             const container = q('#form-edit');
+//             if (!container) return null;
 
-            const req = [
-                { id: '#edit-kode', name: 'Kode Barang' },
-                { id: '#edit-nama', name: 'Nama Barang' },
-                { id: '#edit-sumber-value', name: 'Sumber Barang' },
-                { id: '#edit-status-value', name: 'Status Barang' }
-            ];
+//             const req = [
+//                 { id: '#edit-kode', name: 'Kode Barang' },
+//                 { id: '#edit-nama', name: 'Nama Barang' },
+//                 { id: '#edit-sumber-value', name: 'Sumber Barang' },
+//                 { id: '#edit-status-value', name: 'Status Barang' }
+//             ];
 
-            const errs = req.reduce((acc, r) => {
-                const val = q(r.id, container)?.value.trim();
-                return !val ? [...acc, `${r.name} wajib diisi!`] : acc;
-            }, []);
+//             const errs = req.reduce((acc, r) => {
+//                 const val = q(r.id, container)?.value.trim();
+//                 return !val ? [...acc, `${r.name} wajib diisi!`] : acc;
+//             }, []);
 
-            if (errs.length) {
-                alert("⚠️ GAGAL UPDATE:\n- " + errs.join("\n- "));
-                return null;
-            }
+//             if (errs.length) {
+//                 alert("⚠️ GAGAL UPDATE:\n- " + errs.join("\n- "));
+//                 return null;
+//             }
 
-            return {
-                kode: q('#edit-kode', container).value.trim(),
-                nama: q('#edit-nama', container).value.trim(),
-                sumber: q('#edit-sumber-value', container).value.trim(),
-                status: q('#edit-status-value', container).value.trim(),
-                pengambil: q('#edit-pengambil', container).value.trim(),
-                tanggal: q('#edit-tanggal', container).value,
-                fileBaru: state.file, // Akan berisi file object jika diupdate, atau null jika tidak diubah
-                fotoLama: state.file ? null : state.originalFileUrl // Indikator ke backend apakah foto berubah
-            };
-        },
+//             return {
+//                 kode: q('#edit-kode', container).value.trim(),
+//                 nama: q('#edit-nama', container).value.trim(),
+//                 sumber: q('#edit-sumber-value', container).value.trim(),
+//                 status: q('#edit-status-value', container).value.trim(),
+//                 pengambil: q('#edit-pengambil', container).value.trim(),
+//                 tanggal: q('#edit-tanggal', container).value,
+//                 fileBaru: state.file, // Akan berisi file object jika diupdate, atau null jika tidak diubah
+//                 fotoLama: state.file ? null : state.originalFileUrl // Indikator ke backend apakah foto berubah
+//             };
+//         },
 
-        // 5. Reset Form
-        reset: () => {
-            const container = q('#form-edit');
-            if (!container) return;
+//         // 5. Reset Form
+//         reset: () => {
+//             const container = q('#form-edit');
+//             if (!container) return;
 
-            qa('.form-input', container).forEach(input => input.value = '');
-            qa('input[type="hidden"]', container).forEach(input => input.value = '');
-            q('#edit-file-input', container).value = '';
+//             qa('.form-input', container).forEach(input => input.value = '');
+//             qa('input[type="hidden"]', container).forEach(input => input.value = '');
+//             q('#edit-file-input', container).value = '';
 
-            qa('.select-trigger span', container).forEach(span => {
-                span.innerText = span.id.includes('sumber') ? 'Pilih Sumber :' : 'Pilih Status :';
-                span.classList.add('clr-grey', 'italic');
-            });
+//             qa('.select-trigger span', container).forEach(span => {
+//                 span.innerText = span.id.includes('sumber') ? 'Pilih Sumber :' : 'Pilih Status :';
+//                 span.classList.add('clr-grey', 'italic');
+//             });
 
-            const labelText = q('#edit-file-name-text', container);
-            if (labelText) labelText.innerText = "Pilih File Baru";
+//             const labelText = q('#edit-file-name-text', container);
+//             if (labelText) labelText.innerText = "Pilih File Baru";
 
-            state.file = null;
-            state.originalFileUrl = null;
-            updatePreview(null);
-        }
-    };
-})();
+//             state.file = null;
+//             state.originalFileUrl = null;
+//             updatePreview(null);
+//         }
+//     };
+// })();
