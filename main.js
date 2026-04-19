@@ -33,8 +33,19 @@ window.REQUEST = new request()
 import { UI_Loader, UI_Login, isReallyOnline,setChart } from "./js/UI"
 window.isReallyOnline = isReallyOnline
 
+import inventory from "./js/inventory"
+window.INVENTORY = new inventory()
+
+import trx from "./js/transaksi"
+window.TRANSAKSI = new trx()
+
 UI_Loader("Connecting...")
 document.addEventListener("DOMContentLoaded", () => setTimeout(() => UI_Login(), 1000))
 
 // https://gemini.google.com/share/ac68c54323e9
- 
+
+
+document.querySelector("#logout").onclick = () => {
+    localStorage.setItem("device", "")
+    window.location.reload()
+}

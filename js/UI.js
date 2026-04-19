@@ -317,6 +317,7 @@ export function navBar () {
     const navGroups = document.querySelectorAll(".nav-group")
     const contents  = document.querySelectorAll(".content")
     navGroups.forEach(nav => {
+        if (nav.id == "logout") return
         nav.onclick = () => {
             navGroups.forEach(nv => nv.classList.remove("white"))
             nav.classList.add("white")
@@ -362,7 +363,7 @@ export async function setChart (data) {
             label: 'Barang Masuk',
             data: data.lineMasuk,
             fill: false,
-            borderColor: 'deepskyblue',
+            borderColor: 'limegreen',
             tension: 0.4,
             fill: true, 
             backgroundColor: 'rgba(66, 184, 131, 0.2)', // Warna area (transparan)
@@ -371,7 +372,7 @@ export async function setChart (data) {
             label: 'Barang Keluar',
             data: data.lineKeluar,
             fill: false,
-            borderColor: 'limegreen',
+            borderColor: 'deepskyblue',
             tension: 0.4,
             fill: true, 
             backgroundColor: 'rgba(3, 175, 255, 0.2)', // Warna area (transparan)
@@ -527,7 +528,7 @@ export function UI_clearPopUp () {
     document.querySelectorAll(".pop-up").forEach(popup => popup.classList.add("dis-none"))
 }
 export async function UI_Login(text = "") {
-    return UI_Main()
+    // return UI_Main()
     const isOnline = await isReallyOnline()
     if (!isOnline.confirm) return UI_Offline()
     console.log("UI Login " + text)
@@ -552,9 +553,9 @@ export async function UI_Main () {
     UI_Play()
     UI_clearPopUp()
     await formStart()
-    await INVENTORY.play()
+    await window.INVENTORY.play()
     await updateDashboard()
-    await TRANSACTION.play()
+    await window.TRANSAKSI.play()
     UI_ClearShimmer()
     initTableSort()
 }
@@ -615,7 +616,7 @@ export async function defaultFetchResponse(resp, {success, reject, failed, note}
 }
 export async function updateDashboard () {
     
-    const counter = await window.DB.getAll("counter")
+    const counter       = await window.DB.getAll("counter")
 
     const trxHeader     = counter.find(data => data.type === "trxHeader")
     const hedaerCount   = trxHeader.count
@@ -626,28 +627,28 @@ export async function updateDashboard () {
     const stocks        = counter.find(data => data.type === "stocks")
     const available     = stocks?.available
     const unavailable   = stocks?.unavailable
-    const total         = stocks.total
+    const qty           = stocks.qty
 
     const items         = counter.find(data => data.type === "items")
     const itemsCount    = items.count
 
-    const tot = unavailable + available
+    const availPercent  = ((available/stocks.total)*100).toFixed(2)
+    const unAvailPercent= ((unavailable/stocks.total)*100).toFixed(2)
 
-    const availPercent  = ((available/tot)*100).toFixed(2)
-    const unAvailPercent  = ((unavailable/tot)*100).toFixed(2)
+    // console.log(unavailable, total, unavailable/total)
 
-    console.log(unavailable, total, unavailable/total)
+    document.querySelector("#trx-boxes").textContent            = hedaerCount
+    document.querySelector("#inv-items-total").textContent      = itemsCount
+    document.querySelector("#items-boxes").textContent          = itemsCount
+    document.querySelector("#inven-qty").textContent            = qty
+    document.querySelector("#qty-boxes").textContent            = qty
+    document.querySelector("#inven-unavailable").textContent    = unavailable
+    document.querySelector("#inven-available").textContent      = available
 
-    document.querySelector("#trx-boxes").textContent    = hedaerCount
-    document.querySelector("#inv-items-total").textContent  = itemsCount
-    document.querySelector("#items-boxes").textContent  = itemsCount
-    document.querySelector("#inven-qty").textContent    = total
-    document.querySelector("#qty-boxes").textContent    = total
-    document.querySelector("#inven-unavailable").textContent = unavailable
-    document.querySelector("#inven-available").textContent = available
+    document.querySelector("#unavail-percent").textContent      = unAvailPercent + "%"
+    document.querySelector("#avail-percent").textContent        = availPercent + "%"
 
-    document.querySelector("#unavail-percent").textContent = unAvailPercent + "%"
-    document.querySelector("#avail-percent").textContent = availPercent + "%"
+    document.querySelector("#qty-up").innerHTML                 = `<span class="green p-5 borad-5">${stocks.in}</span><span class="blue p-5 borad-5">${stocks.out}</span>`
 
     
 

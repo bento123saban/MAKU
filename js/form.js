@@ -1,6 +1,6 @@
 
 import { getDevice } from "./device";
-import { UI_Alert, UI_ClearShimmer, UI_Loader, UI_Login, UI_Notif, UI_showShimmer, defaultFetchResponse } from "./UI";
+import { UI_Alert, UI_ClearShimmer, UI_Loader, UI_Login, UI_Notif, UI_showShimmer, defaultFetchResponse, updateDashboard } from "./UI";
 
 const jenisInput = document.querySelector("#form-jenis-input")
 const submitBtn  = document.querySelector("#form-submit-button")
@@ -120,7 +120,10 @@ export async function updateStocks (loaderCallback = null) {
                         type        : "stocks",
                         unavailable : data.unavailable,
                         available   : data.available,
-                        total       : data.total
+                        total       : data.total,
+                        qty         : data.qty,
+                        in          : data.in,
+                        out         : data.out
                     })
                     console.log("[Update Stock] Data stock sudah terupdate ")
                     UI_Notif("Data stok sudah terupdate", "green")
@@ -290,9 +293,9 @@ export async function formStart () {
     const isOnline = await window.isReallyOnline()
     if (!isOnline.confirm) return UI_Notif("Offline", "red")
         
-    // const updatetrx     = await updateTRX()
-    // const updateitems   = await updateItems()
-    // const updatestocks  = await updateStocks()
+    const updatetrx     = await updateTRX()
+    const updateitems   = await updateItems()
+    const updatestocks  = await updateStocks()
 
     navFrom.classList.remove("dis-none")
     document.querySelectorAll(".content-loader").forEach(load => load.classList.add("dis-none"))
@@ -337,9 +340,25 @@ export async function formStart () {
                 })
 
                 await defaultFetchResponse(resp, {
-                    success : (param) => {
+                    success : async (param) => {
+                        const trxHeader = param.data.header
+                        const trxItems  = param.data.items
+                        await window.DB.clear("trxHeader")
+                        await window.DB.upsert("trxHeader", trxHeader.list)
+                        await window.DB.upsert("counter", {
+                            type    : "trxHeader",
+                            count   : trxHeader.count,
+                            month   : trxHeader.month
+                        })
+                        await window.DB.clear("trxItems")
+                        await window.DB.upsert("trxItems", trxItems.list)
+                        await window.DB.upsert("counter", {
+                            type    : "trxItems",
+                            month   : trxItems.month
+                        })
+                        console.log("[Update Transaksi] Data transaksi sudah terupdate ")
+                        UI_Notif("Data transaksi sudah terupdate", "green")
                         UI_Alert(param.data.msg, "green")
-                        FormMasuk.reset()
                     },
                     reject  : (param) => UI_Alert(param.data.msg, "red"),
                     failed  : (param) => UI_Alert((param.error?.message || "Terjadi kesalahan pada sistem."), "red"),
@@ -353,6 +372,10 @@ export async function formStart () {
                 }
             }
             finally {
+                await window.INVENTORY.play()
+                await updateDashboard()
+                await window.TRANSAKSI.play()
+                FormMasuk.reset()
                 e.target.dataset.on = ""
             }
         }
@@ -374,9 +397,25 @@ export async function formStart () {
                     ...user
                 })
                 await defaultFetchResponse(resp, {
-                    success : (param) => {
+                    success : async (param) => {
+                        const trxHeader = param.data.header
+                        const trxItems  = param.data.items
+                        await window.DB.clear("trxHeader")
+                        await window.DB.upsert("trxHeader", trxHeader.list)
+                        await window.DB.upsert("counter", {
+                            type    : "trxHeader",
+                            count   : trxHeader.count,
+                            month   : trxHeader.month
+                        })
+                        await window.DB.clear("trxItems")
+                        await window.DB.upsert("trxItems", trxItems.list)
+                        await window.DB.upsert("counter", {
+                            type    : "trxItems",
+                            month   : trxItems.month
+                        })
+                        console.log("[Update Transaksi] Data transaksi sudah terupdate ")
+                        UI_Notif("Data transaksi sudah terupdate", "green")
                         UI_Alert(param.data.msg, "green")
-                        FormKeluar.reset()
                     },
                     reject  : (param) => UI_Alert(param.data.msg, "red"),
                     failed  : (param) => UI_Alert((param.error?.message || "Terjadi kesalahan pada sistem."), "red"),
@@ -389,8 +428,11 @@ export async function formStart () {
                     msg     : "[Transaksi Keluar] Gagal : " + e.message
                 }
             }
-            
             finally {
+                await window.INVENTORY.play()
+                await updateDashboard()
+                await window.TRANSAKSI.play()
+                FormMasuk.reset()
                 e.target.dataset.on = ""
             }
         }
@@ -419,11 +461,12 @@ export async function formStart () {
                         const items = resp.data.items
                         const stocks = resp.data.stocks
 
-                        // return console.table([resp, items, stocks])
-
                         await window.DB.clear("items")
                         await window.DB.upsert("items", items.list)
-                        await  window.DB.upsert("counter", {type : "items", count : items.count})
+                        await window.DB.upsert("counter", {
+                            type    : "items",
+                            count   : items.count
+                        })
                         console.log("[Update Barang] Data barang sudah terupdate ")
                         UI_Notif("Data barang sudah terupdate", "green")
 
@@ -437,7 +480,6 @@ export async function formStart () {
                         })
                         console.log("[Update Stock] Data stock sudah terupdate ")
                         UI_Notif("Data stok sudah terupdate", "green")
-
                         UI_Alert(param.data.msg, "green")
                         FormTambah.reset()
                     },

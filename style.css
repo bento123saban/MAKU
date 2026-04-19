@@ -634,13 +634,11 @@ table#inventory-table th span {
 }
 #inventory-table tr td:nth-child(1) {
     /* Style kamu di sini */
-    background-color: #f0f0f0;
     text-align: center;
     width: 50px;
 }
 #inventory-table tr td:nth-child(2) {
     /* Style kamu di sini */
-    background-color: #f0f0f0;
     text-align: center;
     width: 150px;
 }

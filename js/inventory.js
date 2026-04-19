@@ -1,7 +1,7 @@
 
 
 
-class inventory {
+export default class inventory {
     constructor () {
         this.readyButton = document.querySelector("#inven-ready-button")
         this.habisButton = document.querySelector("#inven-habis-button")
@@ -36,7 +36,7 @@ class inventory {
         const tbody = document.querySelector('#inventory-table tbody');
         tbody.innerHTML = data.map((data, i) => `
             <tr>
-                <td class="p-5"><span class="pointer borad-5 w-100 h-100 grey p-5 tr-front grid-center">${(i + 1).toString().padStart(2, '0')}</span></td>
+                <td class="p-5"><span class="pointer borad-5 w-100 h-100  p-5 tr-front grid-center">${(i + 1).toString().padStart(2, '0')}</span></td>
                 <td>${data.code}</td>
                 <td>${data.name}</td>
                 <td>${data.stock}</td>
@@ -77,7 +77,3 @@ class inventory {
         }
     }
 }
-
-const INVENTORY = new inventory()
-export default INVENTORY
-

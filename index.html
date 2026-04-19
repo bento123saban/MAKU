@@ -48,7 +48,7 @@
                 <div class="nav-group" data-nav="add" id="tambah-button"><i class="fas fa-add"></i> Tambah</div>
                 <hr  class="br-white">
                 <br>
-                <div class="nav-group"><i class="fa-solid fa-arrow-right-from-bracket"></i> Keluar</div>
+                <div class="nav-group" id="logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Keluar</div>
 
                 <div id="theme-box" class="flex-center gap-10">
                     <i class="fas fa-sun"></i>
@@ -484,29 +484,36 @@
                         <!-- Boxes -->
                         <div id="inven-boxes" class="p-0 m-0 hidden">
                             
+                            <!-- Total Jumlah Barang -->
                             <div class="boxes p-15 borad-20 orange">
                                 <i class="fas fa-boxes"></i>
                                 <h1 class="align-center p-0 m-0" id="inv-items-total"></h1>
                                 <span class="p-0 m-0"> Total</span>
                                 <span class="fz-12"></span>
                             </div>
+
+                            <!-- Total Barang Tersedia -->
                             <div class="boxes p-15 borad-20 green" id="inven-ready-button" data-status="off">
                                 <i class="fas fa-thumbs-up"></i>
                                 <h1 class="align-center p-0 m-0" id="inven-available"></h1>
-                                <span class="p-0 m-0"> Ready</span>
+                                <span class="p-0 m-0">Tersedia</span>
                                 <span class="fz-12" id="avail-percent"></span>
                             </div>
+
+                            <!-- Total Barang Habis -->
                             <div class="boxes p-15 borad-20 grey" id="inven-habis-button" data-status="off">
                                 <i class="far fa-circle relative"></i>
                                 <h1 class="align-center p-0 m-0" id="inven-unavailable"></h1>
-                                <span class="p-0 m-0"> Habis</span>
+                                <span class="p-0 m-0">Habis</span>
                                 <span class="fz-12" id="unavail-percent"></span>
                             </div>
+
+                            <!-- Qty Barang Tersedia -->
                             <div class="boxes p-15 borad-20 br-none purple">
                                 <i class="fas fa-database"></i>
                                 <h1 class="align-center p-0 m-0" id="inven-qty"></h1>
                                 <span class="p-0 m-0"> Qty</span>
-                                <span class="fz-12 dis-block flex-end gap-10 dis-none"><span class="blue p-5 borad-5"></span><span class="green p-5 borad-5"></span></span>
+                                <span class="fz-12 dis-block flex-end gap-10" id="qty-up"></span>
                             </div>
                         </div>
                         <br>

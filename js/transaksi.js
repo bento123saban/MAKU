@@ -3,7 +3,7 @@ import { updates } from "./form";
 const dateFormatter = new Intl.DateTimeFormat('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
 const timeFormatter = new Intl.DateTimeFormat('id-ID', { hour: '2-digit', minute: '2-digit' });
 
-class trx {
+export default class trx {
     constructor () {
         this.trxItemDetailBox   = document.querySelector("#trx-items-detail")
         this.trxDetailBox       = document.querySelector("#trx-detail")
@@ -525,5 +525,3 @@ class trx {
     }
 }
 
-const TRANSACTION = new trx()
-export default TRANSACTION
